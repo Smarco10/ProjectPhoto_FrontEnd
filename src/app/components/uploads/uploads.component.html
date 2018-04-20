@@ -1,0 +1,68 @@
+<table id="layout">
+	<tr>
+		<td colspan="3">
+			<div *ngIf="showTextUp">
+				<label *ngIf="!mkTextUp || (mkTextUp.length == 0)" for="upload-text-up" class="placeholder clickable block_centered" (click)="mkTextUp=' '">CLICK TO ADD TEXT</label>
+				<markdown *ngIf="showMkTextUp && mkTextUp && (mkTextUp.length > 0)" [data]="mkTextUp" (click)="showMkTextUp=!showMkTextUp" class="clickable"></markdown>
+				<textarea *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0) " placeholder="markdown code here..." [(ngModel)]="mkTextUp" name="text-up"></textarea>
+				<br *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0)"/>
+				<button *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0)" (click)="showMkTextUp=!showMkTextUp">Toogle Markdown</button>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div *ngIf="showTextLeft">
+				<label *ngIf="!mkTextLeft || (mkTextLeft.length == 0)" for="upload-text-left" class="placeholder clickable block_centered" (click)="mkTextLeft=' '">+</label>
+				<markdown *ngIf="showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" [data]="mkTextLeft" (click)="showMkTextLeft=!showMkTextLeft" class="clickable"></markdown>
+				<textarea *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextLeft" name="text-left"></textarea>
+				<br *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" />
+				<button *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" (click)="showMkTextLeft=!showMkTextLeft">Toogle Markdown</button>
+			</div>
+		</td>
+		<td>
+			<label *ngIf="!slideData" for="upload-image" class="placeholder clickable block_centered">CLICK TO LOAD PICTURE</label>
+			<img *ngIf="slideData" [src]="slideData" height="500" alt="Aperçu de l’image..." class="clickable block_centered" (click)="slideData=undefined" />
+		</td>
+		<td>
+			<div *ngIf="showTextRight">
+				<label *ngIf="!mkTextRight || (mkTextRight.length == 0)" for="upload-text-right" class="placeholder clickable block_centered" (click)="mkTextRight=' '">+</label>
+				<markdown *ngIf="showMkTextRight && mkTextRight && (mkTextRight.length > 0)" [data]="mkTextRight" (click)="showMkTextRight=!showMkTextRight" class="clickable"></markdown>
+				<textarea *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextRight" name="text-right"></textarea>
+				<br *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" />
+				<button *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" (click)="showMkTextRight=!showMkTextRight">Toogle Markdown</button>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<div *ngIf="showTextDown">
+				<label *ngIf="!mkTextDown || (mkTextDown.length == 0)" for="upload-text-down" class="placeholder clickable block_centered" (click)="mkTextDown=' '">CLICK TO ADD TEXT</label>
+				<markdown *ngIf="showMkTextDown && mkTextDown && (mkTextDown.length > 0)" [data]="mkTextDown" (click)="showMkTextDown=!showMkTextDown" class="clickable"></markdown>
+				<textarea *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextDown" name="text-down"></textarea>
+				<br *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)"/>
+				<button *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" (click)="showMkTextDown=!showMkTextDown">Toogle Markdown</button>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<br/>
+
+<table id="btn-box">
+	<tr>
+		<td><button id="upload-btn" class="button" (click)="upload()">Upload</button></td> <!-- [disabled]="!slideData" -->
+		<td><button id="preview-btn" class="button" (click)="previewSlide()">Preview</button></td>
+	</tr>
+</table>
+
+<!-- FORM -->
+<form enctype="multipart/form-data" method="post" (ngSubmit)="upload()">
+	<input id="upload-text-up" class="hidden" type="text" name="text-up" [ngModel]="mkTextUp" />
+	<input id="upload-text-left" class="hidden" type="text" name="text-left" [ngModel]="mkTextLeft" />
+	<input id="upload-text-right" class="hidden" type="text" name="text-right" [ngModel]="mkTextRight" />
+	<input id="upload-text-down" class="hidden" type="text" name="text-down" [ngModel]="mkTextDown" />
+	
+	<input id="upload-image" class="hidden" name="image" type="file" (change)="previewFile($event)" />
+	<input id="upload-btn" class="hidden" name="upload" type="submit" />
+</form>

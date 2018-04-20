@@ -1,0 +1,29 @@
+
+table {
+	margin: auto;
+}
+
+.form-group input {
+	border-style: none;
+    background-color: #3F3F3F;
+    color: white;
+    padding: 7px;
+}
+
+.form-group .required {
+    background-color: #9c632e;
+}
+
+.form-group .wrong {
+    background-color: #a13f3f;
+}
+
+#loginBtn {
+	width: 100%;
+	margin-top: 20px;
+	border-style: none;
+    background-color: #1D3C58;
+    color: white;
+    padding: 7px;
+    font-size: 1.5em;
+}

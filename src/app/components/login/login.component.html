@@ -1,0 +1,19 @@
+<div class="col-md-6 col-md-offset-3">
+    <h2 class="text_centered">Restricted Area</h2>
+	<form [formGroup]="loginForm" (ngSubmit)="login()">
+		<table>
+	        <tr class="form-group text_centered">
+	            <td><label>Login</label></td>
+	            <td><input type="text" formControlName="login" [ngClass]="{'required': loginForm.get('login').touched && loginForm.hasError('required', ['login'])}"/></td>
+	        </tr>
+	        <tr class="form-group text_centered">
+	            <td><label>Password</label></td>
+	            <td><input type="password" formControlName="password" [ngClass]="{'required': loginForm.get('password').touched && loginForm.hasError('required', ['password']), 'wrong': loginForm.hasError('pattern', ['password'])}" /></td>
+	        </tr>
+	        <tr class="form-group text_centered">
+	            <td colspan="3"><button id="loginBtn" [disabled]="loading || loginForm.invalid">Login</button></td>
+			</tr>
+		</table>
+		<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+    </form>
+</div>
