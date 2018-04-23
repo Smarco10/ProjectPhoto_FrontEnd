@@ -26,7 +26,7 @@ export class SlideService {
     }
 
     getSlideData(id: string, format: string, width: number, height: number): Promise<any> {
-        return this.photosService.get(id, {
+        return this.uploadService.get(id, {
             query: {
                 size: {
                     width: width,
