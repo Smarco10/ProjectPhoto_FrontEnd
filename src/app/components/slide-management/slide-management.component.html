@@ -6,10 +6,6 @@
 	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
 		<h2>{{slide.title}}</h2>
 	</div>
-
-	<div *ngIf="layout == 'view' && slide.text.length !== 0" class="slide_text" [ngStyle]="slide.textStyle">
-		<markdown #mkd>{{slide.text}}</markdown>
-	</div>
 	
 	<div *ngIf="layout == 'manage'">
 		<button mat-raised-button (click)="modifySlide()">modify</button>
