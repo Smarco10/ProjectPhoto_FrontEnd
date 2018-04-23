@@ -5,11 +5,11 @@ import { SlideService } from 'services';
 import { Slide } from '@models/slide';
 
 @Component({
-    selector: 'app-slide',
-    templateUrl: './slide.component.html',
-    styleUrls: ['./slide.component.css']
+    selector: 'app-slide-management',
+    templateUrl: './slide-management.component.html',
+    styleUrls: ['./slide-management.component.css']
 })
-export class SlideComponent implements OnInit {
+export class SlideManagementComponent implements OnInit {
 
     @Input() slide: Slide;
     @Input() layout: string = "view";
@@ -56,5 +56,22 @@ export class SlideComponent implements OnInit {
         else {
             this.router.navigateByUrl("/");
         }
+    }
+
+    modifySlide() {
+        console.log("modifySlide(" + this.slide.id + ")");
+    }
+
+    deleteSlide() {
+        let id = this.slide.id;
+        let router = this.router;
+
+        this.slideService.deleteSlide(id)
+            .then(ret => {
+                console.log("Succeed to remove " + ret);
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 }

@@ -1,4 +1,4 @@
 <mat-card *ngFor="let slide of slides">
-	<app-slide [slide]="slide" [layout]="'manage'"></app-slide>
+	<app-slide-management [slide]="slide" [layout]="'manage'"></app-slide-management>
 </mat-card>
 <button mat-raised-button [routerLink]="['/slide/create']" color="primary">Create new Slide</button>

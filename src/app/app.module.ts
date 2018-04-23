@@ -15,6 +15,7 @@ import {
     UploadsComponent,
     SlideshowComponent,
     SlideComponent,
+    SlideManagementComponent,
     SlidesManagerComponent
 } from '@app/components';
 
@@ -33,6 +34,7 @@ import {
         AppComponent,
         SlideshowComponent,
         SlideComponent,
+        SlideManagementComponent,
         LoginComponent,
         UploadsComponent,
         SlidesManagerComponent
