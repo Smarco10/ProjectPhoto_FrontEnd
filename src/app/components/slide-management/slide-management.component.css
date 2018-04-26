@@ -48,6 +48,7 @@ position: relative;
 }
 
 .buttons {
+	display: inline-grid;
     grid-column: 4;
     grid-row: 1;
 }
