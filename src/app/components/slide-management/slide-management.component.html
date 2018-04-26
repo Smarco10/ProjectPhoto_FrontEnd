@@ -1,13 +1,13 @@
 <div *ngIf="slide" class="grid-container">
-	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide grid-item" [ngStyle]="slide.style">
+	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide" [ngStyle]="slide.style">
 		<img src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" />
 	</div>
 	
-	<div *ngIf="slide.title.length !== 0" class="slide_title grid-item" [ngStyle]="slide.titleStyle">
+	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
 		<h2>{{slide.title}}</h2>
 	</div>
 	
-	<div class="grid-item">
+	<div class="buttons">
 		<button mat-raised-button (click)="modifySlide()">modify</button>
 		<br/>
 		<button mat-raised-button color="warn" (click)="deleteSlide()">remove</button>
