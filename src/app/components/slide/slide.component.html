@@ -1,8 +1,9 @@
 <div *ngIf="slide">
 	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide" [ngStyle]="slide.style">
-		<img src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" />
+		<img *ngIf="slide.isLoaded" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" />
+		<mat-spinner *ngIf="!slide.isLoaded" diameter="70" [ngStyle]="slide.imgStyle"></mat-spinner>
 	</div>
-	
+
 	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
 		<h2>{{slide.title}}</h2>
 	</div>

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { Slide } from '@models/slide'
 
-import { FeathersService } from "@services/feathers/feathers.service";
+import { FeathersService, FeathersServiceEventListener } from "@services/feathers/feathers.service";
 import { AuthService } from "@services/auth/auth.service";
 
 @Injectable()
-export class SlideService {
+export class SlideService extends FeathersServiceEventListener {
 
     private photosService: any;
     private uploadService: any;
@@ -15,7 +15,8 @@ export class SlideService {
         private client: FeathersService,
         private authenticationService: AuthService
     ) {
-        this.photosService = this.client.service('photos');
+        super(client.service('photos'));
+        this.photosService = this.eventService;
         this.uploadService = this.client.service('uploads');
     }
 
@@ -67,18 +68,5 @@ export class SlideService {
 
     deleteSlide(id: string): Promise<any> {
         return this.photosService.remove(id, {});
-    }
-
-    onCreated(callback: Function) {
-        this.photosService.on('created', callback);
-    }
-
-    onUpdated(callback: Function) {
-        this.photosService.on('updated', callback);
-        this.photosService.on('patched', callback);
-    }
-
-    onRemoved(callback: Function) {
-        this.photosService.on('removed', callback);
     }
 }

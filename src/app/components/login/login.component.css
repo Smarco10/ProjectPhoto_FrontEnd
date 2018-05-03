@@ -1,5 +1,5 @@
-
-table {
+mat-card {
+	width: 50%;
 	margin: auto;
 }
 
@@ -16,6 +16,16 @@ table {
 
 .form-group .wrong {
     background-color: #a13f3f;
+}
+
+mat-form-field {
+	width: 100%;
+}
+
+mat-action-row button,mat-spinner {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #loginBtn {

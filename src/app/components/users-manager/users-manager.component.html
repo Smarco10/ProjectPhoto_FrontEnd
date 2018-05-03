@@ -1,0 +1,55 @@
+<mat-accordion multi="false">
+	<mat-expansion-panel *ngFor="let user of users" (opened)="passwordHide = true" (closed)="passwordHide = true">
+		<mat-expansion-panel-header>
+			<mat-panel-title>{{!!user ? (!!user.email ? user.email : user.id) : "Create user"}}</mat-panel-title>
+			<mat-panel-description>
+				<mat-chip-list *ngIf="!!user" #chipList>
+					<mat-chip *ngFor="let permission of user.permissions">
+						{{permission}}
+					</mat-chip>
+				</mat-chip-list>
+
+				<mat-chip-list *ngIf="!user" #chipList>
+					<mat-chip *ngFor="let permission of newUser.permissions">
+						{{permission}}
+					</mat-chip>
+				</mat-chip-list>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+
+		<mat-form-field>
+			<input matInput *ngIf="!!user" placeholder="Email" [(ngModel)]="user.email">
+			<input matInput *ngIf="!user" placeholder="Email" [(ngModel)]="newUser.email">
+		</mat-form-field>
+
+		<mat-form-field>
+			<input matInput *ngIf="!!user" placeholder="Enter new password" [type]="passwordHide ? 'password' : 'text'" [(ngModel)]="user.password">
+			<input matInput *ngIf="!user" placeholder="Enter new password" [type]="passwordHide ? 'password' : 'text'" [(ngModel)]="newUser.password">
+			<mat-icon matSuffix (click)="passwordHide = !passwordHide">{{passwordHide ? 'visibility' : 'visibility_off'}}</mat-icon>
+		</mat-form-field>
+
+		<mat-form-field class="permission-chip-list">
+			<mat-chip-list *ngIf="!!user" #chipList>
+				<mat-chip *ngFor="let permission of user.permissions" [selectable]="true" [removable]="true" (remove)="removePermission(user, permission)">
+					{{permission}}
+					<mat-icon matChipRemove>cancel</mat-icon>
+				</mat-chip>
+				<input placeholder="Permissions" [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="addPermission(user, $event)" />
+			</mat-chip-list>
+
+			<mat-chip-list *ngIf="!user" #chipList>
+				<mat-chip *ngFor="let permission of newUser.permissions" [selectable]="true" [removable]="true" (remove)="removePermission(newUser, permission)">
+					{{permission}}
+					<mat-icon matChipRemove>cancel</mat-icon>
+				</mat-chip>
+				<input placeholder="Permissions" [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="addPermission(newUser, $event)" />
+			</mat-chip-list>
+		</mat-form-field>
+
+		<mat-action-row>
+			<button *ngIf="!!user" mat-button color="warn" (click)="deleteUser(user.id)">Delete</button>
+			<button *ngIf="!!user" mat-button color="primary" (click)="updateUser(user)">Update</button>
+			<button *ngIf="!user" mat-button color="primary" (click)="createUser()">Create</button>
+		</mat-action-row>
+	</mat-expansion-panel>
+</mat-accordion>

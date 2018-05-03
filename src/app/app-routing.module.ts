@@ -8,6 +8,7 @@ import {
     SlideComponent,
     LoginComponent,
     SlidesManagerComponent,
+    UsersManagerComponent,
     UploadsComponent
 } from 'components';
 
@@ -24,6 +25,7 @@ const routes: Routes = [
         ]
     },
     { path: 'slideshow', component: SlideshowComponent },
+    { path: 'users', component: UsersManagerComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '/' }
 ];
 

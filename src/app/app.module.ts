@@ -3,7 +3,17 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatCardModule } from '@angular/material';
+import {
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MAT_LABEL_GLOBAL_OPTIONS,
+    MatProgressSpinnerModule
+} from '@angular/material';
 
 import { NgxCarouselModule } from 'ngx-carousel';
 import 'hammerjs';
@@ -16,7 +26,8 @@ import {
     SlideshowComponent,
     SlideComponent,
     SlideManagementComponent,
-    SlidesManagerComponent
+    SlidesManagerComponent,
+    UsersManagerComponent
 } from '@app/components';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -37,7 +48,8 @@ import {
         SlideManagementComponent,
         LoginComponent,
         UploadsComponent,
-        SlidesManagerComponent
+        SlidesManagerComponent,
+        UsersManagerComponent
     ],
     imports: [
         BrowserModule,
@@ -48,6 +60,12 @@ import {
         BrowserAnimationsModule,
         MatButtonModule,
         MatCardModule,
+        MatChipsModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
         NgxCarouselModule,
         MarkdownModule
     ],
@@ -57,7 +75,8 @@ import {
         AuthGuard,
         AuthService,
         SlideService,
-        FeathersService
+        FeathersService,
+        { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: { float: 'auto' } }
     ],
     bootstrap: [AppComponent]
 })

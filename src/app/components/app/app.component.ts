@@ -12,27 +12,42 @@ import { AuthService, FeathersService } from 'services';
 export class AppComponent {
     title = 'ProjectPhoto';
     logged = false;
+    allowed = {
+        manageSlides: false,
+        manageUsers: true
+    }
 
     constructor(
         private auth: AuthService,
         private feathers: FeathersService,
         private router: Router
     ) {
-        //TODO: pose des problemes (error au chargement avant connection et au logout)
-        this.auth.checkLogin()
-            .then(() => this.setLogged(true))
-            .catch(() => this.setLogged(false));
+        this.feathers.onAuthenticated(() => {
+            this.updateLogin();
+        });
+
+        this.feathers.onLogout(() => {
+            this.updateLogin();
+        });
+
+        this.feathers.onReauthenticationError(() => {
+            this.updateLogin();
+        });
     }
 
-    public setLogged(logged: boolean) {
-        this.logged = logged;
+    private getUserId(): string {
+        return this.auth.getUser().email;
     }
 
-    logout(goToRoot: boolean) {
+    public updateLogin() {
+        let user = this.auth.getUser();
+        this.logged = !!user;
+        this.allowed.manageSlides = this.logged && user.hasPermission("admin");
+    }
+
+    public logout(goToRoot: boolean) {
         // reset login status
         this.auth.logout();
-        this.setLogged(false);
-        console.log("successfully logged out");
 
         if (goToRoot == true) {
             this.router.navigateByUrl('/');

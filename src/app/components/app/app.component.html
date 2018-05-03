@@ -1,7 +1,9 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/themes/prism.min.css" rel="stylesheet" />
+<!--link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/themes/prism.min.css" rel="stylesheet" /-->
 <nav>
 	<button mat-raised-button color="primary" [routerLink]="['/slideshow']">Open Slideshow</button>
-	<button mat-raised-button color="warn" [routerLink]="['/slide/manage']">Slide Management</button>
-	<button mat-raised-button color="warn" *ngIf="logged" (click)="logout(true)">Logout</button>
+	<button mat-raised-button color="warn" *ngIf="logged && allowed.manageSlides" [routerLink]="['/slide/manage']">Slide Management</button>
+	<button mat-raised-button color="warn" *ngIf="logged && allowed.manageUsers" [routerLink]="['/users']">Users Management</button>
+	<button mat-raised-button color="warn" *ngIf="logged" (click)="logout(true)">Logout{{(" (" + getUserId() + ")") || ""}}</button>
+	<button mat-raised-button color="warn" *ngIf="!logged" [routerLink]="['/login']">Login</button>
 </nav>
 <router-outlet></router-outlet>
