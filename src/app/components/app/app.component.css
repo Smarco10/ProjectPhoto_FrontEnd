@@ -1,0 +1,17 @@
+.toolbar-spacer {
+	flex: 1 1 auto;
+}
+
+.toolbar-suffix {
+	flex: 1 1 auto;
+}
+
+#page-content-spacer {
+	margin-top: 14px;
+	display: block;
+}
+
+.mat-drawer-container {
+	background-color: unset;
+    color: unset;
+}

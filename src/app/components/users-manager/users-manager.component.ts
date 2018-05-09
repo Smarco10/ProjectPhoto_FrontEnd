@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from 'services';
 import { User } from '@models/user';
-import { MatChipInputEvent } from "@angular/material/chips";
-import { ENTER, COMMA, SPACE, TAB, ESCAPE } from '@angular/cdk/keycodes';
 
 import { FORBIDDEN, UNAUTHORIZED } from 'http-status-codes'
 
@@ -18,9 +16,6 @@ import { AppComponent } from "@components/app/app.component";
 export class UsersManagerComponent implements OnInit {
 
     private users: Array<User> = new Array<User>();
-    private newUser: User = new User(undefined, undefined, ["user", "view"]);
-
-    private separatorKeysCodes = [ENTER, COMMA, SPACE, TAB, ESCAPE];
 
     constructor(
         private router: Router,
@@ -74,52 +69,5 @@ export class UsersManagerComponent implements OnInit {
                     console.error(err);
                 }
             });
-    }
-
-    private updateUser(user: User) {
-        this.userService.updateUser(user)
-            .catch(err => {
-                console.error(err);
-            });
-    }
-
-    private deleteUser(id: string) {
-        //TODO: show warning
-        this.userService.deleteUser(id)
-            .catch(err => {
-                console.error(err);
-            });
-    }
-
-    private createUser() {
-        this.userService.createUser(this.newUser)
-            .catch(err => {
-                console.error(err);
-            });
-    }
-
-    private addPermission(user: User, event: MatChipInputEvent) {
-        let permission = (event.value || '').trim();
-
-        if (!!permission) {
-            let index = user.permissions.indexOf(permission);
-            if (index < 0) {
-                user.permissions.push(permission.toLowerCase());
-
-                // Reset the input value
-                if (event.input) {
-                    event.input.value = '';
-                }
-            }
-        }
-    }
-
-    private removePermission(user: User, permission: string) {
-        if (!!permission) {
-            let index = user.permissions.indexOf(permission.toLowerCase());
-            if (index >= 0) {
-                user.permissions.splice(index, 1);
-            }
-        }
     }
 }

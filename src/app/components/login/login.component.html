@@ -1,23 +1,25 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-	<mat-card>
-		<mat-card-header>
-			<mat-icon mat-card-avatar>error_outline</mat-icon>
-			<mat-card-title>Restricted Area</mat-card-title>
-			<mat-card-subtitle>You must be logged in to access to this section</mat-card-subtitle>
-		</mat-card-header>
+<div fxLayout="row" fxLayoutAlign="center">
+	<form [formGroup]="loginForm" (ngSubmit)="login()">
+		<mat-card>
+			<mat-card-header>
+				<mat-icon mat-card-avatar fxLayout="row" fxLayoutAlign="center">error_outline</mat-icon>
+				<mat-card-title id="restricted_area_title">Restricted Area</mat-card-title>
+				<mat-card-subtitle>You must be logged in to access to this section</mat-card-subtitle>
+			</mat-card-header>
 
-		<mat-form-field>
-			<input matInput formControlName="login" placeholder="Email">
-		</mat-form-field>
+			<mat-form-field>
+				<input matInput formControlName="login" placeholder="Email">
+			</mat-form-field>
 
-		<mat-form-field>
-			<input matInput formControlName="password" placeholder="Password" [type]="passwordHide ? 'password' : 'text'">
-			<mat-icon matSuffix (click)="passwordHide = !passwordHide">{{passwordHide ? 'visibility' : 'visibility_off'}}</mat-icon>
-		</mat-form-field>
+			<mat-form-field>
+				<input matInput formControlName="password" placeholder="Password" [type]="passwordHide ? 'password' : 'text'">
+				<mat-icon matSuffix (click)="passwordHide = !passwordHide">{{passwordHide ? 'visibility' : 'visibility_off'}}</mat-icon>
+			</mat-form-field>
 
-		<mat-action-row>
-			<button *ngIf="!loading" mat-button color="primary" [disabled]="loading || loginForm.invalid">Login</button>
-			<mat-spinner *ngIf="loading" diameter="30"></mat-spinner>
-		</mat-action-row>
-	</mat-card>
-</form>
+			<mat-action-row>
+				<button *ngIf="!loading" mat-button color="primary" [disabled]="loading || loginForm.invalid">Login</button>
+				<mat-spinner *ngIf="loading" diameter="30"></mat-spinner>
+			</mat-action-row>
+		</mat-card>
+	</form>
+</div>

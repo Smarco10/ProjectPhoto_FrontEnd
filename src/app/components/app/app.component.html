@@ -1,9 +1,55 @@
-<!--link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/themes/prism.min.css" rel="stylesheet" /-->
-<nav>
-	<button mat-raised-button color="primary" [routerLink]="['/slideshow']">Open Slideshow</button>
-	<button mat-raised-button color="warn" *ngIf="logged && allowed.manageSlides" [routerLink]="['/slide/manage']">Slide Management</button>
-	<button mat-raised-button color="warn" *ngIf="logged && allowed.manageUsers" [routerLink]="['/users']">Users Management</button>
-	<button mat-raised-button color="warn" *ngIf="logged" (click)="logout(true)">Logout{{(" (" + getUserId() + ")") || ""}}</button>
-	<button mat-raised-button color="warn" *ngIf="!logged" [routerLink]="['/login']">Login</button>
-</nav>
-<router-outlet></router-outlet>
+<mat-toolbar #myToolbar color="primary" role="header">
+	<mat-toolbar-row>
+		<button mat-icon-button (click)="drawer.toggle()">
+		  <mat-icon>insert_photo</mat-icon>
+		</button>
+
+		<button mat-button color="secondary" [routerLink]="['/']">
+			<h2>ProjectPhoto</h2>
+		</button>
+
+		<span class="toolbar-spacer"></span>
+
+		<div>
+			<mat-menu #menuUser="matMenu">
+				<button mat-menu-item color="primary" *ngIf="logged && allowed.manageUsers" [routerLink]="['/users']">
+				  <mat-icon>supervisor_account</mat-icon>
+				  <span>Users Management</span>
+			  </button>
+				<button mat-menu-item color="warn" *ngIf="logged" (click)="logout(true)">
+				  <mat-icon>person_outline</mat-icon>
+				  <span>Logout</span>
+			  </button>
+			</mat-menu>
+
+			<button *ngIf="logged" mat-button color="secondary" [matMenuTriggerFor]="menuUser">
+				<span>{{getUserId() || "Unknown User"}}</span>
+				<mat-icon>account_circle</mat-icon>
+			</button>
+
+			<button *ngIf="!logged" mat-button color="secondary" [routerLink]="['/login']">
+				<span>Login</span>
+				<mat-icon>person</mat-icon>
+		    </button>
+		</div>
+
+	</mat-toolbar-row>
+</mat-toolbar>
+
+<mat-sidenav-container>
+	<mat-sidenav #drawer mode="over" [fixedInViewport]="true" [fixedTopGap]="toolbarHeight">
+		<button mat-menu-item color="primary" [routerLink]="['/slideshow']">
+			<mat-icon>view_carousel</mat-icon>
+			<span>Open Slideshow</span>
+		</button>
+		<button mat-menu-item color="primary" *ngIf="logged && allowed.manageSlides" [routerLink]="['/slide/manage']">
+		  <mat-icon>add_to_photos</mat-icon>
+		  <span>Slide Management</span>
+		</button>
+	</mat-sidenav>
+
+	<mat-sidenav-content>
+		<span id="page-content-spacer"></span>
+		<router-outlet></router-outlet>
+	</mat-sidenav-content>
+</mat-sidenav-container>

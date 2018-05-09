@@ -1,7 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "https://fonts.google.com/?selection.family=Roboto&subset=latin-ext";
+/*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
+/* @import "~@angular/material/prebuilt-themes/purple-green.css"; */
+/* @import "~@angular/material/prebuilt-themes/pink-bluegrey.css"; */
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 
 body {
 	margin: 0;
@@ -10,8 +14,6 @@ body {
 	/*background-color: rgb(148,147,147);
 	background-color: #345B9D;*/
 	background-color: #141414;
-	font: normal 90% "Trebuchet MS",Verdana,"Lucida Grande",Tahoma,Arial,Helvetica,Sans-Serif;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
 }
 
 .text_centered {

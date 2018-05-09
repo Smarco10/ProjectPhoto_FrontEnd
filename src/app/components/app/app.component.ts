@@ -1,6 +1,6 @@
 
 
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, FeathersService } from 'services';
 
@@ -9,13 +9,19 @@ import { AuthService, FeathersService } from 'services';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+
     title = 'ProjectPhoto';
     logged = false;
     allowed = {
         manageSlides: false,
         manageUsers: true
     }
+
+    @ViewChild('myToolbar', { read: ElementRef })
+    myToolbar: ElementRef;
+
+    toolbarHeight = 0;
 
     constructor(
         private auth: AuthService,
@@ -33,6 +39,10 @@ export class AppComponent {
         this.feathers.onReauthenticationError(() => {
             this.updateLogin();
         });
+    }
+
+    ngAfterViewInit(): void {
+        this.toolbarHeight = this.myToolbar.nativeElement.offsetHeight;
     }
 
     private getUserId(): string {

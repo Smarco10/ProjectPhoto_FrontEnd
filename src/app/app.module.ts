@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
     MatButtonModule,
@@ -12,8 +12,13 @@ import {
     MatIconModule,
     MatInputModule,
     MAT_LABEL_GLOBAL_OPTIONS,
-    MatProgressSpinnerModule
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatToolbarModule
 } from '@angular/material';
+
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { NgxCarouselModule } from 'ngx-carousel';
 import 'hammerjs';
@@ -27,6 +32,7 @@ import {
     SlideComponent,
     SlideManagementComponent,
     SlidesManagerComponent,
+    UserManagementComponent,
     UsersManagerComponent
 } from '@app/components';
 
@@ -49,6 +55,7 @@ import {
         LoginComponent,
         UploadsComponent,
         SlidesManagerComponent,
+        UserManagementComponent,
         UsersManagerComponent
     ],
     imports: [
@@ -56,8 +63,9 @@ import {
         FormsModule,
         ReactiveFormsModule,
         AppRoutingModule,
-        HttpModule,
+        HttpClientModule,
         BrowserAnimationsModule,
+        FlexLayoutModule,
         MatButtonModule,
         MatCardModule,
         MatChipsModule,
@@ -65,7 +73,10 @@ import {
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
+        MatMenuModule,
         MatProgressSpinnerModule,
+        MatSidenavModule,
+        MatToolbarModule,
         NgxCarouselModule,
         MarkdownModule
     ],

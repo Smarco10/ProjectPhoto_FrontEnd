@@ -1,15 +1,15 @@
 /* Gestion du contenu */
-.slide {
+/*.slide {
 	margin: 0 auto;
 	white-space: nowrap;
-}
+}*/
 
 .slide img {
 	/*box-shadow: 0px 0px 20px #888888;*/
 	/*TODO: utiliser background-image: url(data:image/png;base64,iVBORw0KGg...);*/
 }
 
-.slide {
+/*.slide {
 	display: inline-block;
 	height: 100%;
     vertical-align: middle;
@@ -25,4 +25,4 @@
 	text-align: center;
 	text-align: justify;
 	position: relative;
-}
+}*/
