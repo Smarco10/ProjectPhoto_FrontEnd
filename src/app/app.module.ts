@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
-import { HttpClientModule } from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
     MatButtonModule,
@@ -14,6 +14,7 @@ import {
     MAT_LABEL_GLOBAL_OPTIONS,
     MatMenuModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatSidenavModule,
     MatToolbarModule
 } from '@angular/material';
@@ -63,7 +64,7 @@ import {
         FormsModule,
         ReactiveFormsModule,
         AppRoutingModule,
-        HttpClientModule,
+        HttpModule,
         BrowserAnimationsModule,
         FlexLayoutModule,
         MatButtonModule,
@@ -75,18 +76,19 @@ import {
         MatInputModule,
         MatMenuModule,
         MatProgressSpinnerModule,
+        MatSelectModule,
         MatSidenavModule,
         MatToolbarModule,
         NgxCarouselModule,
         MarkdownModule
     ],
     providers: [
-        SlideshowComponent,
         AppComponent,
         AuthGuard,
         AuthService,
-        SlideService,
         FeathersService,
+        SlideService,
+        SlideshowComponent,
         { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: { float: 'auto' } }
     ],
     bootstrap: [AppComponent]

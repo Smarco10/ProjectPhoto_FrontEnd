@@ -1,5 +1,4 @@
 <mat-accordion multi="false">
-	<mat-expansion-panel *ngFor="let user of users" (opened)="user.resetView()" (closed)="user.resetView()">
-		<app-user-management user="user"></app-user-management>
-	</mat-expansion-panel>
+	<!-- TODO: find a solution for removing <app-user-management> super tag -->
+	<app-user-management *ngFor="let user of users" [user]="user" [isAlone]="users.length === 1"></app-user-management>
 </mat-accordion>

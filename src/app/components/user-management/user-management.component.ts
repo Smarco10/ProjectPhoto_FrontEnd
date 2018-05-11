@@ -1,9 +1,10 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ViewEncapsulation } from '@angular/core';
 
 import { AuthService } from 'services';
-import { User } from '@models/user';
+import { User, UserPermissions } from '@models/user';
 import { MatChipInputEvent } from "@angular/material/chips";
 import { ENTER, COMMA, SPACE, TAB, ESCAPE } from '@angular/cdk/keycodes';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-user-management',
@@ -12,71 +13,97 @@ import { ENTER, COMMA, SPACE, TAB, ESCAPE } from '@angular/cdk/keycodes';
 })
 export class UserManagementComponent implements OnInit {
 
+    private isConnectedUserAdmin: boolean = false;
+
     @Input() user: User;
-    private newUser: User = new User(undefined, undefined, ["user", "view"]);
+    @Input() isAlone: boolean;
 
     private deleteRequest: boolean = false;
     private passwordHide: boolean = true;
 
     private separatorKeysCodes = [ENTER, COMMA, SPACE, TAB, ESCAPE];
 
+    private userForm: FormGroup;
+
     constructor(
+        private formBuilder: FormBuilder,
         private userService: AuthService
-    ) { }
+    ) {
+        //TODO: to get from server
+        const validators = {
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', [Validators.pattern('^.{5,}$')]]
+        };
+
+        this.userForm = this.formBuilder.group(validators);
+    }
 
     ngOnInit() {
+
+        this.isConnectedUserAdmin = this.userService.getConnectedUser().isAdmin();
 
         this.resetView();
 
         this.userService.onUpdated((user, context) => {
-            if (user.id === this.user.id) {
-                //TODO update user
+            if (user._id === this.user.id) {
+                if (!!user.password) {
+                    this.user.password = user.password;
+                }
+                if (!!user.email) {
+                    this.user.email = user.email;
+                }
+                if (!!user.permissions) {
+                    this.user.permissions = user.permissions;
+                }
             }
         });
     }
 
     public resetView(): void {
-        //TODO: is it usefull
         this.deleteRequest = false;
         this.passwordHide = true;
     }
 
+    private createUser() {
+        if (this.user.isCreated()) {
+            this.updateUser();
+        } else {
+            if (this.userForm.valid) {
+                this.userService.createUser(this.user)
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }
+        }
+    }
+
     private updateUser() {
-        this.userService.updateUser(this.user)
-            .catch(err => {
-                console.error(err);
-            });
+        if (this.user.isCreated() && this.userForm.valid) {
+            this.userService.updateUser(this.user)
+                .catch(err => {
+                    console.error(err);
+                });
+        }
     }
 
     private deleteUser() {
-        this.userService.deleteUser(this.user.id)
-            .catch(err => {
-                console.error(err);
-            });
-    }
-
-    private addPermission(event: MatChipInputEvent) {
-        let permission = (event.value || '').trim();
-
-        if (!!permission) {
-            let index = this.user.permissions.indexOf(permission);
-            if (index < 0) {
-                this.user.permissions.push(permission.toLowerCase());
-
-                // Reset the input value
-                if (event.input) {
-                    event.input.value = '';
-                }
-            }
+        if (this.user.isCreated()) {
+            this.userService.deleteUser(this.user.id)
+                .catch(err => {
+                    console.error(err);
+                });
         }
     }
 
-    private removePermission(permission: string) {
-        if (!!permission) {
-            let index = this.user.permissions.indexOf(permission.toLowerCase());
-            if (index >= 0) {
-                this.user.permissions.splice(index, 1);
-            }
-        }
+    private addPermission(permission: UserPermissions) {
+        this.user.addPermission(UserPermissions[permission]);
+    }
+
+    private removePermission(permission: UserPermissions) {
+        this.user.removePermission(permission);
+    }
+
+    private userPermissionsKeys(): Array<string> {
+        return Object.keys(UserPermissions);
     }
 }

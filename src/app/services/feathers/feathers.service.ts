@@ -92,7 +92,7 @@ export class FeathersService {
         });
     }
 
-    public getUser(): User {
+    public getConnectedUser(): User {
         return this._feathers.get('user');
     }
 

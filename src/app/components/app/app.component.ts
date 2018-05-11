@@ -1,27 +1,28 @@
 
 
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterContentChecked, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, FeathersService } from 'services';
+import { UserPermissions } from '@models/user';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterContentChecked {
 
     title = 'ProjectPhoto';
     logged = false;
     allowed = {
         manageSlides: false,
-        manageUsers: true
+        manageUsers: false
     }
 
     @ViewChild('myToolbar', { read: ElementRef })
     myToolbar: ElementRef;
 
-    toolbarHeight = 0;
+    private toolbarHeight = 0;
 
     constructor(
         private auth: AuthService,
@@ -41,18 +42,24 @@ export class AppComponent implements AfterViewInit {
         });
     }
 
-    ngAfterViewInit(): void {
+    ngOnInit(): void {
+        this.updateLogin();
+    }
+
+    ngAfterContentChecked(): void {
+        //TODO: pb, is called after each mouse moves
         this.toolbarHeight = this.myToolbar.nativeElement.offsetHeight;
     }
 
     private getUserId(): string {
-        return this.auth.getUser().email;
+        return this.auth.getConnectedUser().email;
     }
 
     public updateLogin() {
-        let user = this.auth.getUser();
+        let user = this.auth.getConnectedUser();
         this.logged = !!user;
-        this.allowed.manageSlides = this.logged && user.hasPermission("admin");
+        this.allowed.manageSlides = this.logged && user.isAdmin();
+        this.allowed.manageUsers = this.logged && user.isAdmin();
     }
 
     public logout(goToRoot: boolean) {

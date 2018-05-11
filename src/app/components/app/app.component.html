@@ -12,10 +12,12 @@
 
 		<div>
 			<mat-menu #menuUser="matMenu">
-				<button mat-menu-item color="primary" *ngIf="logged && allowed.manageUsers" [routerLink]="['/users']">
-				  <mat-icon>supervisor_account</mat-icon>
-				  <span>Users Management</span>
-			  </button>
+				<button mat-menu-item color="primary" *ngIf="logged" [routerLink]="['/users']">
+				  <mat-icon *ngIf="allowed.manageUsers">supervisor_account</mat-icon>
+				  <span *ngIf="allowed.manageUsers">Users Management</span>
+				  <mat-icon *ngIf="!allowed.manageUsers">settings</mat-icon>
+				  <span *ngIf="!allowed.manageUsers">User Settings</span>
+			  	</button>
 				<button mat-menu-item color="warn" *ngIf="logged" (click)="logout(true)">
 				  <mat-icon>person_outline</mat-icon>
 				  <span>Logout</span>

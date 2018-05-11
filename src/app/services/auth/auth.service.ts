@@ -58,8 +58,8 @@ export class AuthService extends FeathersServiceEventListener {
         });
     }
 
-    getUser(): User {
-        return this.feathers.getUser();
+    getConnectedUser(): User {
+        return this.feathers.getConnectedUser();
     }
 
     logout(): Promise<any> {

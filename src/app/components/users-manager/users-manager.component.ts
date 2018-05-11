@@ -22,11 +22,10 @@ export class UsersManagerComponent implements OnInit {
         private root: AppComponent,
         private userService: AuthService
     ) {
-        this.users.push(undefined); //used for newUser
+        this.users.push(new User());
     }
 
     ngOnInit() {
-
         this.userService.onCreated((user, context) => {
             this.users.splice(this.users.length - 1, 0, new User(user._id, user.email, user.permissions));
         });
@@ -39,7 +38,7 @@ export class UsersManagerComponent implements OnInit {
                 }
             }
 
-            if (user._id === this.userService.getUser().id) {
+            if (user._id === this.userService.getConnectedUser().id) {
                 this.root.logout(true);
             }
         });
@@ -59,7 +58,7 @@ export class UsersManagerComponent implements OnInit {
             })
             .catch(err => {
                 if (err.code === FORBIDDEN || err.code === UNAUTHORIZED) {
-                    let user = this.userService.getUser();
+                    let user = this.userService.getConnectedUser();
                     if (!!user) {
                         usersOutputArray.splice(0, this.users.length, user);
                     } else {
