@@ -42,9 +42,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from '@app/guards';
 
 import {
-    SlideService,
     AuthService,
-    FeathersService
+    ConfigurationService,
+    FeathersService,
+    SlideService
 } from '@app/services';
 
 @NgModule({
@@ -86,6 +87,7 @@ import {
         AppComponent,
         AuthGuard,
         AuthService,
+        ConfigurationService,
         FeathersService,
         SlideService,
         SlideshowComponent,

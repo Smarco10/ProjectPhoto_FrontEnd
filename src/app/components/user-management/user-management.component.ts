@@ -1,9 +1,8 @@
 import { Component, OnInit, AfterViewInit, Input, ViewEncapsulation } from '@angular/core';
 
-import { AuthService } from 'services';
-import { User, UserPermissions } from '@models/user';
-import { MatChipInputEvent } from "@angular/material/chips";
-import { ENTER, COMMA, SPACE, TAB, ESCAPE } from '@angular/cdk/keycodes';
+import { AuthService, FeathersService, ConfigurationService } from 'services';
+import { User } from '@models/user';
+
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -21,13 +20,14 @@ export class UserManagementComponent implements OnInit {
     private deleteRequest: boolean = false;
     private passwordHide: boolean = true;
 
-    private separatorKeysCodes = [ENTER, COMMA, SPACE, TAB, ESCAPE];
-
     private userForm: FormGroup;
+
+    private userPermissions: Array<string> = [];
 
     constructor(
         private formBuilder: FormBuilder,
-        private userService: AuthService
+        private userService: AuthService,
+        private configurationService: ConfigurationService
     ) {
         //TODO: to get from server
         const validators = {
@@ -41,6 +41,14 @@ export class UserManagementComponent implements OnInit {
     ngOnInit() {
 
         this.isConnectedUserAdmin = this.userService.getConnectedUser().isAdmin();
+
+        this.configurationService.getPermissions()
+            .then(permissions => {
+                this.userPermissions = permissions;
+            })
+            .catch(err => {
+                console.error(err);
+            });
 
         this.resetView();
 
@@ -95,15 +103,15 @@ export class UserManagementComponent implements OnInit {
         }
     }
 
-    private addPermission(permission: UserPermissions) {
-        this.user.addPermission(UserPermissions[permission]);
+    private addPermission(permission: string) {
+        this.user.addPermission(this.userPermissions[permission]);
     }
 
-    private removePermission(permission: UserPermissions) {
+    private removePermission(permission: string) {
         this.user.removePermission(permission);
     }
 
     private userPermissionsKeys(): Array<string> {
-        return Object.keys(UserPermissions);
+        return Object.keys(this.userPermissions);
     }
 }

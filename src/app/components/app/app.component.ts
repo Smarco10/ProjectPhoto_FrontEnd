@@ -3,7 +3,6 @@
 import { Component, ElementRef, ViewChild, AfterContentChecked, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, FeathersService } from 'services';
-import { UserPermissions } from '@models/user';
 
 @Component({
     selector: 'app-root',
