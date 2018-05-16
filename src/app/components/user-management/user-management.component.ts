@@ -5,6 +5,8 @@ import { User } from '@models/user';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
+import { generateShema } from '@tools/validators'
+
 @Component({
     selector: 'app-user-management',
     templateUrl: './user-management.component.html',
@@ -20,22 +22,32 @@ export class UserManagementComponent implements OnInit {
     private deleteRequest: boolean = false;
     private passwordHide: boolean = true;
 
-    private userForm: FormGroup;
+    private userCreateForm: FormGroup;
+    private userPatchForm: FormGroup;
 
-    private userPermissions: Array<string> = [];
+    private userPermissions: any = [];
+
+    private userCreateValidators: any = {};
+    private userPatchValidators: any = {};
 
     constructor(
         private formBuilder: FormBuilder,
         private userService: AuthService,
         private configurationService: ConfigurationService
     ) {
-        //TODO: to get from server
-        const validators = {
+        this.userCreateValidators = {
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.pattern('^.{5,}$')]]
+            password: ['', [Validators.required, Validators.pattern('^.{2,}$')]]
+        };
+        this.userPatchValidators = {
+            email: ['', [Validators.required]], //TODO: Validators.email
+            password: ['', [Validators.pattern('^.{2,}$')]]
         };
 
-        this.userForm = this.formBuilder.group(validators);
+        console.log("init", this.userPatchValidators);
+
+        this.userCreateForm = this.formBuilder.group(this.userCreateValidators);
+        this.userPatchForm = this.formBuilder.group(this.userPatchValidators);
     }
 
     ngOnInit() {
@@ -45,6 +57,21 @@ export class UserManagementComponent implements OnInit {
         this.configurationService.getPermissions()
             .then(permissions => {
                 this.userPermissions = permissions;
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+        this.configurationService.getValidators()
+            .then(validators => {
+                //TODO: do not work properly
+                for (let validatorName of Object.keys(validators["userCreateData"])) {
+                    this.userCreateValidators[validatorName] = generateShema(validators["userCreateData"][validatorName]);
+                }
+                for (let validatorName of Object.keys(validators["uerPatchData"])) {
+                    this.userPatchValidators[validatorName] = generateShema(validators["userCreateData"][validatorName]);
+                }
+                console.log("after", this.userPatchValidators);
             })
             .catch(err => {
                 console.error(err);
@@ -67,6 +94,10 @@ export class UserManagementComponent implements OnInit {
         });
     }
 
+    private getFormGroup() {
+        return this.user.isCreated() ? this.userPatchForm : this.userCreateForm;
+    }
+
     public resetView(): void {
         this.deleteRequest = false;
         this.passwordHide = true;
@@ -76,7 +107,7 @@ export class UserManagementComponent implements OnInit {
         if (this.user.isCreated()) {
             this.updateUser();
         } else {
-            if (this.userForm.valid) {
+            if (this.userCreateForm.valid) {
                 this.userService.createUser(this.user)
                     .catch(err => {
                         console.error(err);
@@ -86,7 +117,7 @@ export class UserManagementComponent implements OnInit {
     }
 
     private updateUser() {
-        if (this.user.isCreated() && this.userForm.valid) {
+        if (this.user.isCreated() && this.userCreateForm.valid) {
             this.userService.updateUser(this.user)
                 .catch(err => {
                     console.error(err);

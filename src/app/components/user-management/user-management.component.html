@@ -1,4 +1,4 @@
-<mat-expansion-panel #panel (opened)="resetView()" (closed)="resetView()" [formGroup]="userForm" [expanded]="isAlone" [hideToggle]="isAlone">
+<mat-expansion-panel #panel (opened)="resetView()" (closed)="resetView()" [formGroup]="getFormGroup()" [expanded]="isAlone" [hideToggle]="isAlone">
 	<mat-expansion-panel-header>
 		<mat-panel-title>{{user.isCreated() ? (!!user.email ? user.email : user.id) : "Create user"}}</mat-panel-title>
 		<mat-panel-description>
@@ -13,7 +13,7 @@
 
 	<mat-form-field>
 		<input matInput formControlName="email" placeholder="Email" type="email" [(ngModel)]="user.email">
-		<mat-error *ngIf="userForm.hasError('required') || userForm.hasError('email')">Please enter a valid email</mat-error>
+		<mat-error *ngIf="getFormGroup().hasError('required') || getFormGroup().hasError('email')">Please enter a valid email</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
