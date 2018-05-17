@@ -27,27 +27,22 @@ export class UserManagementComponent implements OnInit {
 
     private userPermissions: any = [];
 
-    private userCreateValidators: any = {};
-    private userPatchValidators: any = {};
-
     constructor(
         private formBuilder: FormBuilder,
         private userService: AuthService,
         private configurationService: ConfigurationService
     ) {
-        this.userCreateValidators = {
+        var userCreateValidators = {
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.pattern('^.{2,}$')]]
         };
-        this.userPatchValidators = {
-            email: ['', [Validators.required]], //TODO: Validators.email
+        var userPatchValidators = {
+            email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.pattern('^.{2,}$')]]
         };
 
-        console.log("init", this.userPatchValidators);
-
-        this.userCreateForm = this.formBuilder.group(this.userCreateValidators);
-        this.userPatchForm = this.formBuilder.group(this.userPatchValidators);
+        this.userCreateForm = this.formBuilder.group(userCreateValidators);
+        this.userPatchForm = this.formBuilder.group(userPatchValidators);
     }
 
     ngOnInit() {
@@ -66,12 +61,22 @@ export class UserManagementComponent implements OnInit {
             .then(validators => {
                 //TODO: do not work properly
                 for (let validatorName of Object.keys(validators["userCreateData"])) {
-                    this.userCreateValidators[validatorName] = generateShema(validators["userCreateData"][validatorName]);
+                    console.log(validatorName);
+                    if (!!this.userCreateForm.controls[validatorName]) {
+                        this.userCreateForm.controls[validatorName].setValidators(generateShema(validators["userCreateData"][validatorName]));
+                        this.userCreateForm.controls[validatorName].updateValueAndValidity();
+                    } else {
+                        //TODO
+                    }
                 }
                 for (let validatorName of Object.keys(validators["uerPatchData"])) {
-                    this.userPatchValidators[validatorName] = generateShema(validators["userCreateData"][validatorName]);
+                    if (!!this.userPatchForm.controls[validatorName]) {
+                        this.userPatchForm.controls[validatorName].setValidators(generateShema(validators["uerPatchData"][validatorName]));
+                        this.userPatchForm.controls[validatorName].updateValueAndValidity();
+                    } else {
+                        //TODO
+                    }
                 }
-                console.log("after", this.userPatchValidators);
             })
             .catch(err => {
                 console.error(err);
