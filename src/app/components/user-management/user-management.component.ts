@@ -3,7 +3,7 @@ import { Component, OnInit, AfterViewInit, Input, ViewEncapsulation } from '@ang
 import { AuthService, FeathersService, ConfigurationService } from 'services';
 import { User } from '@models/user';
 
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
 import { generateShema } from '@tools/validators'
 
@@ -30,7 +30,7 @@ export class UserManagementComponent implements OnInit {
         private formBuilder: FormBuilder,
         private userService: AuthService,
         private configurationService: ConfigurationService
-    ) {}
+    ) { }
 
     ngOnInit() {
 
@@ -46,18 +46,14 @@ export class UserManagementComponent implements OnInit {
 
         this.configurationService.getValidators()
             .then(validators => {
-                this.userForm = this.formBuilder.group({});
-                var shemaType = this.user.isCreated() ? "userPatchData" : "userCreateData";
-                var validatorControl: FormControl;
+                var userFormValidators = {};
+                const shemaType = this.user.isCreated() ? "userPatchData" : "userCreateData";
                 for (let validatorName of Object.keys(validators[shemaType])) {
-                    validatorControl = generateShema(validators[shemaType][validatorName]);
-                    if (!!this.userForm.controls[validatorName]) {
-                        this.userForm.controls[validatorName].setValidators(validatorControl);
-                        this.userForm.controls[validatorName].updateValueAndValidity();
-                    } else {
-                        this.userForm.addControl(validayorName, new FormControl(validatorControl));
-                    }
+                    //TODO: recuperer la default value
+                    userFormValidators[validatorName] = ['', generateShema(validators[shemaType][validatorName])];
                 }
+                console.log(shemaType, userFormValidators);
+                this.userForm = this.formBuilder.group(userFormValidators);
             })
             .catch(err => {
                 console.error(err);
