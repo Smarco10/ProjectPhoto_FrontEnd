@@ -22,8 +22,7 @@ export class UserManagementComponent implements OnInit {
     private deleteRequest: boolean = false;
     private passwordHide: boolean = true;
 
-    private userCreateForm: FormGroup;
-    private userPatchForm: FormGroup;
+    private userForm: FormGroup;
 
     private userPermissions: any = [];
 
@@ -31,19 +30,7 @@ export class UserManagementComponent implements OnInit {
         private formBuilder: FormBuilder,
         private userService: AuthService,
         private configurationService: ConfigurationService
-    ) {
-        var userCreateValidators = {
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.pattern('^.{2,}$')]]
-        };
-        var userPatchValidators = {
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.pattern('^.{2,}$')]]
-        };
-
-        this.userCreateForm = this.formBuilder.group(userCreateValidators);
-        this.userPatchForm = this.formBuilder.group(userPatchValidators);
-    }
+    ) {}
 
     ngOnInit() {
 
@@ -59,22 +46,16 @@ export class UserManagementComponent implements OnInit {
 
         this.configurationService.getValidators()
             .then(validators => {
-                //TODO: do not work properly
-                for (let validatorName of Object.keys(validators["userCreateData"])) {
-                    console.log(validatorName);
-                    if (!!this.userCreateForm.controls[validatorName]) {
-                        this.userCreateForm.controls[validatorName].setValidators(generateShema(validators["userCreateData"][validatorName]));
-                        this.userCreateForm.controls[validatorName].updateValueAndValidity();
+                this.userForm = this.formBuilder.group({});
+                var shemaType = this.user.isCreated() ? "userPatchData" : "userCreateData";
+                var validatorControl: FormControl;
+                for (let validatorName of Object.keys(validators[shemaType])) {
+                    validatorControl = generateShema(validators[shemaType][validatorName]);
+                    if (!!this.userForm.controls[validatorName]) {
+                        this.userForm.controls[validatorName].setValidators(validatorControl);
+                        this.userForm.controls[validatorName].updateValueAndValidity();
                     } else {
-                        //TODO
-                    }
-                }
-                for (let validatorName of Object.keys(validators["uerPatchData"])) {
-                    if (!!this.userPatchForm.controls[validatorName]) {
-                        this.userPatchForm.controls[validatorName].setValidators(generateShema(validators["uerPatchData"][validatorName]));
-                        this.userPatchForm.controls[validatorName].updateValueAndValidity();
-                    } else {
-                        //TODO
+                        this.userForm.addControl(validayorName, new FormControl(validatorControl));
                     }
                 }
             })
@@ -99,10 +80,6 @@ export class UserManagementComponent implements OnInit {
         });
     }
 
-    private getFormGroup() {
-        return this.user.isCreated() ? this.userPatchForm : this.userCreateForm;
-    }
-
     public resetView(): void {
         this.deleteRequest = false;
         this.passwordHide = true;
@@ -112,7 +89,7 @@ export class UserManagementComponent implements OnInit {
         if (this.user.isCreated()) {
             this.updateUser();
         } else {
-            if (this.userCreateForm.valid) {
+            if (!!this.userForm && this.userForm.valid) {
                 this.userService.createUser(this.user)
                     .catch(err => {
                         console.error(err);
@@ -122,7 +99,7 @@ export class UserManagementComponent implements OnInit {
     }
 
     private updateUser() {
-        if (this.user.isCreated() && this.userCreateForm.valid) {
+        if (this.user.isCreated() && !!this.userForm && this.userForm.valid) {
             this.userService.updateUser(this.user)
                 .catch(err => {
                     console.error(err);
