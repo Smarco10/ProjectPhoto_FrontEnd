@@ -26,10 +26,25 @@ export class LoginComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.loginForm = this.formBuilder.group({
+        /*this.loginForm = this.formBuilder.group({
             login: ['', [Validators.required]],
             password: ['', [Validators.required, Validators.pattern('^.{5,}$')]]
-        });
+        });*/
+
+        this.configurationService.getValidators()
+            .then(validators => {
+                var loginFormValidators = {};
+                const shemaType = "loginData";
+                for (let validatorName of Object.keys(validators[shemaType])) {
+                    //TODO: recuperer la default value
+                    loginFormValidators[validatorName] = ['', generateShema(validators[shemaType][validatorName])];
+                }
+                console.log(shemaType, loginFormValidators);
+                this.loginForm = this.formBuilder.group(loginFormValidators);
+            })
+            .catch(err => {
+                console.error(err);
+            });
 
         this.authService.logout();
         // Get the query params

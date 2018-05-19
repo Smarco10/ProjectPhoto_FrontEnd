@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="center">
-	<form [formGroup]="loginForm" (ngSubmit)="login()">
+	<form *ngIf="loginForm" [formGroup]="loginForm" (ngSubmit)="login()">
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar fxLayout="row" fxLayoutAlign="center">error_outline</mat-icon>
