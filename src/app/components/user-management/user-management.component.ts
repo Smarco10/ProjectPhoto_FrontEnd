@@ -5,7 +5,7 @@ import { User } from '@models/user';
 
 import { FormGroup, FormControl, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
-import { generateShema } from '@tools/validators'
+import { generateFormGroup } from '@tools/validators'
 
 @Component({
     selector: 'app-user-management',
@@ -46,14 +46,8 @@ export class UserManagementComponent implements OnInit {
 
         this.configurationService.getValidators()
             .then(validators => {
-                var userFormValidators = {};
                 const shemaType = this.user.isCreated() ? "userPatchData" : "userCreateData";
-                for (let validatorName of Object.keys(validators[shemaType])) {
-                    //TODO: recuperer la default value
-                    userFormValidators[validatorName] = ['', generateShema(validators[shemaType][validatorName])];
-                }
-                console.log(shemaType, userFormValidators);
-                this.userForm = this.formBuilder.group(userFormValidators);
+                this.userForm = generateFormGroup(validators[shemaType]);
             })
             .catch(err => {
                 console.error(err);

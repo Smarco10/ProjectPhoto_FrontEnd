@@ -4,26 +4,47 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/shareReplay';
 
 import { User } from '@models/user';
-import { FeathersService } from "@services/feathers/feathers.service";
+import { FeathersService, ServiceNames } from "@services/feathers/feathers.service";
 
 enum ConfigurationTypes {
+    ALL = "all",
     PERMISSIONS = "permissions",
-    VALIDATORS = "validators"
+    VALIDATORS = "validatorShemas"
 };
 
 @Injectable()
 export class ConfigurationService {
 
+    private static pendingPromiseFinished: any = {};
+    private static pendingPromise: any = {};
     private configurationService: any;
 
     constructor(
         private feathers: FeathersService
     ) {
-        this.configurationService = feathers.service('configuration');
+        this.configurationService = feathers.service(ServiceNames.CONFIGURATION);
     }
 
     public getConfig(type: ConfigurationTypes): Promise<any> {
-        return !!type ? this.configurationService.get(type) : this.configurationService.find();
+        const finalType: ConfigurationTypes = !type ? ConfigurationTypes.ALL : type;
+        let promiseStatic = ConfigurationService.pendingPromise[finalType];
+        if (!!ConfigurationService.pendingPromise[finalType] ? ConfigurationService.pendingPromiseFinished[finalType] : true) {
+            ConfigurationService.pendingPromiseFinished[finalType] = false;
+            ConfigurationService.pendingPromise[finalType] = (finalType == ConfigurationTypes.ALL) ? this.configurationService.find() : this.configurationService.get(finalType);
+            ConfigurationService.pendingPromise[finalType]
+                .then(val => {
+                    setTimeout(() => {
+                        ConfigurationService.pendingPromiseFinished[finalType] = true;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setTimeout(() => {
+                        ConfigurationService.pendingPromiseFinished[finalType] = true;
+                    }, 2000);
+                });
+        }
+        return ConfigurationService.pendingPromise[finalType];
     }
 
     public getPermissions(): Promise<any> {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Slide } from '@models/slide'
 
-import { FeathersService, FeathersServiceEventListener } from "@services/feathers/feathers.service";
+import { FeathersService, FeathersServiceEventListener, ServiceNames } from "@services/feathers/feathers.service";
 import { AuthService } from "@services/auth/auth.service";
 
 @Injectable()
@@ -15,9 +15,9 @@ export class SlideService extends FeathersServiceEventListener {
         private client: FeathersService,
         private authenticationService: AuthService
     ) {
-        super(client.service('photos'));
+        super(client.service(ServiceNames.PHOTOS));
         this.photosService = this.eventService;
-        this.uploadService = this.client.service('uploads');
+        this.uploadService = this.client.service(ServiceNames.UPLOADS);
     }
 
     getSlides(query: any): Promise<any[]> {

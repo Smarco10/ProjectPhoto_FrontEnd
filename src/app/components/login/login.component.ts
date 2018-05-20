@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 import { AuthService } from "@services/auth/auth.service";
+import { ConfigurationService } from "@services/configuration/configuration.service";
+
+import { generateFormGroup } from '@tools/validators'
 
 @Component({
     selector: 'login',
@@ -15,32 +18,21 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
     error = '';
-    returnUrl: string;
-    passwordHide: true;
+    returnUrl: string = '/';
+    passwordHide: boolean = true;
 
     constructor(
-        private formBuilder: FormBuilder,
         private authService: AuthService,
+        private configurationService: ConfigurationService,
         private router: Router,
         private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
-        /*this.loginForm = this.formBuilder.group({
-            login: ['', [Validators.required]],
-            password: ['', [Validators.required, Validators.pattern('^.{5,}$')]]
-        });*/
-
         this.configurationService.getValidators()
             .then(validators => {
-                var loginFormValidators = {};
-                const shemaType = "loginData";
-                for (let validatorName of Object.keys(validators[shemaType])) {
-                    //TODO: recuperer la default value
-                    loginFormValidators[validatorName] = ['', generateShema(validators[shemaType][validatorName])];
-                }
-                console.log(shemaType, loginFormValidators);
-                this.loginForm = this.formBuilder.group(loginFormValidators);
+                console.log(validators["loginData"]);
+                this.loginForm = generateFormGroup(validators["loginData"]);
             })
             .catch(err => {
                 console.error(err);
@@ -56,14 +48,14 @@ export class LoginComponent implements OnInit {
     login() {
         if (this.loginForm.valid) {
             this.loading = true;
-            this.authService.login(this.loginForm.value.login, this.loginForm.value.password)
+            this.authService.login(this.loginForm.value.email, this.loginForm.value.password)
                 .then(() => {
                     this.router.navigateByUrl(this.returnUrl);
                 })
                 .catch(err => {
                     // login failed
+                    console.error(err);
                     this.error = 'Email or password is incorrect';
-                    console.error(this.error);
                     this.loading = false;
                 });
         }

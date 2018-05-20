@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/shareReplay';
 
 import { User } from '@models/user';
-import { FeathersService, FeathersServiceEventListener } from "@services/feathers/feathers.service";
+import { FeathersService, FeathersServiceEventListener, ServiceNames } from "@services/feathers/feathers.service";
 
 @Injectable()
 export class AuthService extends FeathersServiceEventListener {
@@ -14,7 +14,7 @@ export class AuthService extends FeathersServiceEventListener {
     constructor(
         private feathers: FeathersService
     ) {
-        super(feathers.service('users'));
+        super(feathers.service(ServiceNames.USERS));
         this.usersService = this.eventService;
     }
 

@@ -1,5 +1,5 @@
 
-import { Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 enum DatashemasTypes {
     EMAIL = "email",
@@ -7,6 +7,8 @@ enum DatashemasTypes {
     NUMBER = "number",
     SUBSET = "subset"
 };
+
+const formBuilder: FormBuilder = new FormBuilder();
 
 export class MyValidators {
     static subsetOf(values: string[]): ValidatorFn {
@@ -65,4 +67,13 @@ export function generateShema(shema): Array<ValidatorFn> {
     }
 
     return validator;
+}
+
+export function generateFormGroup(validatorShemas): FormGroup {
+    var formValidators = {};
+    for (let validatorName of Object.keys(validatorShemas)) {
+        //TODO: recuperer la default value
+        formValidators[validatorName] = ['', generateShema(validatorShemas[validatorName])];
+    }
+    return formBuilder.group(formValidators);
 }

@@ -9,6 +9,24 @@ import { FORBIDDEN, UNAUTHORIZED } from 'http-status-codes'
 
 import { User } from '@models/user';
 
+export enum ServiceNames {
+    CONFIGURATION = "configuration",
+    USERS = "users",
+    UPLOADS = "uploads",
+    PHOTOS = "photos"
+};
+
+export enum ServiceEventNames {
+    LOGOUT = 'logout',
+    REAUTHENTICATION_ERR = 'reauthentication-error',
+    CREATED = 'created',
+    UPDATED = 'updated',
+    PATCHED = 'patched',
+    REMOVED = 'removed'
+}
+
+const LocalUserPassportFieldName: string = 'user';
+
 /**
  * Simple wrapper for feathers
  */
@@ -44,12 +62,12 @@ export class FeathersService {
 
         this.onLogout(() => {
             console.log("successfully logged out");
-            this._feathers.set('user', undefined);
+            this._feathers.set(LocalUserPassportFieldName, undefined);
         });
 
         this.onReauthenticationError(() => {
             console.log("Reauthentication Error");
-            this._feathers.set('user', undefined);
+            this._feathers.set(LocalUserPassportFieldName, undefined);
         });
     }
 
@@ -62,17 +80,16 @@ export class FeathersService {
             let payload = await this._feathers.passport.verifyJWT(response.accessToken);
             console.log("successfully logged in");
 
-            let user = await this.service('users').get(payload.userId);
-            console.log("User:", user);
-            this._feathers.set('user', new User(user._id, user.email, user.permissions));
+            let user = await this.service(ServiceNames.USERS).get(payload.userId);
+            this._feathers.set(LocalUserPassportFieldName, new User(user._id, user.email, user.permissions));
 
             authicated = true;
 
         } catch (err) {
             authicated = false;
-            this._feathers.set('user', undefined);
+            this._feathers.set(LocalUserPassportFieldName, undefined);
             this.logout();
-            console.error("Authentication err");
+            console.error("Authentication err", err);
             if (err.code != UNAUTHORIZED) {
                 console.error(err);
             }
@@ -93,7 +110,7 @@ export class FeathersService {
     }
 
     public getConnectedUser(): User {
-        return this._feathers.get('user');
+        return this._feathers.get(LocalUserPassportFieldName);
     }
 
     // expose logout
@@ -102,7 +119,7 @@ export class FeathersService {
     }
 
     // expose services
-    public service(name: string) {
+    public service(name: ServiceNames) {
         return this._feathers.service(name);
     }
 
@@ -112,11 +129,11 @@ export class FeathersService {
     }
 
     public onLogout(callback: Function) {
-        this._feathers.on('logout', callback);
+        this._feathers.on(ServiceEventNames.LOGOUT, callback);
     }
 
     public onReauthenticationError(callback: Function) {
-        this._feathers.on('reauthentication-error', callback);
+        this._feathers.on(ServiceEventNames.REAUTHENTICATION_ERR, callback);
     }
 }
 
@@ -124,20 +141,20 @@ export class FeathersServiceEventListener {
 
     constructor(protected eventService: any) { }
 
-    onEvent(event: string, callback: Function) {
+    onEvent(event: ServiceEventNames, callback: Function) {
         this.eventService.on(event, callback);
     }
 
     onCreated(callback: Function) {
-        this.onEvent('created', callback);
+        this.onEvent(ServiceEventNames.CREATED, callback);
     }
 
     onUpdated(callback: Function) {
-        this.onEvent('updated', callback);
-        this.onEvent('patched', callback);
+        this.onEvent(ServiceEventNames.UPDATED, callback);
+        this.onEvent(ServiceEventNames.PATCHED, callback);
     }
 
     onRemoved(callback: Function) {
-        this.onEvent('removed', callback);
+        this.onEvent(ServiceEventNames.REMOVED, callback);
     }
 }
