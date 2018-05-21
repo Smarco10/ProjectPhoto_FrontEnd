@@ -61,7 +61,7 @@ export class Slide {
         this.metadata = metadata;
         this.mimetype = metadata["Mime type"];
 
-        if (metadata !== undefined && metadata.size !== undefined) {
+        /*if (metadata !== undefined && metadata.size !== undefined) {
             const rScreen = window.innerWidth / window.innerHeight;
             const rSlide = metadata.size.width / metadata.size.height;
             if ((rSlide > rScreen && metadata.size.width > metadata.size.height) || window.innerHeight > window.innerWidth) {
@@ -73,7 +73,7 @@ export class Slide {
                     "height": "100%"
                 });
             }
-        }
+        }*/
 
         this.isLoaded = true;
     }

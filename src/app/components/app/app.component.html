@@ -40,11 +40,11 @@
 
 <mat-sidenav-container>
 	<mat-sidenav #drawer mode="over" [fixedInViewport]="true" [fixedTopGap]="toolbarHeight">
-		<button mat-menu-item color="primary" [routerLink]="['/slideshow']">
+		<button mat-menu-item color="primary" (click)="drawer.close()" [routerLink]="['/slideshow']">
 			<mat-icon>view_carousel</mat-icon>
 			<span>Open Slideshow</span>
 		</button>
-		<button mat-menu-item color="primary" *ngIf="logged && allowed.manageSlides" [routerLink]="['/slide/manage']">
+		<button mat-menu-item color="primary" (click)="drawer.close()" *ngIf="logged && allowed.manageSlides" [routerLink]="['/slide/manage']">
 		  <mat-icon>add_to_photos</mat-icon>
 		  <span>Slide Management</span>
 		</button>

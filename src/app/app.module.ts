@@ -47,6 +47,7 @@ import {
     FeathersService,
     SlideService
 } from '@app/services';
+import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size.directive';
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import {
         LoginComponent,
         UploadsComponent,
         SlidesManagerComponent,
+        StayFullSizeDirective,
         UserManagementComponent,
         UsersManagerComponent
     ],

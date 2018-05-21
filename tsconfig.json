@@ -22,7 +22,8 @@
             "@services/*": ["app/services/*"],
             "@guards/*": ["app/guards/*"],
             "@models/*": ["app/models/*"],
-            "@tools/*": ["app/tools/*"]
+            "@tools/*": ["app/tools/*"],
+            "@directives/*": ["app/directives/*"]
         }
     }
 }
