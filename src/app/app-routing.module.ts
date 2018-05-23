@@ -4,12 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'guards';
 
 import {
-    SlideshowComponent,
-    SlideComponent,
+    AlbumsComponent,
     LoginComponent,
+    SlideComponent,
+    SlideshowComponent,
     SlidesManagerComponent,
-    UsersManagerComponent,
-    UploadsComponent
+    UploadsComponent,
+    UsersManagerComponent
 } from 'components';
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ const routes: Routes = [
             { path: 'create', component: UploadsComponent, canActivate: [AuthGuard] }
         ]
     },
+    { path: 'albums', component: AlbumsComponent },
     { path: 'slideshow', component: SlideshowComponent },
     { path: 'users', component: UsersManagerComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '/' }

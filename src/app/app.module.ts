@@ -26,6 +26,7 @@ import 'hammerjs';
 import { MarkdownModule } from 'angular2-markdown';
 
 import {
+    AlbumsComponent,
     AppComponent,
     LoginComponent,
     UploadsComponent,
@@ -60,7 +61,8 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         SlidesManagerComponent,
         StayFullSizeDirective,
         UserManagementComponent,
-        UsersManagerComponent
+        UsersManagerComponent,
+        AlbumsComponent
     ],
     imports: [
         BrowserModule,

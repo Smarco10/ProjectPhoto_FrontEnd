@@ -1,0 +1,17 @@
+<!-- TODO: use tiles -->
+<ul class="mdc-image-list albums-list">
+
+	<li *ngFor="let album of albums" class="mdc-image-list__item">
+		<div class="mdc-image-list__image-aspect-container">
+			<img *ngIf="album.isLoaded" class="mdc-image-list__image" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
+			<div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
+				<mat-spinner diameter="70"></mat-spinner>
+			</div>
+		</div>
+
+		<div class="mdc-image-list__supporting">
+			<span class="mdc-image-list__label">{{album.title}}</span>
+		</div>
+	</li>
+
+</ul>

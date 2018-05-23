@@ -19,6 +19,21 @@ export class StayFullSizeDirective implements OnInit {
     }
 
     private resize(): void {
+
+        /*if (metadata !== undefined && metadata.size !== undefined) {
+            const rScreen = window.innerWidth / window.innerHeight;
+            const rSlide = metadata.size.width / metadata.size.height;
+            if ((rSlide > rScreen && metadata.size.width > metadata.size.height) || window.innerHeight > window.innerWidth) {
+                Object.assign(this.imgStyle, {
+                    "width": "100%"
+                });
+            } else {
+                Object.assign(this.imgStyle, {
+                    "height": "100%"
+                });
+            }
+        }*/
+
         const widthPrior: boolean = (this.el.nativeElement.innerWidth > this.el.nativeElement.innerHeight);
         this.renderer.removeStyle(this.el.nativeElement, widthPrior ? "height" : "width");
         this.renderer.setStyle(this.el.nativeElement, widthPrior ? "width" : "height", "100%");

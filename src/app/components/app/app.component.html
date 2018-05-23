@@ -40,6 +40,10 @@
 
 <mat-sidenav-container>
 	<mat-sidenav #drawer mode="over" [fixedInViewport]="true" [fixedTopGap]="toolbarHeight">
+		<button mat-menu-item color="primary" (click)="drawer.close()" [routerLink]="['/albums']">
+			<mat-icon>view_module</mat-icon>
+			<span>Albums</span>
+		</button>
 		<button mat-menu-item color="primary" (click)="drawer.close()" [routerLink]="['/slideshow']">
 			<mat-icon>view_carousel</mat-icon>
 			<span>Open Slideshow</span>
