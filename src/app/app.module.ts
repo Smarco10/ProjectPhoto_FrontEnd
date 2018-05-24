@@ -48,6 +48,7 @@ import {
     SlideService
 } from '@app/services';
 import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size.directive';
+import { AlbumComponent } from './album/album.component';
 
 @NgModule({
     declarations: [
@@ -61,7 +62,8 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         StayFullSizeDirective,
         UserManagementComponent,
         UsersManagerComponent,
-        AlbumsComponent
+        AlbumsComponent,
+        AlbumComponent
     ],
     imports: [
         BrowserModule,

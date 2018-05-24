@@ -1,10 +1,1 @@
-<div *ngFor="let album of albums" class="album-container">
-    <img *ngIf="album.isLoaded" class="album-image" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
-    <div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
-        <mat-spinner diameter="70"></mat-spinner>
-    </div>
-
-    <div class="album-overflow">
-       {{album.title}}
-    </div>
-</div>
+<app-album *ngFor="let album of albums" [album]="album"></app-album>
