@@ -14,33 +14,27 @@ import { Album } from '@models/album'
     templateUrl: './album.component.html',
     styleUrls: ['./album.component.css'],
     animations: [
-        trigger('flyInOut', [
-            state('hover', style({ opacity: 1, transform: 'translateX(0)' })),
-            transition('void => *', [
-                style({
-                    opacity: 0,
-                    transform: 'translateX(-100%)'
-                }),
-                animate('0.2s ease-in')
-            ]),
-            transition('* => void', [
-                animate('0.2s 0.1s ease-out', style({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }))
-            ])
+        trigger('mouseInOut', [
+            state('in', style({
+                opacity: 1, 
+                transform: 'translateY(-100%)'
+            })),
+            state('out', style({
+                opacity: 0,
+                transform: 'translateY(0)'
+            })),
         ])
     ]
 })
 export class AlbumComponent implements OnInit {
 
     @Input() album: Album;
-    private hover: boolean = false;
+    private hover: string = 'out';
 
     constructor() { }
 
     ngOnInit() {
-        this.hover = false;
+        this.hover = 'out';
     }
 
 }

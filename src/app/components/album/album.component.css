@@ -1,0 +1,15 @@
+.album-container {
+    width: 50px;
+    height: 50px;
+}
+
+.album-image {
+
+}
+
+.album-overflow {
+    backgroud-color: #FFFFFF44;
+    color: white;
+    width: 100%;
+    height: 20%;
+}

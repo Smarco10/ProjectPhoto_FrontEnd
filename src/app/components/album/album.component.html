@@ -1,4 +1,4 @@
-<div (mouseenter)="hover=true" (mouseleave)="hover=false" [@flyInOut]="hover" class="album-container">
+<div (mouseenter)="hover='in'" (mouseleave)="hover='out'" [@mouseInOut]="hover" class="album-container">
 	<img *ngIf="!!album && album.isLoaded" class="album-image" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
 	<div *ngIf="!!album && !album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
 		<mat-spinner diameter="70"></mat-spinner>
