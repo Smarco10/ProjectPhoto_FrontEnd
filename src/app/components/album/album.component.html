@@ -1,10 +1,8 @@
-<div (mouseenter)="hover='in'" (mouseleave)="hover='out'" [@mouseInOut]="hover" class="album-container">
-	<img *ngIf="!!album && album.isLoaded" class="album-image" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
-	<div *ngIf="!!album && !album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
-		<mat-spinner diameter="70"></mat-spinner>
-	</div>
+<img *ngIf="!!album && album.isLoaded" class="album-image" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
+<div *ngIf="!!album && !album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
+	<mat-spinner diameter="70"></mat-spinner>
+</div>
 
-	<div *ngIf="!!album" class="album-overflow">
-		{{album.title}}
-	</div>
+<div *ngIf="!!album && album.isLoaded" class="album-overflow" [@mouseInOut]="hover">
+	<span class="album-title">{{album.title}}</span>
 </div>

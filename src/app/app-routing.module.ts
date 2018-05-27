@@ -14,7 +14,7 @@ import {
 } from 'components';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/slideshow', pathMatch: 'full' },
+    { path: '', redirectTo: '/albums', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     {
         path: 'slide',

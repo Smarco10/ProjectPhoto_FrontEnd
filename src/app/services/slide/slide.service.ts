@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Slide } from '@models/slide'
+import { Slide } from '@models/slide';
 
-import { FeathersService, FeathersServiceEventListener, ServiceNames } from "@services/feathers/feathers.service";
+import {
+    FeathersService,
+    FeathersServiceEventListener,
+    ServiceNames
+} from "@services/feathers/feathers.service";
+
 import { AuthService } from "@services/auth/auth.service";
 
 @Injectable()

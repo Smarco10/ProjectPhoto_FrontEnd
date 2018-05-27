@@ -2,20 +2,21 @@
 
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "https://fonts.googleapis.com/css?family=Roboto";
-
 /*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
-/* @import "~@angular/material/prebuilt-themes/purple-green.css"; */
-/* @import "~@angular/material/prebuilt-themes/pink-bluegrey.css"; */
-@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 
+/* @import "~@angular/material/prebuilt-themes/purple-green.css"; */
+
+/* @import "~@angular/material/prebuilt-themes/pink-bluegrey.css"; */
+
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 body {
-	margin: 0;
-	padding: 0;
-	color: white;
-	font-family: 'Roboto', serif;
-	/*background-color: rgb(148,147,147);
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: 'Roboto', serif;
+    /*background-color: rgb(148,147,147);
 	background-color: #345B9D;*/
-	background-color: #141414;
+    background-color: #141414;
 }
 
 .text_centered {
@@ -28,19 +29,22 @@ body {
 }
 
 .hidden {
-	opacity: 0;
-	position: absolute;
-	z-index: -1;
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
 }
 
 /* Tooltip container */
+
 .tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+    border-bottom: 1px dotted black;
+    /* If you want dots under the hoverable text */
 }
 
 /* Tooltip text */
+
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
@@ -49,27 +53,35 @@ body {
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
- 
     /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 1;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
+
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
 
+.clickable:hover {
+    cursor: pointer;
+}
+
+.clickable:active {
+    cursor: grabbing;
+}
+
 h2 {
-	font-size: 3em;
-	font-weight:bold;
-	color: white;
+    font-size: 3em;
+    font-weight: bold;
+    color: white;
 }
 
 p {
-	font-size: 1em;
+    font-size: 1em;
 }
 
 a {
-	color: white;
+    color: white;
 }

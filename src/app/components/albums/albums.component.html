@@ -1,1 +1,8 @@
-<app-album *ngFor="let album of albums" [album]="album"></app-album>
+<mat-grid-list [cols]="nbCols" rowHeight="1:1" gutterSize="16px">
+	<mat-grid-tile *ngFor="let album of albums" (mouseenter)="album.hover='in'" (mouseleave)="album.hover='out'" [routerLink]="['/slideshow', {id: album.id}]" class="clickable">
+		<app-album [album]="album" [hover]="album.hover" class="clickable"></app-album>
+		<button mat-mini-fab *ngIf="allowed.manageAlbum && album.isLoaded" class="floating-icon clickable" color="white" [@mouseInOut]="album.hover" (click)="deleteAlbum(album.id)">
+	    	<mat-icon aria-label="Delete the album">clear</mat-icon>
+	  	</button>
+	</mat-grid-tile>
+</mat-grid-list>

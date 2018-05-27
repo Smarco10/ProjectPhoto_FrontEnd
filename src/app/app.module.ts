@@ -1,4 +1,5 @@
-import { BrowserModule, BrowserAnimationsModule } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -8,6 +9,7 @@ import {
     MatChipsModule,
     MatExpansionModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MAT_LABEL_GLOBAL_OPTIONS,
@@ -25,6 +27,7 @@ import 'hammerjs';
 import { MarkdownModule } from 'angular2-markdown';
 
 import {
+    AlbumComponent,
     AlbumsComponent,
     AppComponent,
     LoginComponent,
@@ -42,13 +45,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from '@app/guards';
 
 import {
+    AlbumsService,
     AuthService,
     ConfigurationService,
     FeathersService,
     SlideService
 } from '@app/services';
 import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size.directive';
-import { AlbumComponent } from './album/album.component';
 
 @NgModule({
     declarations: [
@@ -78,6 +81,7 @@ import { AlbumComponent } from './album/album.component';
         MatChipsModule,
         MatExpansionModule,
         MatFormFieldModule,
+        MatGridListModule,
         MatIconModule,
         MatInputModule,
         MatMenuModule,
@@ -89,6 +93,7 @@ import { AlbumComponent } from './album/album.component';
         MarkdownModule
     ],
     providers: [
+        AlbumsService,
         AppComponent,
         AuthGuard,
         AuthService,

@@ -13,7 +13,8 @@ export enum ServiceNames {
     CONFIGURATION = "configuration",
     USERS = "users",
     UPLOADS = "uploads",
-    PHOTOS = "photos"
+    PHOTOS = "photos",
+    ALBUMS = "albums"
 };
 
 export enum ServiceEventNames {

@@ -1,3 +1,4 @@
+export * from '@components/album/album.component';
 export * from '@components/albums/albums.component';
 export * from '@components/app/app.component';
 export * from '@components/login/login.component';

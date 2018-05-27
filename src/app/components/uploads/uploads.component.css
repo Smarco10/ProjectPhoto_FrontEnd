@@ -1,11 +1,11 @@
 textarea {
-	width: 100%;
-	height: 100px;
+    width: 100%;
+    height: 100px;
 }
 
 #load_slide {
-	margin-top: 20px;
-	border-style: none;
+    margin-top: 20px;
+    border-style: none;
     background-color: #1D3C58;
     color: white;
     padding: 4px;
@@ -13,14 +13,14 @@ textarea {
 }
 
 #btn-box {
-	width: 25%;
-	margin: 0px auto;
+    width: 25%;
+    margin: 0px auto;
 }
 
 .button {
-	width: 100%;
-	margin: 5px 2.5px;
-	border-style: none;
+    width: 100%;
+    margin: 5px 2.5px;
+    border-style: none;
     color: white;
     padding: 7px;
     font-size: 1.5em;
@@ -35,35 +35,28 @@ textarea {
 }
 
 #layout {
-	width: 100%;
-	margin: auto;
-}
-
-.clickable:hover {
-	cursor: pointer;
-}
-
-.clickable:active {
-	cursor: grabbing;
+    width: 100%;
+    margin: auto;
 }
 
 .placeholder {
-	padding: 20px;
-	font-size: 2em;
-	font-weight: bold;
-	text-align: center;
-	border-style: dashed;
-	border-width: thick;
-	color: #333333;
-	border-color: #333333;
+    box-sizing: border-box;
+    padding: 20px;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    border-style: dashed;
+    border-width: thick;
+    color: #333333;
+    border-color: #333333;
 }
 
 .placeholder:hover {
-	color: #474747;
-	border-color: #474747;
+    color: #474747;
+    border-color: #474747;
 }
 
 .placeholder:active {
-	color: #333333;
-	border-color: #333333;
+    color: #333333;
+    border-color: #333333;
 }

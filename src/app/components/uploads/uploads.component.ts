@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Slide } from '@models/slide'
-import { SlideService } from 'services'
+import { AlbumsService, SlideService } from 'services'
 
 @Component({
     selector: 'app-uploads',
@@ -33,7 +33,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis i
 
     constructor(
         private formBuilder: FormBuilder,
-        private slideService: SlideService
+        private slideService: SlideService,
+        private albumsService: AlbumsService
     ) { }
 
     ngOnInit() { }
