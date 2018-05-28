@@ -29,11 +29,20 @@ export class AlbumsService extends FeathersServiceEventListener {
         });
     }
 
-    uploadAlbum(album: Album): Promise<any> {
-        return this.albumsService
-            .create({
-                /*TODO*/
-            });
+    uploadAlbum(id: string, slides: string[], imageId: string, title: string): Promise<any> {
+        const body = {
+            slides,
+            imageId,
+            title
+        };
+
+        if(id){
+            return this.albumsService
+                .patch(id, body);
+        } else {
+            return this.albumsService
+                .create(body);
+        }
     }
 
     deleteAlbum(id: string): Promise<any> {

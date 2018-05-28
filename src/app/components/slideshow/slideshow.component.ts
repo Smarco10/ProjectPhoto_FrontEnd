@@ -38,34 +38,13 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
             this.loadSlideData(this.slides.length - 1);
         });
 
-        this.slideService.onUpdated((message, context) => {
-
+        this.slideService.onUpdated((updatedSlide, context) => {
+            this.applyOnSlides(updatedSlide._id, updateSlide, updatedSlide);
         });
 
-        this.slideService.onRemoved((message, context) => {
-            this.removeSlide(message);
+        this.slideService.onRemoved((id, context) => {
+            this.applyOnSlides(id, removeSlide);
         });
-    }
-
-    private loadSlideData(index: number) {
-        if (index < this.slides.length && !this.slides[index].isLoaded) {
-            this.slideService.getSlideData(this.slides[index].imageId, "PNG", window.innerWidth - 100, 500)
-                .then(data => {
-                    this.slides[index].setData(data.buffer, data.metadata);
-                })
-                .catch(err => {
-                    console.error(err);
-                });
-        }
-    }
-
-    private removeSlide(slideId: string) {
-        for (var i = 0; i < this.slides.length; ++i) {
-            if (this.slides[i].id === slideId) {
-                this.slides.splice(i, 1);
-                break;
-            }
-        }
     }
 
     ngAfterViewInit() {
@@ -81,6 +60,41 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
                 console.log(err);
             });
     }
+
+    private loadSlideData(index: number) {
+        if (index < this.slides.length && !this.slides[index].isLoaded) {
+            this.slideService.getSlideData(this.slides[index].imageId, "PNG", window.innerWidth - 100, 500)
+                .then(data => {
+                    this.slides[index].setData(data.buffer, data.metadata);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+    }
+
+    private applyOnSlides(slideId: string, cb: function, options: any) {
+        for (var i = 0; i < this.slides.length; ++i) {
+            if (this.slides[i].id === slideId) {
+                cb(i, options);
+                break;
+            }
+        }
+    }
+
+    private updateSlide(index: number, body: any) {
+        this.slides[index].title = body.title;
+        this.slides[index].text = body.text;
+        if(this.slides[index].imageId != body.imageId) {
+            this.slides[index].imageId = body.imageId;
+            this.loadSlideData(index); 
+        }
+        //TODO: update all other Data
+    }
+
+    private removeSlide(index: number) {
+        this.slides.splice(index, 1);
+        }
 
     public carouselLoadEvent(event: number) {
         this.loadSlideData(event);

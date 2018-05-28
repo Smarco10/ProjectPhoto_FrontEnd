@@ -72,12 +72,12 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
             this.albums.push(new Album(message._id, message.slides, message.image, message.title));
         });
 
-        this.albumsService.onUpdated((message, context) => {
-
+        this.albumsService.onUpdated((updatedAlbum, context) => {
+            this.applyOnAlbum(updatedAlbum._id, this.updateAlbum, updatedAlbum);
         });
 
-        this.albumsService.onRemoved((message, context) => {
-            this.removeAlbum(message);
+        this.albumsService.onRemoved((id, context) => {
+            this.applyOnAlbum(id, this.removeAlbum);
         });
     }
 
@@ -134,12 +134,22 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
         else if (this.media.isActive(MediaScreenSize.EXTRA_SMALL)) { this.nbCols = 1; }
     }
 
-    private removeAlbum(albumId: string) {
+    private applyOnAlbum(albumId: string, cb: function, options: any) {
         for (var i = 0; i < this.albums.length; ++i) {
             if (this.albums[i].id === albumId) {
-                this.albums.splice(i, 1);
+                cb(i, options);
                 break;
             }
         }
+    }
+
+    private updateAlbum(index: number, body: any) {
+    //TODO: how to reload imageData if needed?
+    this.albums[index].title = body.title;
+    this.albums[index].text = body.text;
+    }
+
+    private removeAlbum(index: number) {
+        this.albums.splice(index, 1);
     }
 }
