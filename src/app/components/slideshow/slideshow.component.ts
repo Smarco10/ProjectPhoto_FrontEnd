@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
 
-import { SlideService } from 'services';
+import { FilesService, SlideService } from 'services';
 import { Slide } from '@models/slide';
 
 @Component({
@@ -15,6 +15,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     public carouselOne: NgxCarousel;
 
     constructor(
+        private filesService: FilesService,
         private slideService: SlideService
     ) { }
 
@@ -33,17 +34,16 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
             easing: 'ease'
         }
 
-        this.slideService.onCreated((message, context) => {
-            this.slides.push(new Slide(message._id, message.image, message.title, message.text));
-            this.loadSlideData(this.slides.length - 1);
+        this.slideService.onCreated((newSlide, context) => {
+            this.slides.push(new Slide(newSlide));
         });
 
         this.slideService.onUpdated((updatedSlide, context) => {
-            this.applyOnSlides(updatedSlide._id, updateSlide, updatedSlide);
+            this.applyOnSlide(updatedSlide._id, this.updateSlide, updatedSlide);
         });
 
         this.slideService.onRemoved((id, context) => {
-            this.applyOnSlides(id, removeSlide);
+            this.applyOnSlide(id, this.removeSlide);
         });
     }
 
@@ -51,7 +51,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         this.slideService.getSlides(undefined)
             .then(slides => {
                 for (var i = 0; i < slides.length; ++i) {
-                    this.slides.push(new Slide(slides[i]._id, slides[i].image, slides[i].title, slides[i].text));
+                    this.slides.push(new Slide(slides[i]));
                 }
 
                 this.carouselLoadEvent(0);
@@ -63,7 +63,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private loadSlideData(index: number) {
         if (index < this.slides.length && !this.slides[index].isLoaded) {
-            this.slideService.getSlideData(this.slides[index].imageId, "PNG", window.innerWidth - 100, 500)
+            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", width: window.innerWidth - 100, height: 500 })
                 .then(data => {
                     this.slides[index].setData(data.buffer, data.metadata);
                 })
@@ -73,7 +73,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private applyOnSlides(slideId: string, cb: function, options: any) {
+    private applyOnSlide(slideId: string, cb: (index: number, options?: any) => void, options?: any) {
         for (var i = 0; i < this.slides.length; ++i) {
             if (this.slides[i].id === slideId) {
                 cb(i, options);
@@ -82,19 +82,13 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private updateSlide(index: number, body: any) {
-        this.slides[index].title = body.title;
-        this.slides[index].text = body.text;
-        if(this.slides[index].imageId != body.imageId) {
-            this.slides[index].imageId = body.imageId;
-            this.loadSlideData(index); 
-        }
-        //TODO: update all other Data
+    private updateSlide(index: number, updatedSlide: any) {
+        this.slides[index].updateFromServer(updatedSlide);
     }
 
     private removeSlide(index: number) {
         this.slides.splice(index, 1);
-        }
+    }
 
     public carouselLoadEvent(event: number) {
         this.loadSlideData(event);

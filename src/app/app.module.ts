@@ -49,6 +49,7 @@ import {
     AuthService,
     ConfigurationService,
     FeathersService,
+    FilesService,
     SlideService
 } from '@app/services';
 import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size.directive';
@@ -99,6 +100,7 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         AuthService,
         ConfigurationService,
         FeathersService,
+        FilesService,
         SlideService,
         SlideshowComponent,
         { provide: MAT_LABEL_GLOBAL_OPTIONS, useValue: { float: 'auto' } }

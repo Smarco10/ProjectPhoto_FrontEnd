@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { SlideService } from 'services';
+import { FilesService, SlideService } from 'services';
 import { Slide } from '@models/slide';
 
 @Component({
@@ -14,6 +14,7 @@ export class SlidesManagerComponent implements OnInit {
     private slides: Array<Slide>;
 
     constructor(
+        private filesService: FilesService,
         private router: Router,
         private slideService: SlideService
     ) { }
@@ -21,17 +22,17 @@ export class SlidesManagerComponent implements OnInit {
     ngOnInit() {
         let router = this.router;
 
-        this.slideService.onCreated((message, context) => {
-            this.slides.push(new Slide(message._id, message.image, message.title, message.text));
+        this.slideService.onCreated((newSlide, context) => {
+            this.slides.push(new Slide(newSlide));
             this.loadSlideData(this.slides.length - 1);
         });
 
-        this.slideService.onUpdated((message, context) => {
-
+        this.slideService.onUpdated((updatedSlide, context) => {
+            this.applyOnSlide(updatedSlide._id, updatedSlide, updatedSlide);
         });
 
-        this.slideService.onRemoved((message, context) => {
-            this.removeSlide(message);
+        this.slideService.onRemoved((id, context) => {
+            this.applyOnSlide(id, this.removeSlide);
         });
 
         this.updateSlides();
@@ -46,7 +47,7 @@ export class SlidesManagerComponent implements OnInit {
         slideService.getSlides(undefined)
             .then(slides => {
                 for (var i = 0; i < slides.length; ++i) {
-                    let slide = new Slide(slides[i]._id, slides[i].image, slides[i].title, slides[i].text);
+                    let slide = new Slide(slides[i]);
                     slidesOutputArray.push(slide);
                     this.loadSlideData(i);
                 }
@@ -58,7 +59,7 @@ export class SlidesManagerComponent implements OnInit {
 
     private loadSlideData(index: number) {
         if (index < this.slides.length && !this.slides[index].isLoaded) {
-            this.slideService.getSlideData(this.slides[index].imageId, "PNG", 100, 100)
+            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", width: 100, height: 100 })
                 .then(data => {
                     this.slides[index].setData(data.buffer, data.metadata);
                 })
@@ -68,12 +69,20 @@ export class SlidesManagerComponent implements OnInit {
         }
     }
 
-    private removeSlide(slideId: string) {
+    private applyOnSlide(slideId: string, cb: (index: number, options?: any) => void, options?: any) {
         for (var i = 0; i < this.slides.length; ++i) {
             if (this.slides[i].id === slideId) {
-                this.slides.splice(i, 1);
+                cb(i, options);
                 break;
             }
         }
+    }
+
+    private updateSlide(index: number, updatedSlide: any) {
+        this.slides[index].updateFromServer(updatedSlide);
+    }
+
+    private removeSlide(index: number) {
+        this.slides.splice(index, 1);
     }
 }

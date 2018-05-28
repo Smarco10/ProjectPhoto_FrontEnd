@@ -36,7 +36,7 @@ import { MediaScreenSize } from '@tools/common';
 })
 export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    private watcher: Subscription;
+    private mediaWatcher: Subscription;
     private activeMediaQuery = "";
 
     @Input() nbCols: number = 4;
@@ -66,10 +66,10 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
             this.updateLogin();
         });
 
-        this.watcher = media.subscribe((change: MediaChange) => { this.updateGrid(); });
+        this.mediaWatcher = media.subscribe((change: MediaChange) => { this.updateGrid(); });
 
-        this.albumsService.onCreated((message, context) => {
-            this.albums.push(new Album(message._id, message.slides, message.image, message.title));
+        this.albumsService.onCreated((albumCreated, context) => {
+            this.albums.push(new Album(albumCreated));
         });
 
         this.albumsService.onUpdated((updatedAlbum, context) => {
@@ -87,7 +87,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.albumsService.getAlbums(undefined)
             .then(albums => {
                 for (var i = 0; i < albums.length; ++i) {
-                    this.albums.push(new Album(albums[i]._id, albums[i].slides, albums[i].imageId, albums[i].title));
+                    this.albums.push(new Album(albums[i]));
                 }
             })
             .catch(err => {
@@ -97,14 +97,19 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
         //XXX: to remove
         this.slideService.getSlides(undefined)
             .then(slides => {
-                var albumSlides: Array<Slide> = new Array<Slide>();
+                var albumSlides: Array<string> = new Array<string>();
 
                 for (var i = 0; i < slides.length; ++i) {
-                    albumSlides.push(new Slide(slides[i]._id, slides[i].image, slides[i].title, slides[i].text));
+                    albumSlides.push(slides[i]._id);
                 }
 
                 for (var i = 0; i < albumSlides.length; ++i) {
-                    this.albums.push(new Album("id", albumSlides, albumSlides[i].imageId, "album " + (i + 1)));
+                    this.albums.push(new Album({
+                        _id: "id",
+                        slides: albumSlides,
+                        imageId: slides[i].imageId,
+                        title: "album " + (i + 1)
+                    }));
                 }
             })
             .catch(err => {
@@ -118,7 +123,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.watcher.unsubscribe();
+        this.mediaWatcher.unsubscribe();
     }
 
     private updateLogin() {
@@ -134,7 +139,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
         else if (this.media.isActive(MediaScreenSize.EXTRA_SMALL)) { this.nbCols = 1; }
     }
 
-    private applyOnAlbum(albumId: string, cb: function, options: any) {
+    private applyOnAlbum(albumId: string, cb: (index: number, options?: any) => void, options?: any) {
         for (var i = 0; i < this.albums.length; ++i) {
             if (this.albums[i].id === albumId) {
                 cb(i, options);
@@ -143,13 +148,11 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    private updateAlbum(index: number, body: any) {
-    //TODO: how to reload imageData if needed?
-    this.albums[index].title = body.title;
-    this.albums[index].text = body.text;
+    private updateAlbum(index: number, updatedAlbum: any): void {
+        this.albums[index].updateFromServer(updatedAlbum);
     }
 
-    private removeAlbum(index: number) {
+    private removeAlbum(index: number): void {
         this.albums.splice(index, 1);
     }
 }

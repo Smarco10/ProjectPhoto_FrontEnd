@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import {
     trigger,
     state,
@@ -6,8 +6,9 @@ import {
     animate,
     transition
 } from '@angular/animations';
+import { Subscription } from 'rxjs/Subscription';
 
-import { SlideService } from 'services'
+import { FilesService, SlideService } from 'services'
 import { Album } from '@models/album'
 
 @Component({
@@ -29,25 +30,33 @@ import { Album } from '@models/album'
         ])
     ]
 })
-export class AlbumComponent implements OnInit {
+export class AlbumComponent implements OnInit, OnDestroy {
 
     @Input() album: Album;
+    private albumImageIdSubscription: Subscription;
     @Input() hover: string = 'out';
 
     constructor(
+        private filesService: FilesService,
         private slideService: SlideService
-    ) { }
+    ) {
+        this.albumImageIdSubscription = this.album.getImageIdObserver()
+            .subscribe(message => { this.loadAlbumData(); });
+    }
 
     ngOnInit() {
         this.hover = 'out';
-
         this.loadAlbumData();
+    }
+
+    ngOnDestroy() {
+        this.albumImageIdSubscription.unsubscribe();
     }
 
     private loadAlbumData() {
         if (!this.album.isLoaded) {
             var imageWidth = 600;
-            this.slideService.getSlideData(this.album.imageId, "PNG", imageWidth, imageWidth)
+            this.filesService.getFileData(this.album.imageId, { format: "PNG", width: imageWidth, height: imageWidth })
                 .then(data => {
                     this.album.setData(data.buffer, data.metadata);
                 })

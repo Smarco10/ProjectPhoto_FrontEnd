@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 function b64(e: ArrayBuffer): string {
     var t = "";
@@ -18,6 +20,8 @@ export class Slide {
     mimetype: string;
     data: string;
     metadata: any;
+    private imageIdSubject: Subject<string> = new Subject<string>();
+
     title: string;
     text: string;
 
@@ -26,34 +30,40 @@ export class Slide {
     titleStyle: object;
     textStyle: object;
 
-    constructor(id: string, imageId: string, title: string, text: string) {
-        this.id = id;
-        this.imageId = imageId;
-
-        this.title = title;
-        this.text = text;
+    constructor(serverData: any) {
+        this.id = serverData._id;
+        this.updateFromServer(serverData);
 
         this.style = {
-            //"position": "absolute",
             "width": "100%"
         };
 
-        this.imgStyle = {
-            "display": "block",
-            "margin": "auto",
-            "vertical-align": "middle"
+        this.setStyle(
+            {
+                "display": "block",
+                "margin": "auto",
+                "vertical-align": "middle"
+            },
+            {
+                "position": "absolute",
+                "top": "10%",
+                "left": "0",
+                "text-align": "center",
+                "width": "100%"
+            },
+            {}
+        );
+    }
+
+    updateFromServer(serverData: any) {
+        this.title = serverData.title;
+        this.text = serverData.text;
+        if (this.imageId != serverData.imageId) {
+            this.imageId = serverData.imageId;
+            this.isLoaded = false;
+            this.imageIdSubject.next(this.imageId);
         }
-
-        this.titleStyle = {
-            "position": "absolute",
-            "top": "10%",
-            "left": "0",
-            "text-align": "center",
-            "width": "100%"
-        };
-        this.textStyle = {};
-
-        this.isLoaded = false;
+        //TODO: how to update style???
     }
 
     setData(data: ArrayBuffer | string, metadata: any) {
@@ -62,6 +72,10 @@ export class Slide {
         this.mimetype = metadata["Mime type"];
 
         this.isLoaded = true;
+    }
+
+    getImageIdObserver(): Observable<string> {
+        return this.imageIdSubject.asObservable();
     }
 
     setStyle(imgStyle: object, titleStyle: object, textStyle: object) {

@@ -12,7 +12,7 @@ import { User } from '@models/user';
 export enum ServiceNames {
     CONFIGURATION = "configuration",
     USERS = "users",
-    UPLOADS = "uploads",
+    FILES = "uploads",
     PHOTOS = "photos",
     ALBUMS = "albums"
 };

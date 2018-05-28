@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Slide } from '@models/slide'
-import { AlbumsService, SlideService } from 'services'
+import { AlbumsService, FilesService, SlideService } from 'services'
 
 @Component({
     selector: 'app-uploads',
@@ -32,9 +32,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis i
     showTextDown: boolean = true;
 
     constructor(
+        private albumsService: AlbumsService,
         private formBuilder: FormBuilder,
-        private slideService: SlideService,
-        private albumsService: AlbumsService
+        private filesService: FilesService,
+        private slideService: SlideService
     ) { }
 
     ngOnInit() { }
@@ -55,10 +56,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis i
 
     upload() {
         if (this.slideData) {
-            this.slideService
-                .uploadSlide(this.slideData, this.mkTextUp, this.mkTextDown)
+            this.filesService.uploadFile(this.slideData)
                 .then(data => {
-                    alert("Succeed to upload slide");
+                    this.slideService
+                        .uploadSlide(data.id, this.mkTextUp, this.mkTextDown)
+                        .then(() => {
+                            alert("Succeed to upload slide");
+                        })
+                        .catch(err => {
+                            console.error("Failed to upload slide: " + err);
+                        });
                 })
                 .catch(err => {
                     console.error("Failed to upload slide: " + err);

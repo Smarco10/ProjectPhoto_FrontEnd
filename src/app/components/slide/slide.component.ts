@@ -1,7 +1,8 @@
-import { ElementRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ElementRef, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
-import { SlideService } from 'services';
+import { FilesService, SlideService } from 'services';
 import { Slide } from '@models/slide';
 
 @Component({
@@ -9,20 +10,35 @@ import { Slide } from '@models/slide';
     templateUrl: './slide.component.html',
     styleUrls: ['./slide.component.css']
 })
-export class SlideComponent implements OnInit {
+export class SlideComponent implements OnInit, OnDestroy {
 
     @Input() slide: Slide;
+    private slideImageIdSubscription: Subscription;
     @Input() layout: string = "view";
 
     constructor(
         private route: ActivatedRoute,
+        private filesService: FilesService,
         private router: Router,
         private slideService: SlideService
-    ) { }
+    ) {
+        if (!!this.slide) {
+            this.slideImageIdSubscription = this.slide.getImageIdObserver()
+                .subscribe(message => { this.loadSlideData(); });
+        }
+    }
 
     ngOnInit() {
         if (this.layout == 'view') {
             this.updateSlide();
+        } else {
+            this.loadSlideData();
+        }
+    }
+
+    ngOnDestroy() {
+        if (!!this.slideImageIdSubscription) {
+            this.slideImageIdSubscription.unsubscribe();
         }
     }
 
@@ -35,16 +51,11 @@ export class SlideComponent implements OnInit {
             })
                 .then(slidesFound => {
                     if (slidesFound.length > 0) {
-                        this.slide = new Slide(slidesFound[0]._id, slidesFound[0].image, slidesFound[0].title, slidesFound[0].text);
-                        this.slideService.getSlideData(this.slide.imageId, "PNG", window.innerWidth, window.innerHeight)
-                            .then(data => {
-                                this.slide.setData(data.buffer, data.metadata);
-                            })
-                            .catch(err => {
-                                console.error(err);
-                            });
+                        this.slide = new Slide(slidesFound[0]);
+                        this.slideImageIdSubscription = this.slide.getImageIdObserver()
+                            .subscribe(message => { this.loadSlideData(); });
+                        this.loadSlideData();
                     } else {
-                        console.log("No slides found");
                         this.router.navigateByUrl("/");
                     }
                 })
@@ -52,9 +63,18 @@ export class SlideComponent implements OnInit {
                     console.error(err);
                     this.router.navigateByUrl("/");
                 });
-        }
-        else {
+        } else {
             this.router.navigateByUrl("/");
         }
+    }
+
+    private loadSlideData() {
+        this.filesService.getFileData(this.slide.imageId, { format: "PNG", width: window.innerWidth, height: window.innerHeight })
+            .then(data => {
+                this.slide.setData(data.buffer, data.metadata);
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 }
