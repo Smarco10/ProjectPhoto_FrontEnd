@@ -18,6 +18,7 @@ export class UploadsComponent implements OnInit {
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis iaculis egestas. Ut et consectetur nisi, nec faucibus leo. Curabitur at purus maximus, blandit ante in, eleifend arcu. Mauris rhoncus ex quam, vel bibendum diam blandit a. In pretium tellus in ipsum finibus porttitor. Aliquam hendrerit ac tellus et porta. Suspendisse ultrices urna vel augue egestas accumsan. Proin eleifend facilisis massa sit amet tempor. Vivamus eleifend libero ac nunc sodales, eu gravida ligula finibus. Integer gravida luctus felis, eget vulputate leo maximus in. Etiam tellus lorem, iaculis id eleifend sit amet, porta sit amet lectus. In pellentesque quam eu tincidunt vehicula. Pellentesque pellentesque arcu quis nulla pellentesque, ac rhoncus ipsum ornare.\n\
 ";
 
+    albums: Album[] = [];
     slideData: string;
     fileList: FileList;
 
