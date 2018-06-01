@@ -8,26 +8,25 @@ import {
 @Injectable()
 export class FilesService {
 
-    private photosService: any;
-    private uploadService: any;
+    private filesService: any;
 
     constructor(
         private client: FeathersService
     ) {
-        this.uploadService = this.client.service(ServiceNames.FILES);
+        this.filesService = this.client.service(ServiceNames.FILES);
     }
 
     getFileData(id: string, options?: any): Promise<any> {
-        return this.uploadService.get(id, {
+        return this.filesService.get(id, {
             query: options
         });
     }
 
     uploadFile(fileData: string): Promise<any> {
-        return this.uploadService.create({ uri: fileData });
+        return this.filesService.create({ uri: fileData });
     }
 
     deleteFile(id: string): Promise<any> {
-        return this.photosService.remove(id, {});
+        return this.filesService.remove(id, {});
     }
 }

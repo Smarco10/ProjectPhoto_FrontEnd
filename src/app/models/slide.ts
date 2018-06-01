@@ -58,8 +58,8 @@ export class Slide {
     updateFromServer(serverData: any) {
         this.title = serverData.title;
         this.text = serverData.text;
-        if (this.imageId != serverData.imageId) {
-            this.imageId = serverData.imageId;
+        if (this.imageId !== serverData.image) {
+            this.imageId = serverData.image;
             this.isLoaded = false;
             this.imageIdSubject.next(this.imageId);
         }

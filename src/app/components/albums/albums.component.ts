@@ -107,8 +107,8 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.albums.push(new Album({
                         _id: "id",
                         slides: albumSlides,
-                        imageId: slides[i].imageId,
-                        title: "album " + (i + 1)
+                        image: slides[i].image,
+                        title: "Album " + (i + 1)
                     }));
                 }
             })

@@ -6,7 +6,6 @@ export class Album extends Slide {
 
     constructor(serverData: any) {
         super(serverData);
-        this.updateFromServer(serverData);
     }
 
     public updateFromServer(serverData: any) {

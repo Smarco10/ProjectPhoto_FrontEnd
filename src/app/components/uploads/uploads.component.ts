@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Slide } from '@models/slide'
+import { Album } from '@models/album'
 import { AlbumsService, FilesService, SlideService } from 'services'
 
 @Component({

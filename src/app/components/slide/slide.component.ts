@@ -22,17 +22,17 @@ export class SlideComponent implements OnInit, OnDestroy {
         private router: Router,
         private slideService: SlideService
     ) {
-        if (!!this.slide) {
-            this.slideImageIdSubscription = this.slide.getImageIdObserver()
-                .subscribe(message => { this.loadSlideData(); });
-        }
     }
 
     ngOnInit() {
         if (this.layout == 'view') {
             this.updateSlide();
         } else {
-            this.loadSlideData();
+            if (!!this.slide) {
+                this.slideImageIdSubscription = this.slide.getImageIdObserver()
+                    .subscribe(message => { this.loadSlideData(); });
+            }
+            //TODO: this.loadSlideData();
         }
     }
 
@@ -69,7 +69,7 @@ export class SlideComponent implements OnInit, OnDestroy {
     }
 
     private loadSlideData() {
-        this.filesService.getFileData(this.slide.imageId, { format: "PNG", width: window.innerWidth, height: window.innerHeight })
+        this.filesService.getFileData(this.slide.imageId, { format: "PNG", size: { width: window.innerWidth, height: window.innerHeight } })
             .then(data => {
                 this.slide.setData(data.buffer, data.metadata);
             })

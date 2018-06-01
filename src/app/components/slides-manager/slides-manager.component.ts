@@ -59,7 +59,7 @@ export class SlidesManagerComponent implements OnInit {
 
     private loadSlideData(index: number) {
         if (index < this.slides.length && !this.slides[index].isLoaded) {
-            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", width: 100, height: 100 })
+            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", size: { width: 100, height: 100 } })
                 .then(data => {
                     this.slides[index].setData(data.buffer, data.metadata);
                 })

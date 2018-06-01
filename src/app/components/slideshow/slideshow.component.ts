@@ -36,7 +36,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
 
         this.slideService.onCreated((newSlide, context) => {
             this.slides.push(new Slide(newSlide));
-        }); 
+        });
 
         this.slideService.onUpdated((updatedSlide, context) => {
             this.applyOnSlide(updatedSlide._id, this.updateSlide, updatedSlide);
@@ -63,7 +63,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private loadSlideData(index: number) {
         if (index < this.slides.length && !this.slides[index].isLoaded) {
-            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", width: window.innerWidth - 100, height: 500 })
+            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", size: { width: window.innerWidth - 100, height: 500 } })
                 .then(data => {
                     this.slides[index].setData(data.buffer, data.metadata);
                 })
@@ -91,10 +91,9 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     }
 
     public carouselLoadEvent(event: number) {
-        this.loadSlideData(event);
         if (event < this.slides.length) {
             //TODO: Implement a IsLoading state
-            if(!this.slides[event].isLoaded) {
+            if (!this.slides[event].isLoaded) {
                 this.loadSlideData(event);
             }
             this.loadSlideData(event + 1);

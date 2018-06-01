@@ -39,12 +39,11 @@ export class AlbumComponent implements OnInit, OnDestroy {
     constructor(
         private filesService: FilesService,
         private slideService: SlideService
-    ) {
-        this.albumImageIdSubscription = this.album.getImageIdObserver()
-            .subscribe(message => { this.loadAlbumData(); });
-    }
+    ) { }
 
     ngOnInit() {
+        this.albumImageIdSubscription = this.album.getImageIdObserver()
+            .subscribe(message => { this.loadAlbumData(); });
         this.hover = 'out';
         this.loadAlbumData();
     }
@@ -56,7 +55,7 @@ export class AlbumComponent implements OnInit, OnDestroy {
     private loadAlbumData() {
         if (!this.album.isLoaded) {
             var imageWidth = 600;
-            this.filesService.getFileData(this.album.imageId, { format: "PNG", width: imageWidth, height: imageWidth })
+            this.filesService.getFileData(this.album.imageId, { format: "PNG", size: { width: imageWidth, height: imageWidth } })
                 .then(data => {
                     this.album.setData(data.buffer, data.metadata);
                 })

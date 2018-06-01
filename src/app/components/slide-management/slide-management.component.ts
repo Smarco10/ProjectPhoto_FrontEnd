@@ -20,19 +20,19 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
         private filesService: FilesService,
         private router: Router,
         private slideService: SlideService
-    ) {
+    ) { }
+
+    ngOnInit() {
         this.slideImageIdSubscription = this.slide.getImageIdObserver()
             .subscribe(message => { this.loadSlideData(); });
     }
-
-    ngOnInit() { }
 
     ngOnDestroy() {
         this.slideImageIdSubscription.unsubscribe();
     }
 
     private loadSlideData() {
-        this.filesService.getFileData(this.slide.imageId, { format: "PNG", width: window.innerWidth, height: window.innerHeight })
+        this.filesService.getFileData(this.slide.imageId, { format: "PNG", size: { width: window.innerWidth, height: window.innerHeight } })
             .then(data => {
                 this.slide.setData(data.buffer, data.metadata);
             })
