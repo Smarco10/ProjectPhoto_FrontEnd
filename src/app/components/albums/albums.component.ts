@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Subscription } from 'rxjs/Subscription';
+import { Router } from '@angular/router';
 
 import {
     trigger,
@@ -49,6 +50,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         private media: ObservableMedia,
+        private router: Router,
         private auth: AuthService,
         private albumsService: AlbumsService,
         private feathers: FeathersService,
@@ -128,6 +130,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private updateLogin() {
         let user = this.auth.getConnectedUser();
+        console.log(user); //pk user disparait???
         this.allowed.manageAlbum = !!user && user.isAdmin();
     }
 
@@ -154,5 +157,15 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private removeAlbum(index: number): void {
         this.albums.splice(index, 1);
+    }
+
+    private deleteAlbum(event, id: string): void {
+        event.stopPropagation();
+        alert("delete album " + id);
+    }
+
+    private childNavigation(event, rootLink): void {
+        event.stopPropagation();
+        this.router.navigate(rootLink);
     }
 }

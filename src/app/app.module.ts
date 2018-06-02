@@ -13,10 +13,12 @@ import {
     MatIconModule,
     MatInputModule,
     MAT_LABEL_GLOBAL_OPTIONS,
+    MatListModule,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSidenavModule,
+    MatRadioModule,
     MatToolbarModule
 } from '@angular/material';
 
@@ -28,6 +30,7 @@ import { MarkdownModule } from 'angular2-markdown';
 
 import {
     AlbumComponent,
+    AlbumEditionComponent,
     AlbumsComponent,
     AppComponent,
     LoginComponent,
@@ -66,8 +69,9 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         StayFullSizeDirective,
         UserManagementComponent,
         UsersManagerComponent,
-        AlbumsComponent,
-        AlbumComponent
+        AlbumComponent,
+        AlbumEditionComponent,
+        AlbumsComponent
     ],
     imports: [
         BrowserModule,
@@ -85,10 +89,12 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         MatGridListModule,
         MatIconModule,
         MatInputModule,
+        MatListModule,
         MatMenuModule,
         MatProgressSpinnerModule,
         MatSelectModule,
         MatSidenavModule,
+        MatRadioModule,
         MatToolbarModule,
         NgxCarouselModule,
         MarkdownModule

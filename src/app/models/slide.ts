@@ -55,7 +55,7 @@ export class Slide {
         );
     }
 
-    updateFromServer(serverData: any) {
+    updateFromServer(serverData: any): void {
         this.title = serverData.title;
         this.text = serverData.text;
         if (this.imageId !== serverData.image) {
@@ -66,12 +66,16 @@ export class Slide {
         //TODO: how to update style???
     }
 
-    setData(data: ArrayBuffer | string, metadata: any) {
+    setData(data: ArrayBuffer | string, metadata: any): void {
         this.data = typeof (data) === "string" ? data : b64(data);
         this.metadata = metadata;
         this.mimetype = metadata["Mime type"];
 
         this.isLoaded = true;
+    }
+
+    unsetData() {
+        this.isLoaded = false;
     }
 
     getImageIdObserver(): Observable<string> {

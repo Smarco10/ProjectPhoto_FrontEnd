@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         this.configurationService.getValidators()
             .then(validators => {
-                console.log(validators["loginData"]);
                 this.loginForm = generateFormGroup(validators["loginData"]);
             })
             .catch(err => {

@@ -73,7 +73,7 @@ export class FeathersService {
     }
 
     // expose authentication
-    public async authenticate(credentials?) {
+    public async authenticate(credentials?: any) {
         var authicated: boolean = false;
 
         try {
@@ -88,9 +88,9 @@ export class FeathersService {
 
         } catch (err) {
             authicated = false;
+            console.error("Authentication err", err);
             this._feathers.set(LocalUserPassportFieldName, undefined);
             this.logout();
-            console.error("Authentication err", err);
             if (err.code != UNAUTHORIZED) {
                 console.error(err);
             }

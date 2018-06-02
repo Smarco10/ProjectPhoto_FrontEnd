@@ -29,6 +29,10 @@ export class AlbumsService extends FeathersServiceEventListener {
         });
     }
 
+    getAlbum(id: string, options?: any): Promise<any> {
+        return this.albumsService.get(id, options);
+    }
+
     uploadAlbum(id: string, slides: string[], imageId: string, title: string): Promise<any> {
         const body = {
             slides,
@@ -36,7 +40,7 @@ export class AlbumsService extends FeathersServiceEventListener {
             title
         };
 
-        if(id){
+        if (id) {
             return this.albumsService
                 .patch(id, body);
         } else {

@@ -15,17 +15,17 @@ export class SlideService extends FeathersServiceEventListener {
         super(client.service(ServiceNames.PHOTOS));
     }
 
-    getSlides(query: any): Promise<any[]> {
+    getSlides(query?: any): Promise<any[]> {
         return this.eventService.find({
-            query: query
+            query
         });
     }
 
     uploadSlide(imageId: string, title: string, text: string): Promise<any> {
         return this.eventService.create({
             image: imageId,
-            title: title,
-            text: text
+            title,
+            text
         });
     }
 

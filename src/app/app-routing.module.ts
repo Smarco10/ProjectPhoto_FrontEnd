@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'guards';
 
 import {
+    AlbumEditionComponent,
     AlbumsComponent,
     LoginComponent,
     SlideComponent,
@@ -19,10 +20,17 @@ const routes: Routes = [
     {
         path: 'slide',
         children: [
-            { path: '', redirectTo: '/slideshow', pathMatch: 'full' },
+            { path: '', redirectTo: '/', pathMatch: 'full' },
             { path: 'view', component: SlideComponent },
             { path: 'manage', component: SlidesManagerComponent, canActivate: [AuthGuard] },
             { path: 'create', component: UploadsComponent, canActivate: [AuthGuard] }
+        ]
+    },
+    {
+        path: 'album',
+        children: [
+            { path: '', redirectTo: '/', pathMatch: 'full' },
+            { path: 'edit', component: AlbumEditionComponent, canActivate: [AuthGuard] }
         ]
     },
     { path: 'albums', component: AlbumsComponent },

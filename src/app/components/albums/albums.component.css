@@ -1,17 +1,33 @@
 mat-grid-tile {
-    background-color: #000000FF
+    background-color: #000000
 }
 
-.floating-icon {
-    color: grey;
-    z-index: 100;
+.floating {
     position: absolute;
-    top: 10px;
-    right: 10px;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.album-icons {
+    z-index: 100;
+    top: 0.5rem;
+    right: 0.5rem;
     opacity: 0;
     transform: translateX(100%);
 }
 
-.floating-icon:hover {
-    color: black;
+.body-icons {
+    z-index: 101;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+.grey-icon {
+    color: #232F34;
+}
+
+.red-icon {
+    color: white;
 }
