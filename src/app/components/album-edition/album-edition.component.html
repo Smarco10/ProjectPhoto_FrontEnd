@@ -1,4 +1,4 @@
-<div *ngIf="!!album">
+<mat-card *ngIf="!!album">
 	<h1 *ngIf="!!album.id">Edition of album {{album.id}}</h1>
 	<h1 *ngIf="!album.id">Creation of new album</h1>
 
@@ -9,7 +9,7 @@
 
 	<div>
 		<label>slides</label>
-		<mat-radio-group>
+		<mat-radio-group #frontImageRadioGroup>
 			<mat-list *ngIf="album.slides.length > 0" role="list">
 				<mat-list-item *ngFor="let slide of album.slides" role="listitem">
 					<label>{{slide}}</label>
@@ -17,9 +17,9 @@
 					<button mat-button class="clickable" color="warn" (click)="removeSlide(slide)">
 			  			<mat-icon aria-label="Remove the slide">remove_circle</mat-icon>
 			  		</button>
-
-					<mat-radio-button *ngIf="album.slides.length > 1" class="example-margin" value="{{slide}}" (change)="setImage(slide)">
-						<mat-icon aria-label="Set as front picture">photo</mat-icon>
+					<!-- TODO: select front image when editing an actual album and first image when creating new album -->
+					<mat-radio-button *ngIf="album.slides.length > 1" value="{{slide}}" (change)="setImage(slide)">
+						Set as front picture
 					</mat-radio-button>
 				</mat-list-item>
 			</mat-list>
@@ -39,7 +39,7 @@
 	</div>
 
 	<button mat-button class="clickable" color="primary" (click)="sendAlbum()">
-		<span *ngIf="!!album.id">Update this Album</span>
-		<span *ngIf="!album.id">Create new Album</span>
+		<span *ngIf="!!album.id">Update</span>
+		<span *ngIf="!album.id">Create</span>
 	</button>
-</div>
+</mat-card>

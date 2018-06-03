@@ -78,46 +78,24 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
             this.applyOnAlbum(updatedAlbum._id, this.updateAlbum, updatedAlbum);
         });
 
-        this.albumsService.onRemoved((id, context) => {
-            this.applyOnAlbum(id, this.removeAlbum);
+        this.albumsService.onRemoved((albumRemoved, context) => {
+            this.applyOnAlbum(albumRemoved._id, this.removeAlbum);
         });
     }
 
     ngOnInit() {
         this.updateLogin();
 
-        this.albumsService.getAlbums(undefined)
+        this.albumsService.getAlbums()
             .then(albums => {
-                for (var i = 0; i < albums.length; ++i) {
-                    this.albums.push(new Album(albums[i]));
+                //TODO: pourquoi je recois un .data???
+                for (var i = 0; i < albums.data.length; ++i) {
+                    this.albums.push(new Album(albums.data[i]));
                 }
             })
             .catch(err => {
                 console.log(err);
             });
-
-        //XXX: to remove
-        this.slideService.getSlides(undefined)
-            .then(slides => {
-                var albumSlides: Array<string> = new Array<string>();
-
-                for (var i = 0; i < slides.length; ++i) {
-                    albumSlides.push(slides[i]._id);
-                }
-
-                for (var i = 0; i < albumSlides.length; ++i) {
-                    this.albums.push(new Album({
-                        _id: "id",
-                        slides: albumSlides,
-                        image: slides[i].image,
-                        title: "Album " + (i + 1)
-                    }));
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
-        //XXX: end to remove
     }
 
     ngAfterViewInit() {
@@ -130,7 +108,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private updateLogin() {
         let user = this.auth.getConnectedUser();
-        console.log(user); //pk user disparait???
+        console.log("updateLogin", user); //pk user disparait???
         this.allowed.manageAlbum = !!user && user.isAdmin();
     }
 
@@ -161,7 +139,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private deleteAlbum(event, id: string): void {
         event.stopPropagation();
-        alert("delete album " + id);
+        this.albumsService.deleteAlbum(id);
     }
 
     private childNavigation(event, rootLink): void {

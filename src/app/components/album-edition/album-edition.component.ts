@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatRadioGroup } from '@angular/material';
 import { AuthService, AlbumsService, SlideService, FilesService } from 'services';
 import { Album } from '@models/album';
 import { Slide } from '@models/slide';
@@ -9,11 +10,14 @@ import { Slide } from '@models/slide';
     templateUrl: './album-edition.component.html',
     styleUrls: ['./album-edition.component.css']
 })
-export class AlbumEditionComponent implements OnInit {
+export class AlbumEditionComponent implements OnInit, AfterViewInit {
 
     private album: Album;
     private slides: Array<Slide> = new Array<Slide>();
-    private addedSlides: Array<Slide> = new Array<Slide>(); //TODO: instead of this, use an array of Slide in Album
+    private addedSlides: Array<Slide> = new Array<Slide>();
+    @ViewChild('frontImageRadioGroup', { read: MatRadioGroup })
+    frontImageRadioGroup: MatRadioGroup;
+    private getAlbumPromise: Promise<any>;
 
     constructor(
         private route: ActivatedRoute,
@@ -26,7 +30,8 @@ export class AlbumEditionComponent implements OnInit {
         const map = this.route.snapshot.paramMap
         if (map.has('id')) {
             let id = map.get('id');
-            this.albumsService.getAlbum(id)
+            this.getAlbumPromise = this.albumsService.getAlbum(id);
+            this.getAlbumPromise
                 .then(album => {
                     this.initAlbum(album);
                 })
@@ -35,6 +40,7 @@ export class AlbumEditionComponent implements OnInit {
                     this.initAlbum();
                 });
         } else {
+            this.getAlbumPromise = new Promise((resolve) => { resolve(); });
             this.initAlbum();
         }
 
@@ -49,8 +55,35 @@ export class AlbumEditionComponent implements OnInit {
             });
     }
 
+    ngAfterViewInit(): void {
+        this.getAlbumPromise
+            .then(() => {
+                var slideId: string;
+                for (var i = 0; i < this.addedSlides.length; ++i) {
+                    if (this.addedSlides[i].imageId === this.album.imageId) {
+                        slideId = this.addedSlides[i].id;
+                        break;
+                    }
+                }
+                console.log(this.frontImageRadioGroup, ".value", slideId);
+                //TODO: ne marche pas: this.frontImageRadioGroup.value = slideId;
+            });
+    }
+
     private initAlbum(serverAlbum?: any): void {
         this.album = new Album(serverAlbum || {});
+        let slideId: string;
+
+        if (!!serverAlbum) {
+            for (let i = 0; i < this.slides.length; ++i) {
+                if (this.album.slides.indexOf(this.slides[i].id) > -1) {
+                    let slides = this.slides.splice(i, 1);
+                    this.addedSlides.splice(this.addedSlides.length, 0, ...slides);
+                    i--;
+                }
+            }
+            this.loadImageData();
+        }
     }
 
     private sendAlbum(): void {
@@ -71,7 +104,7 @@ export class AlbumEditionComponent implements OnInit {
 
     private setImage(slideId: string): void {
         var imageId: string;
-        for (let slide of this.slides) {
+        for (let slide of this.addedSlides) {
             if (slide.id === slideId) {
                 imageId = slide.imageId;
                 break;
@@ -79,9 +112,27 @@ export class AlbumEditionComponent implements OnInit {
         }
 
         if (!!imageId) {
-            this.album.unsetData();
+            this.album.imageId = imageId;
+            this.loadImageData();
+        }
+    }
 
-            this.filesService.getFileData(imageId, { format: 'PNG', size: { width: 500, height: 500 } })
+    private slideIdFromImageId(imageId: string): string {
+        var slideId: string;
+        for (let slide of this.addedSlides) {
+            if (slide.imageId === imageId) {
+                slideId = slide.id;
+                break;
+            }
+        }
+        console.log("slideId: ", imageId, slideId);
+        return slideId;
+    }
+
+    private loadImageData() {
+        this.album.unsetData();
+        if (!!this.album.imageId) {
+            this.filesService.getFileData(this.album.imageId, { format: 'PNG', size: { width: 500, height: 500 } })
                 .then(data => {
                     this.album.setData(data.buffer, data.metadata);
                 })
@@ -120,7 +171,6 @@ export class AlbumEditionComponent implements OnInit {
             this.setImage(slideId);
         }
 
-        //TODO: move from this.slides to  this.addSlides
         for (let i = 0; i < this.slides.length; ++i) {
             if (this.slides[i].id === slideId) {
                 let slides = this.slides.splice(i, 1);

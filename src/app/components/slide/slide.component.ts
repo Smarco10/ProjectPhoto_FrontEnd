@@ -1,4 +1,4 @@
-import { ElementRef, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ElementRef, Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 

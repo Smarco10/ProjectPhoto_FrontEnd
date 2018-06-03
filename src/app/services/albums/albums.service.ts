@@ -23,9 +23,9 @@ export class AlbumsService extends FeathersServiceEventListener {
         this.albumsService = this.eventService;
     }
 
-    getAlbums(query: any): Promise<any[]> {
+    getAlbums(query?: any): Promise<any> {
         return this.albumsService.find({
-            query: query
+            query
         });
     }
 
@@ -33,10 +33,10 @@ export class AlbumsService extends FeathersServiceEventListener {
         return this.albumsService.get(id, options);
     }
 
-    uploadAlbum(id: string, slides: string[], imageId: string, title: string): Promise<any> {
+    uploadAlbum(id: string, slides: string[], image: string, title: string): Promise<any> {
         const body = {
             slides,
-            imageId,
+            image,
             title
         };
 

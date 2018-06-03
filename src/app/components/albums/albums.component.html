@@ -1,18 +1,20 @@
-<mat-grid-list [cols]="nbCols" rowHeight="1:1" gutterSize="16px">
+<mat-grid-list *ngIf="albums.length > 0" [cols]="nbCols" rowHeight="1:1" gutterSize="16px">
 	<mat-grid-tile *ngFor="let album of albums" (mouseenter)="album.hover='in'" (mouseleave)="album.hover='out'" [routerLink]="['/slideshow', {id: album.id}]" class="clickable">
 		<app-album [album]="album" [hover]="album.hover" class="clickable"></app-album>
 		<div fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="start stretch" class="floating album-icons" [@mouseInOut]="album.hover">
-			<button mat-mini-fab *ngIf="allowed.manageAlbum && album.isLoaded" class="clickable grey-icon" color="white" (click)="deleteAlbum($event, album.id)">
+			<button mat-mini-fab *ngIf="allowed.manageAlbum" class="clickable grey-icon" color="white" (click)="deleteAlbum($event, album.id)">
 		    	<mat-icon aria-label="Delete the album">clear</mat-icon>
 		  	</button>
-			<button mat-mini-fab *ngIf="allowed.manageAlbum && album.isLoaded" class="clickable grey-icon" color="white" (click)="childNavigation($event, ['/album/edit', {id: album.id}])">
+			<button mat-mini-fab *ngIf="allowed.manageAlbum" class="clickable grey-icon" color="white" (click)="childNavigation($event, ['/album/edit', {id: album.id}])">
 		    	<mat-icon aria-label="Edit the album">edit</mat-icon>
 		  	</button>
 		</div>
 	</mat-grid-tile>
 </mat-grid-list>
 
-<div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start stretch" class="fixed body-icons">
+<h1 *ngIf="albums.length === 0">No albums to show</h1>
+
+<div *ngIf="allowed.manageAlbum" fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="start stretch" class="fixed body-icons">
 	<button mat-fab class="clickable red-icon" color="warn" [routerLink]="['/album/edit']">
 		<mat-icon aria-label="Create an album">add</mat-icon>
 	</button>

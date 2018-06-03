@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
 
 import { FilesService, SlideService } from 'services';
@@ -42,13 +42,13 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
             this.applyOnSlide(updatedSlide._id, this.updateSlide, updatedSlide);
         });
 
-        this.slideService.onRemoved((id, context) => {
-            this.applyOnSlide(id, this.removeSlide);
+        this.slideService.onRemoved((slideRemoved, context) => {
+            this.applyOnSlide(slideRemoved._id, this.removeSlide);
         });
     }
 
     ngAfterViewInit() {
-        this.slideService.getSlides(undefined)
+        this.slideService.getSlides()
             .then(slides => {
                 for (var i = 0; i < slides.length; ++i) {
                     this.slides.push(new Slide(slides[i]));

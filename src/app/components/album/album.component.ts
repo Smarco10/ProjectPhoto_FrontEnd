@@ -55,8 +55,10 @@ export class AlbumComponent implements OnInit, OnDestroy {
     private loadAlbumData() {
         if (!this.album.isLoaded) {
             var imageWidth = 600;
+            console.log("get front image", this.album.imageId);
             this.filesService.getFileData(this.album.imageId, { format: "PNG", size: { width: imageWidth, height: imageWidth } })
                 .then(data => {
+                    console.log("front image received");
                     this.album.setData(data.buffer, data.metadata);
                 })
                 .catch(err => {
