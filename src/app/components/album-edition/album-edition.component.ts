@@ -30,15 +30,18 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         const map = this.route.snapshot.paramMap
         if (map.has('id')) {
             let id = map.get('id');
-            this.getAlbumPromise = this.albumsService.getAlbum(id);
-            this.getAlbumPromise
-                .then(album => {
-                    this.initAlbum(album);
-                })
-                .catch(err => {
-                    console.error(err);
-                    this.initAlbum();
-                });
+            this.getAlbumPromise = new Promise((resolve) => {
+                this.albumsService.getAlbum(id)
+                    .then(album => {
+                        this.initAlbum(album);
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        this.initAlbum();
+                        resolve();
+                    });
+            });
         } else {
             this.getAlbumPromise = new Promise((resolve) => { resolve(); });
             this.initAlbum();
@@ -47,7 +50,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         this.slidesService.getSlides()
             .then(slides => {
                 for (let i = 0; i < slides.length; ++i) {
-                    this.slides.splice(slides.length, 0, new Slide(slides[i]));
+                    this.slides.push(new Slide(slides[i]));
                 }
             })
             .catch(err => {
@@ -58,17 +61,21 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(): void {
         this.getAlbumPromise
             .then(() => {
-                var slideId: string;
-                for (var i = 0; i < this.addedSlides.length; ++i) {
-                    if (this.addedSlides[i].imageId === this.album.imageId) {
-                        slideId = this.addedSlides[i].id;
-                        break;
-                    }
-                }
-                console.log(this.frontImageRadioGroup, ".value", slideId);
-                //TODO: ne marche pas: this.frontImageRadioGroup.value = slideId;
+                updateFrontImageRadioButton();
             });
     }
+
+     private updateFrontImageRadioButton(): void {
+        var slideId: string;
+        for (var i = 0; i < this.addedSlides.length; ++i) {
+            if (this.addedSlides[i].imageId === this.album.imageId) {
+                slideId = this.addedSlides[i].id;
+                break;
+            }
+        }
+        console.log(this.frontImageRadioGroup, ".value", slideId);
+        //TODO: ne marche pas: this.frontImageRadioGroup.value = slideId;
+     }
 
     private initAlbum(serverAlbum?: any): void {
         this.album = new Album(serverAlbum || {});

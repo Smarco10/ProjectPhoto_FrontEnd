@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
 
-import { FilesService, SlideService } from 'services';
+import { AlbumsService, FilesService, SlideService } from 'services';
 import { Slide } from '@models/slide';
 
 @Component({
@@ -15,6 +15,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     public carouselOne: NgxCarousel;
 
     constructor(
+        private albumsService: AlbumsService,
         private filesService: FilesService,
         private slideService: SlideService
     ) { }
@@ -48,17 +49,27 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.slideService.getSlides()
-            .then(slides => {
-                for (var i = 0; i < slides.length; ++i) {
-                    this.slides.push(new Slide(slides[i]));
-                }
+        const map = this.route.snapshot.paramMap
+        if (map.has('id')) {
+            var albumId = map.get('id');
+            this.albumsService.getAlbum(albumId)
+                .then(album => {
+                    this.slideService.getSlides({_id: album.slides})
+                        .then(slides => {
+                            for (var i = 0; i < slides.length; ++i) {
+                                this.slides.push(new Slide(slides[i]));
+                            }
 
-                this.carouselLoadEvent(0);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+                            this.carouselLoadEvent(0);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 
     private loadSlideData(index: number) {

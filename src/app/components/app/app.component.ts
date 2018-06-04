@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     @ViewChild('myToolbar', { read: ElementRef })
     myToolbar: ElementRef;
 
-    private toolbarHeight = 0;
+    private toolbarHeight: number = 0;
 
     constructor(
         private auth: AuthService,
@@ -45,8 +45,12 @@ export class AppComponent implements OnInit, AfterContentChecked {
         this.updateLogin();
     }
 
-    ngAfterContentChecked(): void {
+    /*ngAfterContentChecked(): void {
         //TODO: pb, is called after each mouse moves
+        resizeSidenavDrawer();
+        }/*
+
+    private resizeSidenavDrawer(): void {
         this.toolbarHeight = this.myToolbar.nativeElement.offsetHeight;
     }
 
