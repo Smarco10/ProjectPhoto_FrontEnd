@@ -59,13 +59,17 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.getAlbumPromise
-            .then(() => {
-                updateFrontImageRadioButton();
-            });
+        if (!!this.getAlbumPromise) {
+            this.getAlbumPromise
+                .then(() => {
+                    this.updateFrontImageRadioButton();
+                });
+        } else {
+            this.updateFrontImageRadioButton();
+        }
     }
 
-     private updateFrontImageRadioButton(): void {
+    private updateFrontImageRadioButton(): void {
         var slideId: string;
         for (var i = 0; i < this.addedSlides.length; ++i) {
             if (this.addedSlides[i].imageId === this.album.imageId) {
@@ -75,7 +79,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         }
         console.log(this.frontImageRadioGroup, ".value", slideId);
         //TODO: ne marche pas: this.frontImageRadioGroup.value = slideId;
-     }
+    }
 
     private initAlbum(serverAlbum?: any): void {
         this.album = new Album(serverAlbum || {});

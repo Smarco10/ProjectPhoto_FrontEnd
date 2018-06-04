@@ -16,9 +16,7 @@ export class SlideService extends FeathersServiceEventListener {
     }
 
     getSlides(query?: any): Promise<any[]> {
-        return this.eventService.find({
-            query
-        });
+        return this.eventService.find(query);
     }
 
     uploadSlide(imageId: string, title: string, text: string): Promise<any> {

@@ -1,6 +1,4 @@
-
-
-import { Component, ElementRef, ViewChild, AfterContentChecked, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, FeathersService } from 'services';
 
@@ -9,7 +7,7 @@ import { AuthService, FeathersService } from 'services';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterContentChecked {
+export class AppComponent implements OnInit {
 
     title = 'ProjectPhoto';
     logged = false;
@@ -44,11 +42,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
     ngOnInit(): void {
         this.updateLogin();
     }
-
-    /*ngAfterContentChecked(): void {
-        //TODO: pb, is called after each mouse moves
-        resizeSidenavDrawer();
-        }/*
 
     private resizeSidenavDrawer(): void {
         this.toolbarHeight = this.myToolbar.nativeElement.offsetHeight;

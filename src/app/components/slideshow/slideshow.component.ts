@@ -1,4 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
 
 import { AlbumsService, FilesService, SlideService } from 'services';
@@ -15,6 +17,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     public carouselOne: NgxCarousel;
 
     constructor(
+        private route: ActivatedRoute,
         private albumsService: AlbumsService,
         private filesService: FilesService,
         private slideService: SlideService
@@ -54,12 +57,14 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
             var albumId = map.get('id');
             this.albumsService.getAlbum(albumId)
                 .then(album => {
-                    this.slideService.getSlides({_id: album.slides})
+                    console.log("slides requested: ", album.slides);
+                    //la requete ne fonctionne pas, elle est vide cote server
+                    this.slideService.getSlides({ _id: { $in: album.slides } }) //{ image: 'n3tDBArmMEe2tDVD' }
                         .then(slides => {
+                            console.log("slides retrieves: ", slides);
                             for (var i = 0; i < slides.length; ++i) {
                                 this.slides.push(new Slide(slides[i]));
                             }
-
                             this.carouselLoadEvent(0);
                         })
                         .catch(err => {
