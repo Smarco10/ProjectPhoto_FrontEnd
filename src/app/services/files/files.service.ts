@@ -29,4 +29,14 @@ export class FilesService {
     deleteFile(id: string): Promise<any> {
         return this.filesService.remove(id, {});
     }
+
+    static getPictureParam(format: string, width: number, height: number): any {
+        return {
+            format,
+            size: {
+                width,
+                height
+            }
+        };
+    }
 }

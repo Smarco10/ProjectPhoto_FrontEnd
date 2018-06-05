@@ -71,13 +71,9 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     }
 
     private loadSlides(slideIds?: string[]): void {
-        console.log("slides requested: ", slideIds);
-        //la requete ne fonctionne pas, elle est vide cote server
-        //TODO: Use get(forEachSlideId) instead of find
-        const query = slideIds && {query: { _id: { $in: slideIds } }}
-        this.slideService.getSlides(query)//{ image: 'n3tDBArmMEe2tDVD' }
+        const query = slideIds && { _id: { $in: slideIds } }
+        this.slideService.getSlides(query)
             .then(slides => {
-                console.log("slides retrieves: ", slides);
                 for (var i = 0; i < slides.length; ++i) {
                     this.slides.push(new Slide(slides[i]));
                 }
@@ -90,7 +86,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private loadSlideData(index: number) {
         if (index < this.slides.length && !this.slides[index].isLoaded) {
-            this.filesService.getFileData(this.slides[index].imageId, { format: "PNG", size: { width: window.innerWidth - 100, height: 500 } })
+            this.filesService.getFileData(this.slides[index].imageId, FilesService.getPictureParam('PNG', window.innerWidth - 100, 500))
                 .then(data => {
                     this.slides[index].setData(data.buffer, data.metadata);
                 })

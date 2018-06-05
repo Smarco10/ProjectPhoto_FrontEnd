@@ -5,7 +5,7 @@ enum DatashemasTypes {
     EMAIL = "email",
     STRING = "string",
     NUMBER = "number",
-    SUBSET = "subset"
+    ARRAY = "array"
 };
 
 const formBuilder: FormBuilder = new FormBuilder();
@@ -24,36 +24,37 @@ export function generateShema(shema): Array<ValidatorFn> {
     if (!!shema) {
         switch (shema.type) {
             case DatashemasTypes.EMAIL:
-                validator.splice(validator.length, 0, Validators.email);
+                validator.push(Validators.email);
                 break;
 
             case DatashemasTypes.STRING:
                 if (!!shema.pattern) {
-                    validator.splice(validator.length, 0, Validators.pattern(shema.pattern));
+                    validator.push(Validators.pattern(shema.pattern));
                 }
 
                 if (!!shema.min) {
-                    validator.splice(validator.length, 0, Validators.minLength(shema.min));
+                    validator.push(Validators.minLength(shema.min));
                 }
 
                 if (!!shema.max) {
-                    validator.splice(validator.length, 0, Validators.minLength(shema.max));
+                    validator.push(Validators.minLength(shema.max));
                 }
                 break;
 
-            case DatashemasTypes.SUBSET:
+            case DatashemasTypes.ARRAY:
                 if (!!shema.subsetOf) {
-                    validator.splice(validator.length, 0, MyValidators.subsetOf(shema.subsetOf));
+                    validator.push(MyValidators.subsetOf(shema.subsetOf));
                 }
+                //TODO: generateShema(eltShema)
                 break;
 
             case DatashemasTypes.NUMBER:
                 if (!!shema.min) {
-                    validator.splice(validator.length, 0, Validators.min(shema.min));
+                    validator.push(Validators.min(shema.min));
                 }
 
                 if (!!shema.max) {
-                    validator.splice(validator.length, 0, Validators.min(shema.max));
+                    validator.push(Validators.min(shema.max));
                 }
                 break;
 
@@ -62,7 +63,7 @@ export function generateShema(shema): Array<ValidatorFn> {
         }
 
         if (shema.required) {
-            validator.splice(validator.length, 0, Validators.required);
+            validator.push(Validators.required);
         }
     }
 

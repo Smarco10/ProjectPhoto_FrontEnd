@@ -17,8 +17,8 @@
 					<button mat-button class="clickable" color="warn" (click)="removeSlide(slide)">
 			  			<mat-icon aria-label="Remove the slide">remove_circle</mat-icon>
 			  		</button>
-					<!-- TODO: select front image when editing an actual album and first image when creating new album -->
-					<mat-radio-button *ngIf="album.slides.length > 1" value="{{slide}}" (change)="setImage(slide)">
+					<!-- *ngIf="album.slides.length > 1"  -->
+					<mat-radio-button value="{{slide}}" (change)="setImage(slide)">
 						Set as front picture
 					</mat-radio-button>
 				</mat-list-item>

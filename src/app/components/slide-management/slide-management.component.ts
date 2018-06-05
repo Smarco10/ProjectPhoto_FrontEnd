@@ -32,7 +32,7 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
     }
 
     private loadSlideData() {
-        this.filesService.getFileData(this.slide.imageId, { format: "PNG", size: { width: window.innerWidth, height: window.innerHeight } })
+        this.filesService.getFileData(this.slide.imageId, FilesService.getPictureParam('PNG', window.innerWidth, window.innerHeight))
             .then(data => {
                 this.slide.setData(data.buffer, data.metadata);
             })

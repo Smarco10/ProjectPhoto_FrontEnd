@@ -15,9 +15,12 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
     private album: Album;
     private slides: Array<Slide> = new Array<Slide>();
     private addedSlides: Array<Slide> = new Array<Slide>();
+
     @ViewChild('frontImageRadioGroup', { read: MatRadioGroup })
     frontImageRadioGroup: MatRadioGroup;
+
     private getAlbumPromise: Promise<any>;
+    private getSlidesPromise: Promise<any>;
 
     constructor(
         private route: ActivatedRoute,
@@ -43,24 +46,20 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
                     });
             });
         } else {
-            this.getAlbumPromise = new Promise((resolve) => { resolve(); });
             this.initAlbum();
         }
-
-        this.slidesService.getSlides()
-            .then(slides => {
-                for (let i = 0; i < slides.length; ++i) {
-                    this.slides.push(new Slide(slides[i]));
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
     }
 
     ngAfterViewInit(): void {
+        var promises: Array<Promise<any>> = new Array<Promise<any>>();
         if (!!this.getAlbumPromise) {
-            this.getAlbumPromise
+            promises.push(this.getAlbumPromise);
+        }
+        if (!!this.getSlidesPromise) {
+            promises.push(this.getSlidesPromise);
+        }
+        if (promises.length > 0) {
+            Promise.all(promises)
                 .then(() => {
                     this.updateFrontImageRadioButton();
                 });
@@ -70,33 +69,47 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
     }
 
     private updateFrontImageRadioButton(): void {
-        var slideId: string;
-        for (var i = 0; i < this.addedSlides.length; ++i) {
-            if (this.addedSlides[i].imageId === this.album.imageId) {
-                slideId = this.addedSlides[i].id;
-                break;
+        if (!!this.frontImageRadioGroup) {
+            var slideId: string = this.addedSlides.length > 0 ? this.addedSlides[0].id : undefined;
+            for (var i = 0; i < this.addedSlides.length; ++i) {
+                if (this.addedSlides[i].imageId === this.album.imageId) {
+                    slideId = this.addedSlides[i].id;
+                    break;
+                }
             }
+            console.log("updateFrontImageRadioButton", slideId);
+            this.frontImageRadioGroup.value = slideId;
         }
-        console.log(this.frontImageRadioGroup, ".value", slideId);
-        //TODO: ne marche pas: this.frontImageRadioGroup.value = slideId;
     }
 
-    private initAddedSlidesArray(): void {
-        for (let i = 0; i < this.slides.length; ++i) {
-            if (this.album.slides.indexOf(this.slides[i].id) > -1) {
-                let slides = this.slides.splice(i, 1);
-                this.addedSlides.push(...slides);
-                i--;
-            }
-        }
+    private initSlides(): void {
+        this.getSlidesPromise = new Promise((resolve) => {
+            this.slidesService.getSlides()
+                .then(slides => {
+                    for (let i = 0; i < slides.length; ++i) {
+                        const slide: Slide = new Slide(slides[i]);
+                        if (this.album.slides.indexOf(slide.id) > -1) {
+                            this.addedSlides.push(slide);
+                        } else {
+                            this.slides.push(slide);
+                        }
+                    }
+                    this.updateFrontImageRadioButton();
+                    resolve();
+                })
+                .catch(err => {
+                    console.error(err);
+                    resolve();
+                });
+        });
     }
 
     private initAlbum(serverAlbum?: any): void {
         this.album = new Album(serverAlbum || {});
-        let slideId: string;
+
+        this.initSlides();
 
         if (!!serverAlbum) {
-            initAddedSlidesArray();
             this.loadImageData();
         }
     }
@@ -105,21 +118,22 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         if (!!this.album) {
             this.albumsService.uploadAlbum(this.album.id, this.album.slides, this.album.imageId, this.album.title)
                 .then(album => {
-                    if (this.album.id) {
-                        this.album.updateFromServer(album);
+                    if (!!this.album.id) {
+                        alert("album updated");
                     } else {
-                        this.album = new Album(album);
+                        alert("album created");
                     }
+                    this.album.updateFromServer(album);
                 })
                 .catch(err => {
                     console.log(err);
-                    this.album = new Album(album);
+                    alert("Error " + err);
                 });
         }
     }
 
     private setImage(slideId: string): void {
-        var imageId: string;
+        var imageId: string = this.album.imageId;
         for (let slide of this.addedSlides) {
             if (slide.id === slideId) {
                 imageId = slide.imageId;
@@ -127,28 +141,16 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
             }
         }
 
-        if (!!imageId) {
-            this.album.imageId = imageId;
-            this.loadImageData();
-        }
-    }
+        this.album.imageId = imageId;
 
-    private slideIdFromImageId(imageId: string): string {
-        var slideId: string;
-        for (let slide of this.addedSlides) {
-            if (slide.imageId === imageId) {
-                slideId = slide.id;
-                break;
-            }
-        }
-        console.log("slideId: ", imageId, slideId);
-        return slideId;
+        this.loadImageData();
+        this.updateFrontImageRadioButton();
     }
 
     private loadImageData() {
         this.album.unsetData();
         if (!!this.album.imageId) {
-            this.filesService.getFileData(this.album.imageId, { format: 'PNG', size: { width: 500, height: 500 } })
+            this.filesService.getFileData(this.album.imageId, FilesService.getPictureParam('PNG', 500, 500))
                 .then(data => {
                     this.album.setData(data.buffer, data.metadata);
                 })
@@ -158,41 +160,49 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private removeSlide(slideId: string): void {
-        for (let i = 0; i < this.album.slides.length; ++i) {
-            if (this.album.slides[i] === slideId) {
-                if (this.album.imageId === this.album.imageId) {
-                    this.album.unsetData();
-                }
-                this.album.slides.splice(i, 1);
-                if (this.album.slides.length === 1) {
-                    this.setImage(this.album.slides[0]);
-                }
+    private transvaseSlide(slideId: string, fromArray: Array<Slide>, toArray: Array<Slide>): void {
+        for (let i = 0; i < fromArray.length; ++i) {
+            if (fromArray[i].id === slideId) {
+                toArray.push(...fromArray.splice(i, 1));
                 break;
             }
         }
+    }
 
-        for (let i = 0; i < this.addedSlides.length; ++i) {
-            if (this.addedSlides[i].id === slideId) {
-                let slides = this.addedSlides.splice(i, 1);
-                this.slides.splice(this.slides.length, 0, ...slides);
+    private getImageIdFromSlideId(slideId: string, array: Array<Slide>): string {
+        var imageId: string;
+        for (var i = 0; i < array.length; ++i) {
+            if (array[i].id == slideId) {
+                imageId = array[i].imageId;
+            }
+        }
+        return imageId;
+    }
+
+    private removeSlide(slideId: string): void {
+        for (let i = 0; i < this.album.slides.length; ++i) {
+            if (this.album.slides[i] === slideId) {
+                this.album.slides.splice(i, 1);
+                this.transvaseSlide(slideId, this.addedSlides, this.slides);
+
+                if (this.album.slides.length > 0 && this.album.imageId === this.getImageIdFromSlideId(slideId, this.slides)) {
+                    this.setImage(this.album.slides[0]);
+                } else {
+                    if (this.album.slides.length === 0) {
+                        this.album.unsetData();
+                    }
+                }
                 break;
             }
         }
     }
 
     private addSlide(slideId: string): void {
-        this.album.slides.splice(this.album.slides.length, 0, slideId);
+        this.album.slides.push(slideId);
+        this.transvaseSlide(slideId, this.slides, this.addedSlides);
+
         if (this.album.slides.length === 1) {
             this.setImage(slideId);
-        }
-
-        for (let i = 0; i < this.slides.length; ++i) {
-            if (this.slides[i].id === slideId) {
-                let slides = this.slides.splice(i, 1);
-                this.addedSlides.splice(this.addedSlides.length, 0, ...slides);
-                break;
-            }
         }
     }
 }
