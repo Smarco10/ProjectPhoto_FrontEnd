@@ -54,27 +54,38 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         const map = this.route.snapshot.paramMap
         if (map.has('id')) {
-            var albumId = map.get('id');
-            this.albumsService.getAlbum(albumId)
-                .then(album => {
-                    console.log("slides requested: ", album.slides);
-                    //la requete ne fonctionne pas, elle est vide cote server
-                    this.slideService.getSlides({ _id: { $in: album.slides } }) //{ image: 'n3tDBArmMEe2tDVD' }
-                        .then(slides => {
-                            console.log("slides retrieves: ", slides);
-                            for (var i = 0; i < slides.length; ++i) {
-                                this.slides.push(new Slide(slides[i]));
-                            }
-                            this.carouselLoadEvent(0);
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            this.loadAlbum(map.get('id'));
+        } else {
+            this.loadSlides(); //TODO or redirect to '/'
         }
+    }
+
+    private loadAlbum(albumId: string): void {
+        this.albumsService.getAlbum(albumId)
+            .then(album => {
+                this.loadSlides(album.slides);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    private loadSlides(slideIds?: string[]): void {
+        console.log("slides requested: ", slideIds);
+        //la requete ne fonctionne pas, elle est vide cote server
+        //TODO: Use get(forEachSlideId) instead of find
+        const query = slideIds && {query: { _id: { $in: slideIds } }}
+        this.slideService.getSlides(query)//{ image: 'n3tDBArmMEe2tDVD' }
+            .then(slides => {
+                console.log("slides retrieves: ", slides);
+                for (var i = 0; i < slides.length; ++i) {
+                    this.slides.push(new Slide(slides[i]));
+                }
+                this.carouselLoadEvent(0);
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     private loadSlideData(index: number) {

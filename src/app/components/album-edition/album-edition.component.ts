@@ -81,18 +81,22 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         //TODO: ne marche pas: this.frontImageRadioGroup.value = slideId;
     }
 
+    private initAddedSlidesArray(): void {
+        for (let i = 0; i < this.slides.length; ++i) {
+            if (this.album.slides.indexOf(this.slides[i].id) > -1) {
+                let slides = this.slides.splice(i, 1);
+                this.addedSlides.push(...slides);
+                i--;
+            }
+        }
+    }
+
     private initAlbum(serverAlbum?: any): void {
         this.album = new Album(serverAlbum || {});
         let slideId: string;
 
         if (!!serverAlbum) {
-            for (let i = 0; i < this.slides.length; ++i) {
-                if (this.album.slides.indexOf(this.slides[i].id) > -1) {
-                    let slides = this.slides.splice(i, 1);
-                    this.addedSlides.splice(this.addedSlides.length, 0, ...slides);
-                    i--;
-                }
-            }
+            initAddedSlidesArray();
             this.loadImageData();
         }
     }
@@ -109,6 +113,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
                 })
                 .catch(err => {
                     console.log(err);
+                    this.album = new Album(album);
                 });
         }
     }

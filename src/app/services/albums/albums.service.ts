@@ -17,20 +17,18 @@ export class AlbumsService extends FeathersServiceEventListener {
 
     constructor(
         private client: FeathersService,
-        private authenticationService: AuthService
     ) {
         super(client.service(ServiceNames.ALBUMS));
-        this.albumsService = this.eventService;
     }
 
     getAlbums(query?: any): Promise<any> {
-        return this.albumsService.find({
+        return this.eventService.find({
             query
         });
     }
 
     getAlbum(id: string, options?: any): Promise<any> {
-        return this.albumsService.get(id, options);
+        return this.eventService.get(id, options);
     }
 
     uploadAlbum(id: string, slides: string[], image: string, title: string): Promise<any> {
@@ -41,15 +39,15 @@ export class AlbumsService extends FeathersServiceEventListener {
         };
 
         if (id) {
-            return this.albumsService
+            return this.eventService
                 .patch(id, body);
         } else {
-            return this.albumsService
+            return this.eventService
                 .create(body);
         }
     }
 
     deleteAlbum(id: string): Promise<any> {
-        return this.albumsService.remove(id, {});
+        return this.eventService.remove(id, {});
     }
 }
