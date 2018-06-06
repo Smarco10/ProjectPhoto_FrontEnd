@@ -5,7 +5,7 @@ import { User } from '@models/user';
 
 import { FormGroup, FormControl, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
-import { generateFormGroup } from '@tools/validators'
+import { ValidatorMethods, generateFormGroup } from '@tools/validators'
 
 @Component({
     selector: 'app-user-management',
@@ -46,8 +46,8 @@ export class UserManagementComponent implements OnInit {
 
         this.configurationService.getValidators()
             .then(validators => {
-                const shemaType = this.user.isCreated() ? "userPatchData" : "userCreateData";
-                this.userForm = generateFormGroup(validators[shemaType]);
+                const shemaType = this.user.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
+                this.userForm = generateFormGroup(validators[shemaType].user);
             })
             .catch(err => {
                 console.error(err);

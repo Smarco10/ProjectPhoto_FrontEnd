@@ -1,9 +1,14 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatRadioGroup } from '@angular/material';
-import { AuthService, AlbumsService, SlideService, FilesService } from 'services';
+import { FormGroup } from '@angular/forms';
+
+import { AuthService, AlbumsService, ConfigurationService, SlideService, FilesService } from 'services';
+
 import { Album } from '@models/album';
 import { Slide } from '@models/slide';
+
+import { ValidatorMethods, generateFormGroup } from '@tools/validators'
 
 @Component({
     selector: 'app-album-edition',
@@ -12,6 +17,7 @@ import { Slide } from '@models/slide';
 })
 export class AlbumEditionComponent implements OnInit, AfterViewInit {
 
+    private albumForm: FormGroup;
     private album: Album;
     private slides: Array<Slide> = new Array<Slide>();
     private addedSlides: Array<Slide> = new Array<Slide>();
@@ -26,8 +32,18 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         private route: ActivatedRoute,
         private albumsService: AlbumsService,
         private slidesService: SlideService,
-        private filesService: FilesService
-    ) { }
+        private filesService: FilesService,
+        private configurationService: ConfigurationService
+    ) {
+        this.configurationService.getValidators()
+            .then(validators => {
+                const shemaType = this.album.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
+                this.albumForm = generateFormGroup(validators[shemaType].album);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
 
     ngOnInit(): void {
         const map = this.route.snapshot.paramMap
@@ -117,7 +133,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         if (!!this.album) {
             this.albumsService.uploadAlbum(this.album.id, this.album.slides, this.album.imageId, this.album.title)
                 .then(album => {
-                    if (!!this.album.id) {
+                    if (this.album.isCreated()) {
                         alert("album updated");
                     } else {
                         alert("album created");

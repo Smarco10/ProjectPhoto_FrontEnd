@@ -55,6 +55,10 @@ export class Slide {
         );
     }
 
+    public isCreated(): boolean {
+        return !!this.id;
+    }
+
     updateFromServer(serverData: any): void {
         this.title = serverData.title;
         this.text = serverData.text;

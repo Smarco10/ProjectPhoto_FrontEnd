@@ -1,6 +1,16 @@
 
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
+export enum ValidatorMethods {
+    ALL = "all",
+    FIND = "find",
+    GET = "get",
+    CREATE = "create",
+    UPDATE = "update",
+    PATCH = 'patch',
+    REMOVE = 'remove'
+};
+
 enum DatashemasTypes {
     EMAIL = "email",
     STRING = "string",
@@ -45,7 +55,18 @@ export function generateShema(shema): Array<ValidatorFn> {
                 if (!!shema.subsetOf) {
                     validator.push(MyValidators.subsetOf(shema.subsetOf));
                 }
-                //TODO: generateShema(eltShema)
+
+                if (!!shema.eltShema) {
+                    //TODO: validator.push(MyValidators.eltShema(generateShema(eltShema)));
+                }
+
+                if (!!shema.min) {
+                    validator.push(Validators.minLength(shema.min));
+                }
+
+                if (!!shema.max) {
+                    validator.push(Validators.minLength(shema.max));
+                }
                 break;
 
             case DatashemasTypes.NUMBER:

@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { AuthService } from "@services/auth/auth.service";
 import { ConfigurationService } from "@services/configuration/configuration.service";
 
-import { generateFormGroup } from '@tools/validators'
+import { ValidatorMethods, generateFormGroup } from '@tools/validators'
 
 @Component({
     selector: 'login',
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         this.configurationService.getValidators()
             .then(validators => {
-                this.loginForm = generateFormGroup(validators["loginData"]);
+                this.loginForm = generateFormGroup(validators[ValidatorMethods.GET].user);
             })
             .catch(err => {
                 console.error(err);
