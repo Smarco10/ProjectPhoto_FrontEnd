@@ -77,7 +77,6 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
                     break;
                 }
             }
-            console.log("updateFrontImageRadioButton", slideId);
             this.frontImageRadioGroup.value = slideId;
         }
     }

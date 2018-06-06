@@ -1,45 +1,51 @@
 <mat-card *ngIf="!!album">
-	<h1 *ngIf="!!album.id">Edition of album {{album.id}}</h1>
-	<h1 *ngIf="!album.id">Creation of new album</h1>
+    <h1 *ngIf="!albumForm">You cannot send Album</h1>
+    <form *ngIf="!!albumForm" [formGroup]="albumForm" (ngSubmit)="sendAlbum()">
+        <mat-card-header>
+            <mat-icon mat-card-avatar fxLayout="row" fxLayoutAlign="center">error_outline</mat-icon>
+            <mat-card-title *ngIf="!!album.id">Edition of album {{album.id}}</mat-card-title>
+            <mat-card-title *ngIf="!album.id">Creation of new album</mat-card-title>
+            <mat-card-subtitle>You must be logged in to access to this section</mat-card-subtitle>
+        </mat-card-header>
 
-	<div>
-		<label>title</label>
-		<input type="text" [(ngModel)]="album.title" />
-	</div>
+        <mat-form-field>
+            <input matInput formControlName="title" [(ngModel)]="album.title" placeholder="Album title">
+        </mat-form-field>
 
-	<div>
-		<label>slides</label>
-		<mat-radio-group #frontImageRadioGroup>
-			<mat-list *ngIf="album.slides.length > 0" role="list">
-				<mat-list-item *ngFor="let slide of album.slides" role="listitem">
-					<label>{{slide}}</label>
+        <div>
+            <label>slides</label>
+            <mat-radio-group #frontImageRadioGroup>
+                <mat-list *ngIf="album.slides.length > 0" role="list">
+                    <mat-list-item *ngFor="let slide of album.slides" role="listitem">
+                        <label>{{slide}}</label>
 
-					<button mat-button class="clickable" color="warn" (click)="removeSlide(slide)">
-			  			<mat-icon aria-label="Remove the slide">remove_circle</mat-icon>
-			  		</button>
-					<!-- *ngIf="album.slides.length > 1"  -->
-					<mat-radio-button value="{{slide}}" (change)="setImage(slide)">
-						Set as front picture
-					</mat-radio-button>
-				</mat-list-item>
-			</mat-list>
-		</mat-radio-group>
+                        <button mat-button class="clickable" color="warn" (click)="removeSlide(slide)">
+                            <mat-icon aria-label="Remove the slide">remove_circle</mat-icon>
+                        </button>
 
-		<mat-select *ngIf="slides.length > 0" placeholder="Select an Image">
-			<mat-option *ngFor="let slide of slides" (click)="addSlide(slide.id)">{{slide.id}}</mat-option>
-		</mat-select>
-	</div>
+                        <mat-radio-button *ngIf="album.slides.length > 1" value="{{slide}}" (change)="setImage(slide)">
+                            Set as front picture
+                        </mat-radio-button>
+                    </mat-list-item>
+                </mat-list>
+            </mat-radio-group>
 
-	<div *ngIf="album.slides.length > 0">
-		<label>Front image</label>
-		<img *ngIf="album.isLoaded" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
-		<div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
-			<mat-spinner diameter="70"></mat-spinner>
-		</div>
-	</div>
+            <mat-select *ngIf="slides.length > 0" placeholder="Select an Image">
+                <mat-option *ngFor="let slide of slides" (click)="addSlide(slide.id)">{{slide.id}}</mat-option>
+            </mat-select>
+        </div>
 
-	<button mat-button class="clickable" color="primary" (click)="sendAlbum()">
-		<span *ngIf="!!album.id">Update</span>
-		<span *ngIf="!album.id">Create</span>
-	</button>
+        <div *ngIf="album.slides.length > 0">
+            <label>Front image</label>
+            <img *ngIf="album.isLoaded" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
+            <div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
+                <mat-spinner diameter="70"></mat-spinner>
+            </div>
+        </div>
+
+        <button mat-button class="clickable block_centered" color="primary" (click)="sendAlbum()">
+            <span *ngIf="!!album.id">Update</span>
+            <span *ngIf="!album.id">Create</span>
+        </button>
+    </form>
 </mat-card>
