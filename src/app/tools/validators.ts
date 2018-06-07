@@ -21,70 +21,61 @@ enum DatashemasTypes {
 const formBuilder: FormBuilder = new FormBuilder();
 
 export class MyValidators {
-    //TODO: generify with T[]
     static subsetOf<T>(values: T[]): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } => {
-            console.log("MyValidators.subsetOf", control.value, values);
             return values.indexOf(control.value) > -1 ? { 'subsetOf': { value: control.value } } : null;
-        };
-    },
-    static eltShemas(shema: ValidatroFn[]): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
-            console.log("MyValidators.eltShemas", control.value);
-            return null;
         };
     }
 }
 
 export function generateShema(shema): Array<ValidatorFn> {
-    var validator: Array<ValidatorFn> = [];
+    var validators: Array<ValidatorFn> = [];
 
     if (!!shema) {
         switch (shema.type) {
             case DatashemasTypes.EMAIL:
-                validator.push(Validators.email);
+                validators.push(Validators.email);
                 break;
 
             case DatashemasTypes.STRING:
                 if (!!shema.pattern) {
-                    validator.push(Validators.pattern(shema.pattern));
+                    validators.push(Validators.pattern(shema.pattern));
                 }
 
                 if (!!shema.min) {
-                    validator.push(Validators.minLength(shema.min));
+                    validators.push(Validators.minLength(shema.min));
                 }
 
                 if (!!shema.max) {
-                    validator.push(Validators.minLength(shema.max));
+                    validators.push(Validators.minLength(shema.max));
                 }
                 break;
 
             case DatashemasTypes.ARRAY:
                 if (!!shema.subsetOf) {
-                    validator.push(MyValidators.subsetOf(shema.subsetOf));
+                    validators.push(MyValidators.subsetOf(shema.subsetOf));
                 }
 
                 if (!!shema.eltShema) {
-                    var subShemas: ValidatorFn[];
-                    //TODO: validator.push(MyValidators.eltShemas(shemas)));
+                    //validators.push(MyValidators.eltShemas(generateShema(shema.eltShema)));
                 }
 
                 if (!!shema.min) {
-                    validator.push(Validators.minLength(shema.min));
+                    validators.push(Validators.minLength(shema.min));
                 }
 
                 if (!!shema.max) {
-                    validator.push(Validators.minLength(shema.max));
+                    validators.push(Validators.minLength(shema.max));
                 }
                 break;
 
             case DatashemasTypes.NUMBER:
                 if (!!shema.min) {
-                    validator.push(Validators.min(shema.min));
+                    validators.push(Validators.min(shema.min));
                 }
 
                 if (!!shema.max) {
-                    validator.push(Validators.min(shema.max));
+                    validators.push(Validators.min(shema.max));
                 }
                 break;
 
@@ -93,11 +84,11 @@ export function generateShema(shema): Array<ValidatorFn> {
         }
 
         if (shema.required) {
-            validator.push(Validators.required);
+            validators.push(Validators.required);
         }
     }
 
-    return validator;
+    return validators;
 }
 
 export function generateFormGroup(validatorShemas): FormGroup {

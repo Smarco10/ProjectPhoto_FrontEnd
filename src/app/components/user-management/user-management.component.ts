@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, ViewEncapsulation } from '@angular/core';
 
-import { AuthService, FeathersService, ConfigurationService } from 'services';
+import { AuthService, FeathersService, ConfigurationService, ConfigurationTypes } from 'services';
 import { User } from '@models/user';
 
 import { FormGroup, FormControl, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
@@ -24,7 +24,7 @@ export class UserManagementComponent implements OnInit {
 
     private userForm: FormGroup;
 
-    private userPermissions: any = [];
+    private userPermissions: any = {};
 
     constructor(
         private formBuilder: FormBuilder,
@@ -36,19 +36,14 @@ export class UserManagementComponent implements OnInit {
 
         this.isConnectedUserAdmin = this.userService.getConnectedUser().isAdmin();
 
-        this.configurationService.getPermissions()
-            .then(permissions => {
-            this.userPermissions = [...permissions, "invalid]; //TODO: Test with invalid value
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        this.configurationService.getConfig()
+            .then(config => {
+                this.userPermissions = config[ConfigurationTypes.PERMISSIONS];
+                this.userPermissions["INVALID"] = "invalid"; //TODO: Test with invalid value
 
-        this.configurationService.getValidators()
-            .then(validators => {
                 const shemaType = this.user.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
-                this.userForm = generateFormGroup(validators[shemaType].user);
-                //TODO: Associate user.permissions with this.userForm.permissions validator
+                this.userForm = generateFormGroup(config[ConfigurationTypes.VALIDATORS][shemaType].user);
+
             })
             .catch(err => {
                 console.error(err);

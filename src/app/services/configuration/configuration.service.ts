@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
-
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/shareReplay';
-
-import { User } from '@models/user';
 import { FeathersService, ServiceNames } from "@services/feathers/feathers.service";
 
-enum ConfigurationTypes {
-    ALL = "all",
+export enum ConfigurationTypes {
+    ALL = "",
     PERMISSIONS = "permissions",
     VALIDATORS = "validatorShemas"
 };
@@ -25,7 +20,7 @@ export class ConfigurationService {
         this.configurationService = feathers.service(ServiceNames.CONFIGURATION);
     }
 
-    public getConfig(type: ConfigurationTypes): Promise<any> {
+    public getConfig(type?: ConfigurationTypes): Promise<any> {
         const finalType: ConfigurationTypes = !type ? ConfigurationTypes.ALL : type;
         let promiseStatic = ConfigurationService.pendingPromise[finalType];
         if (!!ConfigurationService.pendingPromise[finalType] ? ConfigurationService.pendingPromiseFinished[finalType] : true) {
