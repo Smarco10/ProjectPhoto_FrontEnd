@@ -21,9 +21,17 @@ enum DatashemasTypes {
 const formBuilder: FormBuilder = new FormBuilder();
 
 export class MyValidators {
-    static subsetOf(values: string[]): ValidatorFn {
+    //TODO: generify with T[]
+    static subsetOf<T>(values: T[]): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } => {
-            return values.indexOf(control.value) >= 0 ? { 'subsetOf': { value: control.value } } : null;
+            console.log("MyValidators.subsetOf", control.value, values);
+            return values.indexOf(control.value) > -1 ? { 'subsetOf': { value: control.value } } : null;
+        };
+    },
+    static eltShemas(shema: ValidatroFn[]): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } => {
+            console.log("MyValidators.eltShemas", control.value);
+            return null;
         };
     }
 }
@@ -57,7 +65,8 @@ export function generateShema(shema): Array<ValidatorFn> {
                 }
 
                 if (!!shema.eltShema) {
-                    //TODO: validator.push(MyValidators.eltShema(generateShema(eltShema)));
+                    var subShemas: ValidatorFn[];
+                    //TODO: validator.push(MyValidators.eltShemas(shemas)));
                 }
 
                 if (!!shema.min) {

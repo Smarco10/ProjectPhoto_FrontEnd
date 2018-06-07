@@ -38,7 +38,7 @@ export class UserManagementComponent implements OnInit {
 
         this.configurationService.getPermissions()
             .then(permissions => {
-                this.userPermissions = permissions;
+            this.userPermissions = [...permissions, "invalid]; //TODO: Test with invalid value
             })
             .catch(err => {
                 console.error(err);
@@ -48,6 +48,7 @@ export class UserManagementComponent implements OnInit {
             .then(validators => {
                 const shemaType = this.user.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
                 this.userForm = generateFormGroup(validators[shemaType].user);
+                //TODO: Associate user.permissions with this.userForm.permissions validator
             })
             .catch(err => {
                 console.error(err);
