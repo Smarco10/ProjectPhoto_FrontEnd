@@ -43,7 +43,7 @@ export class UserManagementComponent implements OnInit {
 
                 const shemaType = this.user.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
                 this.userForm = generateFormGroup(config[ConfigurationTypes.VALIDATORS][shemaType].user);
-
+                this.userForm.get("permissions").setValue(this.user.permissions);
             })
             .catch(err => {
                 console.error(err);
@@ -104,10 +104,14 @@ export class UserManagementComponent implements OnInit {
 
     private addPermission(permission: string) {
         this.user.addPermission(this.userPermissions[permission]);
+        //TODO: is it necessary?
+        this.userForm.get("permissions").setValue(this.user.permissions);
     }
 
     private removePermission(permission: string) {
         this.user.removePermission(permission);
+        //TODO: is it necessary?
+        this.userForm.get("permissions").setValue(this.user.permissions);
     }
 
     private userPermissionsKeys(): Array<string> {

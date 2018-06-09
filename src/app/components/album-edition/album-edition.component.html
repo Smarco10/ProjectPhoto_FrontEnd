@@ -30,7 +30,7 @@
 				</mat-list>
 			</mat-radio-group>
 
-			<mat-select *ngIf="slides.length > 0" placeholder="Select an Image">
+            <mat-select placeholder="{{slides.length > 0 ? 'Select an Image' : 'No image to select, please add some...'}}">
 				<mat-option *ngFor="let slide of slides" (click)="addSlide(slide.id)">{{slide.id}}</mat-option>
 			</mat-select>
 		</div>
