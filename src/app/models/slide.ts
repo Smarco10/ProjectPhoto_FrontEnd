@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
 
 function b64(e: ArrayBuffer): string {
     var t = "";
@@ -59,15 +58,19 @@ export class Slide {
         return !!this.id;
     }
 
-    updateFromServer(serverData: any): void {
-        this.title = serverData.title;
-        this.text = serverData.text;
-        if (this.imageId !== serverData.image) {
-            this.imageId = serverData.image;
-            this.isLoaded = false;
-            this.imageIdSubject.next(this.imageId);
+    updateFromServer(serverData: any): boolean {
+        const serverDataAreValid: boolean = serverData._id === this.id;
+        if (serverDataAreValid) {
+            this.title = serverData.title;
+            this.text = serverData.text;
+            if (this.imageId !== serverData.image) {
+                this.imageId = serverData.image;
+                this.isLoaded = false;
+                this.imageIdSubject.next(this.imageId);
+            }
+            //TODO: how to update style???
         }
-        //TODO: how to update style???
+        return serverDataAreValid;
     }
 
     setData(data: ArrayBuffer | string, metadata: any): void {

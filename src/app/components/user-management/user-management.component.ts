@@ -1,23 +1,26 @@
-import { Component, OnInit, AfterViewInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { FormGroup, AbstractControl, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService, FeathersService, ConfigurationService, ConfigurationTypes } from 'services';
 import { User } from '@models/user';
 
-import { FormGroup, FormControl, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 
-import { ValidatorMethods, generateFormGroup } from '@tools/validators'
+import { ValidatorMethods, generateFormGroup, validateVariable, ValidatorStatus } from '@tools/validators'
 
 @Component({
     selector: 'app-user-management',
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.css']
 })
-export class UserManagementComponent implements OnInit {
+export class UserManagementComponent implements OnInit, OnDestroy {
 
     private isConnectedUserAdmin: boolean = false;
 
     @Input() user: User;
     @Input() isAlone: boolean;
+
+    private userPermissionsSubscription: Subscription;
 
     private deleteRequest: boolean = false;
     private passwordHide: boolean = true;
@@ -39,11 +42,15 @@ export class UserManagementComponent implements OnInit {
         this.configurationService.getConfig()
             .then(config => {
                 this.userPermissions = config[ConfigurationTypes.PERMISSIONS];
-                this.userPermissions["INVALID"] = "invalid"; //TODO: Test with invalid value
 
                 const shemaType = this.user.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
                 this.userForm = generateFormGroup(config[ConfigurationTypes.VALIDATORS][shemaType].user);
-                this.userForm.get("permissions").setValue(this.user.permissions);
+
+                this.userPermissionsSubscription = this.user.getPermissionsObserver().subscribe(permissions => {
+                    validateVariable(this.userForm.get("permissions"), permissions);
+                });
+
+                validateVariable(this.userForm.get("permissions"), this.user.permissions);
             })
             .catch(err => {
                 console.error(err);
@@ -52,18 +59,14 @@ export class UserManagementComponent implements OnInit {
         this.resetView();
 
         this.userService.onUpdated((user, context) => {
-            if (user._id === this.user.id) {
-                if (!!user.password) {
-                    this.user.password = user.password;
-                }
-                if (!!user.email) {
-                    this.user.email = user.email;
-                }
-                if (!!user.permissions) {
-                    this.user.permissions = user.permissions;
-                }
-            }
+            this.user.updateFromServer(user);
         });
+    }
+
+    ngOnDestroy() {
+        if (!!this.userPermissionsSubscription) {
+            this.userPermissionsSubscription.unsubscribe();
+        }
     }
 
     public resetView(): void {
@@ -104,14 +107,10 @@ export class UserManagementComponent implements OnInit {
 
     private addPermission(permission: string) {
         this.user.addPermission(this.userPermissions[permission]);
-        //TODO: is it necessary?
-        this.userForm.get("permissions").setValue(this.user.permissions);
     }
 
     private removePermission(permission: string) {
         this.user.removePermission(permission);
-        //TODO: is it necessary?
-        this.userForm.get("permissions").setValue(this.user.permissions);
     }
 
     private userPermissionsKeys(): Array<string> {

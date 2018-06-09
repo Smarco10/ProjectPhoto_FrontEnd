@@ -1,5 +1,12 @@
 
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import {
+    AbstractControl,
+    FormBuilder,
+    FormGroup,
+    ValidationErrors,
+    ValidatorFn,
+    Validators
+} from '@angular/forms';
 
 export enum ValidatorMethods {
     ALL = "all",
@@ -18,12 +25,40 @@ enum DatashemasTypes {
     ARRAY = "array"
 };
 
+export enum ValidatorStatus {
+    VALID = "VALID",
+    INVALID = "INVALID",
+    PENDING = "PENDING",
+    DISABLED = "DISABLED"
+};
+
 const formBuilder: FormBuilder = new FormBuilder();
 
 export class MyValidators {
     static subsetOf<T>(values: T[]): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
-            return values.indexOf(control.value) > -1 ? { 'subsetOf': { value: control.value } } : null;
+        return (control: AbstractControl): ValidationErrors => {
+            var eltInError: Array<T> = new Array<T>();
+
+            for (let val of control.value) {
+                if (values.indexOf(val) < 0) {
+                    eltInError.push(val);
+                }
+            }
+
+            return eltInError.length === 0 ? null : { 'subsetOf': { value: eltInError } };
+        };
+    }
+    static eltValidators(formGroup: FormGroup): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors => {
+            var eltInError: Array<any> = new Array<any>();
+
+            for (let val of control.value) {
+                //TODO: validate val with all validators
+            }
+
+            console.log("MyValidators.eltValidators", control.value, eltInError);
+
+            return eltInError.length === 0 ? null : { 'eltValidators': { value: eltInError } };
         };
     }
 }
@@ -57,7 +92,7 @@ export function generateShema(shema): Array<ValidatorFn> {
                 }
 
                 if (!!shema.eltShema) {
-                    //validators.push(MyValidators.eltShemas(generateShema(shema.eltShema)));
+                    validators.push(MyValidators.eltValidators(generateFormGroup(shema.eltShema)));
                 }
 
                 if (!!shema.min) {
@@ -98,5 +133,13 @@ export function generateFormGroup(validatorShemas): FormGroup {
         formValidators[validatorName] = ['', generateShema(validatorShemas[validatorName])];
     }
     return formBuilder.group(formValidators);
+}
+
+export function validateVariable<T>(formControl: AbstractControl, variable: T): void {
+    formControl.setValue(variable);
+    formControl.updateValueAndValidity({
+        onlySelf: false,
+        emitEvent: true
+    });
 }
 

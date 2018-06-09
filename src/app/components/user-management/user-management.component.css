@@ -1,13 +1,16 @@
-.mat-expansion-panel-header-title, 
-.mat-expansion-panel-header-description {
-  flex-basis: 0;
+.mat-expansion-panel-header-title, .mat-expansion-panel-header-description {
+    flex-basis: 0;
 }
 
 .mat-expansion-panel-header-description {
-  justify-content: space-between;
-  align-items: center;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .permission-chip-list {
-	width: 100%;
+    width: 100%;
+}
+
+.matChipError {
+    background-color: red;
 }

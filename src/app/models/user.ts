@@ -1,33 +1,41 @@
+import { Observable, Subject } from 'rxjs';
 
 export class User {
 
     id: string;
     email: string;
-    _permissions: string[];
+    private _permissions: string[];
+    private permissionsSubject: Subject<Array<string>> = new Subject<Array<string>>();
 
-    _password?: string;
+    password?: string;
 
     constructor(id: string = undefined, email: string = undefined, permissions: string[] = []) {
         this.id = id;
         this.email = email;
-        this.permissions = permissions;
+        this._permissions = permissions;
         this.password = undefined;
+    }
+
+    updateFromServer(serverData: any): boolean {
+        const serverDataAreValid: boolean = serverData._id === this.id;
+        if (serverDataAreValid) {
+            this.email = serverData.email;
+            this._permissions = serverData.permissions;
+        }
+        return serverDataAreValid;
     }
 
     set permissions(permissions: string[]) {
         this._permissions = permissions || [];
+        this.permissionsSubject.next(this._permissions);
     }
 
     get permissions() {
         return this._permissions;
     }
 
-    set password(password: string) {
-        this._password = password;
-    }
-
-    get password() {
-        return this._password;
+    getPermissionsObserver(): Observable<Array<string>> {
+        return this.permissionsSubject.asObservable();
     }
 
     public isCreated(): boolean {
@@ -35,7 +43,7 @@ export class User {
     }
 
     public hasPermission(permission: string): boolean {
-        return this.permissions.indexOf(permission.toLowerCase()) >= 0;
+        return this._permissions.indexOf(permission.toLowerCase()) >= 0;
     }
 
     public isAdmin(): boolean {
@@ -43,23 +51,35 @@ export class User {
     }
 
     public addPermission(permission: string): boolean {
-        let previousLenght = this.permissions.length;
+        let previousLenght = this._permissions.length;
 
-        if (this.permissions.indexOf(permission) < 0) {
-            this.permissions.push(permission);
+        if (this._permissions.indexOf(permission) < 0) {
+            this._permissions.push(permission);
         }
 
-        return previousLenght < this.permissions.length;
+        const succeed: boolean = previousLenght < this._permissions.length;
+
+        if (succeed) {
+            this.permissionsSubject.next(this._permissions);
+        }
+
+        return succeed;
     }
 
     public removePermission(permission: string): boolean {
-        let previousLenght = this.permissions.length;
+        let previousLenght = this._permissions.length;
 
-        let index = this.permissions.indexOf(permission);
+        let index = this._permissions.indexOf(permission);
         if (index >= 0) {
-            this.permissions.splice(index, 1);
+            this._permissions.splice(index, 1);
         }
 
-        return previousLenght > this.permissions.length;
+        const succeed: boolean = previousLenght > this._permissions.length;
+
+        if (succeed) {
+            this.permissionsSubject.next(this._permissions);
+        }
+
+        return succeed;
     }
 }

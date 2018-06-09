@@ -1,26 +1,28 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatRadioGroup } from '@angular/material';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 
 import { AuthService, AlbumsService, ConfigurationService, SlideService, FilesService } from 'services';
 
 import { Album } from '@models/album';
 import { Slide } from '@models/slide';
 
-import { ValidatorMethods, generateFormGroup } from '@tools/validators'
+import { ValidatorMethods, generateFormGroup, validateVariable } from '@tools/validators'
 
 @Component({
     selector: 'app-album-edition',
     templateUrl: './album-edition.component.html',
     styleUrls: ['./album-edition.component.css']
 })
-export class AlbumEditionComponent implements OnInit, AfterViewInit {
+export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private albumForm: FormGroup;
     private album: Album;
     private slides: Array<Slide> = new Array<Slide>();
     private addedSlides: Array<Slide> = new Array<Slide>();
+    private albumSlidesSubscription: Subscription;
 
     @ViewChild('frontImageRadioGroup', { read: MatRadioGroup })
     frontImageRadioGroup: MatRadioGroup;
@@ -34,16 +36,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         private slidesService: SlideService,
         private filesService: FilesService,
         private configurationService: ConfigurationService
-    ) {
-        this.configurationService.getValidators()
-            .then(validators => {
-                const shemaType = this.album.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
-                this.albumForm = generateFormGroup(validators[shemaType].album);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }
+    ) { }
 
     ngOnInit(): void {
         const map = this.route.snapshot.paramMap
@@ -84,6 +77,12 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
         }
     }
 
+    ngOnDestroy() {
+        if (!!this.albumSlidesSubscription) {
+            this.albumSlidesSubscription.unsubscribe();
+        }
+    }
+
     private updateFrontImageRadioButton(): void {
         if (!!this.frontImageRadioGroup) {
             var slideId: string = this.addedSlides.length > 0 ? this.addedSlides[0].id : undefined;
@@ -117,10 +116,29 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
                     resolve();
                 });
         });
+
+        this.slides.push(new Slide({
+            _id: "INVALID"
+        })); //XXX: only for test
     }
 
     private initAlbum(serverAlbum?: any): void {
         this.album = new Album(serverAlbum || {});
+
+        this.configurationService.getValidators()
+            .then(validators => {
+                const shemaType = this.album.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
+                this.albumForm = generateFormGroup(validators[shemaType].album);
+
+                this.albumSlidesSubscription = this.album.getSlidesObserver().subscribe(slides => {
+                    validateVariable(this.albumForm.get("slides"), slides);
+                });
+
+                validateVariable(this.albumForm.get("slides"), this.album.slides);
+            })
+            .catch(err => {
+                console.error(err);
+            });
 
         this.initSlides();
 
@@ -195,29 +213,26 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit {
     }
 
     private removeSlide(slideId: string): void {
-        for (let i = 0; i < this.album.slides.length; ++i) {
-            if (this.album.slides[i] === slideId) {
-                this.album.slides.splice(i, 1);
-                this.transvaseSlide(slideId, this.addedSlides, this.slides);
+        if (this.album.removeSlides(slideId)) {
+            this.transvaseSlide(slideId, this.addedSlides, this.slides);
 
-                if (this.album.slides.length > 0 && this.album.imageId === this.getImageIdFromSlideId(slideId, this.slides)) {
-                    this.setImage(this.album.slides[0]);
-                } else {
-                    if (this.album.slides.length === 0) {
-                        this.album.unsetData();
-                    }
+            if (this.album.slides.length > 0 && this.album.imageId === this.getImageIdFromSlideId(slideId, this.slides)) {
+                this.setImage(this.album.slides[0]);
+            } else {
+                if (this.album.slides.length === 0) {
+                    this.album.unsetData();
                 }
-                break;
             }
         }
     }
 
     private addSlide(slideId: string): void {
-        this.album.slides.push(slideId);
-        this.transvaseSlide(slideId, this.slides, this.addedSlides);
+        if (this.album.addSlides(slideId)) {
+            this.transvaseSlide(slideId, this.slides, this.addedSlides);
 
-        if (this.album.slides.length === 1) {
-            this.setImage(slideId);
+            if (this.album.slides.length === 1) {
+                this.setImage(slideId);
+            }
         }
     }
 }

@@ -16,7 +16,7 @@
 			<label>slides</label>
 			<mat-radio-group #frontImageRadioGroup>
 				<mat-list *ngIf="album.slides.length > 0" role="list">
-					<mat-list-item *ngFor="let slide of album.slides" role="listitem">
+					<mat-list-item *ngFor="let slide of album.slides" role="listitem" [ngClass]="{'matListError': albumForm.get('slides').hasError('eltValidators') && userForm.get('slides').getError('eltValidators').value.indexOf(slide) > -1}">
 						<label>{{slide}}</label>
 
 						<button mat-button class="clickable" color="warn" (click)="removeSlide(slide)">
@@ -30,7 +30,7 @@
 				</mat-list>
 			</mat-radio-group>
 
-            <mat-select placeholder="{{slides.length > 0 ? 'Select an Image' : 'No image to select, please add some...'}}">
+			<mat-select placeholder="{{slides.length > 0 ? 'Select an Image' : 'No slide to select, please add some...'}}">
 				<mat-option *ngFor="let slide of slides" (click)="addSlide(slide.id)">{{slide.id}}</mat-option>
 			</mat-select>
 		</div>

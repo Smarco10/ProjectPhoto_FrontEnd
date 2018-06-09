@@ -3,7 +3,8 @@
 		<mat-panel-title>{{user.isCreated() ? (!!user.email ? user.email : user.id) : "Create user"}}</mat-panel-title>
 		<mat-panel-description>
 			<mat-chip-list #chipList>
-				<mat-chip *ngFor="let permission of user.permissions" [selectable]="false" [removable]="isConnectedUserAdmin" (remove)="removePermission(permission)">
+				<!--  -->
+				<mat-chip *ngFor="let permission of user.permissions" [selectable]="false" [removable]="isConnectedUserAdmin" (remove)="removePermission(permission)" [ngClass]="{'matChipError': userForm.get('permissions').hasError('subsetOf') && userForm.get('permissions').getError('subsetOf').value.indexOf(permission) > -1}">
 					{{permission}}
 					<mat-icon *ngIf="isConnectedUserAdmin" matChipRemove>cancel</mat-icon>
 				</mat-chip>
