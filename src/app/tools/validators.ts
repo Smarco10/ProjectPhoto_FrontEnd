@@ -1,7 +1,9 @@
 
 import {
     AbstractControl,
+    FormArray,
     FormBuilder,
+    FormControl,
     FormGroup,
     ValidationErrors,
     ValidatorFn,
@@ -34,6 +36,35 @@ export enum ValidatorStatus {
 
 const formBuilder: FormBuilder = new FormBuilder();
 
+class MyFormGroup extends FormGroup {
+
+    private control: AbstractControl;
+
+    private static assign(controls: string[], control: AbstractControl): {
+        [key: string]: AbstractControl;
+    } {
+        var obj: {
+            [key: string]: AbstractControl;
+        } = {};
+
+        for (var key of controls) {
+            obj[key] = control;
+        }
+
+        return obj;
+    }
+
+    constructor(controls: string[], control: AbstractControl, validatorOrOpts?: ValidatorFn | ValidatorFn[] | null) {
+        super(MyFormGroup.assign(controls, control), validatorOrOpts, null); //TODO: AsyncValidatorFn
+        this.control = control;
+    }
+
+    addControl(name: string): void {
+        //use control: AbstractControl from global control
+        super.addControl(name, this.control);
+    }
+}
+
 export class MyValidators {
     static subsetOf<T>(values: T[]): ValidatorFn {
         return (control: AbstractControl): ValidationErrors => {
@@ -63,13 +94,22 @@ export class MyValidators {
     }
 }
 
-export function generateShema(shema): Array<ValidatorFn> {
-    var validators: Array<ValidatorFn> = [];
+export function generateShema(shema): AbstractControl {
+    var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
+    var control: AbstractControl;
+
+    if (!!shema.subsetOf) {
+        validators.push(MyValidators.subsetOf(shema.subsetOf));
+    }
+
+    if (shema.required) {
+        validators.push(Validators.required);
+    }
 
     if (!!shema) {
         switch (shema.type) {
             case DatashemasTypes.EMAIL:
-                validators.push(Validators.email);
+                control = new FormControl('', Validators.email);
                 break;
 
             case DatashemasTypes.STRING:
@@ -84,16 +124,12 @@ export function generateShema(shema): Array<ValidatorFn> {
                 if (!!shema.max) {
                     validators.push(Validators.minLength(shema.max));
                 }
+
+                control = new FormControl('', validators);
                 break;
 
             case DatashemasTypes.ARRAY:
-                if (!!shema.subsetOf) {
-                    validators.push(MyValidators.subsetOf(shema.subsetOf));
-                }
-
-                if (!!shema.eltShema) {
-                    validators.push(MyValidators.eltValidators(generateFormGroup(shema.eltShema)));
-                }
+                var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
 
                 if (!!shema.min) {
                     validators.push(Validators.minLength(shema.min));
@@ -102,9 +138,18 @@ export function generateShema(shema): Array<ValidatorFn> {
                 if (!!shema.max) {
                     validators.push(Validators.minLength(shema.max));
                 }
+
+                if (!!shema.eltShema) {
+                    control = new MyFormGroup(validators, generateShema(shema.eltShema));
+                } else {
+                    control = new FormControl('', validators);
+                }
+
                 break;
 
             case DatashemasTypes.NUMBER:
+                var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
+
                 if (!!shema.min) {
                     validators.push(Validators.min(shema.min));
                 }
@@ -112,18 +157,17 @@ export function generateShema(shema): Array<ValidatorFn> {
                 if (!!shema.max) {
                     validators.push(Validators.min(shema.max));
                 }
+
+                control = new FormControl('', validators);
                 break;
 
             default:
+                control = new FormControl('');
                 break;
-        }
-
-        if (shema.required) {
-            validators.push(Validators.required);
         }
     }
 
-    return validators;
+    return control;
 }
 
 export function generateFormGroup(validatorShemas): FormGroup {
