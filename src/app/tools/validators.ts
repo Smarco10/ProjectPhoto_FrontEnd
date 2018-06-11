@@ -36,11 +36,11 @@ export enum ValidatorStatus {
 
 const formBuilder: FormBuilder = new FormBuilder();
 
-class MyFormGroup extends FormGroup {
+class UniqueRulesFormGroup extends FormGroup {
 
     private control: AbstractControl;
 
-    private static assign(controls: string[], control: AbstractControl): {
+    private static assign(validators: ValidatorFn | ValidatorFn[], ...controls: string[]): {
         [key: string]: AbstractControl;
     } {
         var obj: {
@@ -48,20 +48,19 @@ class MyFormGroup extends FormGroup {
         } = {};
 
         for (var key of controls) {
-            obj[key] = control;
+            obj[key] = new FormControl(validators);
         }
 
         return obj;
     }
 
-    constructor(controls: string[], control: AbstractControl, validatorOrOpts?: ValidatorFn | ValidatorFn[] | null) {
-        super(MyFormGroup.assign(controls, control), validatorOrOpts, null); //TODO: AsyncValidatorFn
-        this.control = control;
+    constructor(validatorOrOpts: ValidatorFn | ValidatorFn[], ...controls?: string[]) {
+        super(MyFormGroup.assign(validatorOrOpts, controls), null, null); //TODO: AsyncValidatorFn
+        this.validators = validatorOrOpts;
     }
 
     addControl(name: string): void {
-        //use control: AbstractControl from global control
-        super.addControl(name, this.control);
+        super.addControl(name, new FormControl(this.validators));
     }
 }
 
@@ -79,40 +78,23 @@ export class MyValidators {
             return eltInError.length === 0 ? null : { 'subsetOf': { value: eltInError } };
         };
     }
-    static eltValidators(formGroup: FormGroup): ValidatorFn {
-        return (control: AbstractControl): ValidationErrors => {
-            var eltInError: Array<any> = new Array<any>();
-
-            for (let val of control.value) {
-                //TODO: validate val with all validators
-            }
-
-            console.log("MyValidators.eltValidators", control.value, eltInError);
-
-            return eltInError.length === 0 ? null : { 'eltValidators': { value: eltInError } };
-        };
-    }
 }
 
-export function generateShema(shema): AbstractControl {
+export function generateShema(shema): ValidatorFn[] {
     var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
-    var control: AbstractControl;
-
-    if (!!shema.subsetOf) {
-        validators.push(MyValidators.subsetOf(shema.subsetOf));
-    }
-
-    if (shema.required) {
-        validators.push(Validators.required);
-    }
 
     if (!!shema) {
+        if (!!shema.subsetOf) {
+            validators.push(MyValidators.subsetOf(shema.subsetOf));
+        }
+
         switch (shema.type) {
             case DatashemasTypes.EMAIL:
-                control = new FormControl('', Validators.email);
+                validators.push(Validators.email);
                 break;
 
             case DatashemasTypes.STRING:
+
                 if (!!shema.pattern) {
                     validators.push(Validators.pattern(shema.pattern));
                 }
@@ -125,11 +107,9 @@ export function generateShema(shema): AbstractControl {
                     validators.push(Validators.minLength(shema.max));
                 }
 
-                control = new FormControl('', validators);
                 break;
 
             case DatashemasTypes.ARRAY:
-                var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
 
                 if (!!shema.min) {
                     validators.push(Validators.minLength(shema.min));
@@ -139,16 +119,9 @@ export function generateShema(shema): AbstractControl {
                     validators.push(Validators.minLength(shema.max));
                 }
 
-                if (!!shema.eltShema) {
-                    control = new MyFormGroup(validators, generateShema(shema.eltShema));
-                } else {
-                    control = new FormControl('', validators);
-                }
-
                 break;
 
             case DatashemasTypes.NUMBER:
-                var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
 
                 if (!!shema.min) {
                     validators.push(Validators.min(shema.min));
@@ -158,13 +131,28 @@ export function generateShema(shema): AbstractControl {
                     validators.push(Validators.min(shema.max));
                 }
 
-                control = new FormControl('', validators);
                 break;
 
             default:
-                control = new FormControl('');
                 break;
         }
+
+        if (shema.required) {
+            validators.push(Validators.required);
+        }
+    }
+
+    return validators;
+}
+
+export function generateControl(shema: any): AbstractControl {
+    var control: AbstractControl;
+    var validators: validators: ValidatorFn | ValidatorFn[] = generateShema(shema);
+
+    if (!!shema.eltShema) {
+        control = new UniqueRulesFormGroup(validators, generateShema(shema.eltShema));
+    } else {
+        control = new FormControl('', validators);
     }
 
     return control;
@@ -173,8 +161,8 @@ export function generateShema(shema): AbstractControl {
 export function generateFormGroup(validatorShemas): FormGroup {
     var formValidators = {};
     for (let validatorName of Object.keys(validatorShemas)) {
-        //TODO: recuperer la default value
-        formValidators[validatorName] = ['', generateShema(validatorShemas[validatorName])];
+        let shema = validatorShemas[validatorName];
+        formValidators[validatorName] = generateControl(shema);
     }
     return formBuilder.group(formValidators);
 }
