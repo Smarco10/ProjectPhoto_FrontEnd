@@ -2,7 +2,6 @@
 import {
     AbstractControl,
     FormArray,
-    FormBuilder,
     FormControl,
     FormGroup,
     ValidationErrors,
@@ -34,11 +33,9 @@ export enum ValidatorStatus {
     DISABLED = "DISABLED"
 };
 
-const formBuilder: FormBuilder = new FormBuilder();
+export class UniqueRulesFormGroup extends FormGroup {
 
-class UniqueRulesFormGroup extends FormGroup {
-
-    private control: AbstractControl;
+    private validators: ValidatorFn | ValidatorFn[];
 
     private static assign(validators: ValidatorFn | ValidatorFn[], ...controls: string[]): {
         [key: string]: AbstractControl;
@@ -48,19 +45,19 @@ class UniqueRulesFormGroup extends FormGroup {
         } = {};
 
         for (var key of controls) {
-            obj[key] = new FormControl(validators);
+            obj[key] = new FormControl('', validators);
         }
 
         return obj;
     }
 
-    constructor(validatorOrOpts: ValidatorFn | ValidatorFn[], ...controls?: string[]) {
-        super(MyFormGroup.assign(validatorOrOpts, controls), null, null); //TODO: AsyncValidatorFn
+    constructor(validatorOrOpts: ValidatorFn | ValidatorFn[], ...controls: string[]) {
+        super(UniqueRulesFormGroup.assign(validatorOrOpts, ...controls), null, null); //TODO: AsyncValidatorFn
         this.validators = validatorOrOpts;
     }
 
     addControl(name: string): void {
-        super.addControl(name, new FormControl(this.validators));
+        super.addControl(name, new FormControl('', this.validators));
     }
 }
 
@@ -80,7 +77,7 @@ export class MyValidators {
     }
 }
 
-export function generateShema(shema): ValidatorFn[] {
+export function generateShema(shema: any): ValidatorFn[] {
     var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
 
     if (!!shema) {
@@ -147,24 +144,25 @@ export function generateShema(shema): ValidatorFn[] {
 
 export function generateControl(shema: any): AbstractControl {
     var control: AbstractControl;
-    var validators: validators: ValidatorFn | ValidatorFn[] = generateShema(shema);
 
     if (!!shema.eltShema) {
-        control = new UniqueRulesFormGroup(validators, generateShema(shema.eltShema));
+        //TODO: use generateShema(shema)
+        control = new UniqueRulesFormGroup(generateShema(shema.eltShema));
     } else {
-        control = new FormControl('', validators);
+        control = new FormControl('', generateShema(shema));
     }
 
     return control;
 }
 
-export function generateFormGroup(validatorShemas): FormGroup {
-    var formValidators = {};
+export function generateFormGroup(validatorShemas: any): FormGroup {
+    var formValidators: { [key: string]: AbstractControl } = {};
+
     for (let validatorName of Object.keys(validatorShemas)) {
-        let shema = validatorShemas[validatorName];
-        formValidators[validatorName] = generateControl(shema);
+        formValidators[validatorName] = generateControl(validatorShemas[validatorName]);
     }
-    return formBuilder.group(formValidators);
+
+    return new FormGroup(formValidators);
 }
 
 export function validateVariable<T>(formControl: AbstractControl, variable: T): void {

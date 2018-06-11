@@ -9,7 +9,7 @@ import { AuthService, AlbumsService, ConfigurationService, SlideService, FilesSe
 import { Album } from '@models/album';
 import { Slide } from '@models/slide';
 
-import { ValidatorMethods, generateFormGroup, validateVariable } from '@tools/validators'
+import { ValidatorMethods, generateFormGroup, validateVariable, UniqueRulesFormGroup } from '@tools/validators'
 
 @Component({
     selector: 'app-album-edition',
@@ -29,6 +29,8 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private getAlbumPromise: Promise<any>;
     private getSlidesPromise: Promise<any>;
+
+    private uniqueRulesFormGroup: UniqueRulesFormGroup;
 
     constructor(
         private route: ActivatedRoute,
@@ -130,11 +132,17 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
                 const shemaType = this.album.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
                 this.albumForm = generateFormGroup(validators[shemaType].album);
 
-                this.albumSlidesSubscription = this.album.getSlidesObserver().subscribe(slides => {
+                this.uniqueRulesFormGroup = <UniqueRulesFormGroup>this.albumForm.get("slides");
+
+                for (let slide of this.album.slides) {
+                    this.uniqueRulesFormGroup.addControl(slide);
+                }
+
+                /*this.albumSlidesSubscription = this.album.getSlidesObserver().subscribe(slides => {
                     validateVariable(this.albumForm.get("slides"), slides);
                 });
 
-                validateVariable(this.albumForm.get("slides"), this.album.slides);
+                validateVariable(this.albumForm.get("slides"), this.album.slides);*/
             })
             .catch(err => {
                 console.error(err);
@@ -228,6 +236,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private addSlide(slideId: string): void {
         if (this.album.addSlides(slideId)) {
+            this.uniqueRulesFormGroup.addControl(slideId);
             this.transvaseSlide(slideId, this.slides, this.addedSlides);
 
             if (this.album.slides.length === 1) {
