@@ -125,17 +125,25 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private initAlbum(serverAlbum?: any): void {
-        this.album = new Album(serverAlbum || {});
+        var tmpAlbum = new Album(serverAlbum || {});
 
         this.configurationService.getValidators()
             .then(validators => {
-                const shemaType = this.album.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
+                const shemaType = tmpAlbum.isCreated() ? ValidatorMethods.PATCH : ValidatorMethods.CREATE;
                 this.albumForm = generateFormGroup(validators[shemaType].album);
 
                 this.uniqueRulesFormGroup = <UniqueRulesFormGroup>this.albumForm.get("slides");
 
-                for (let slide of this.album.slides) {
+                for (let slide of tmpAlbum.slides) {
                     this.uniqueRulesFormGroup.addControl(slide);
+                }
+
+                this.album = tmpAlbum;
+
+                this.initSlides();
+
+                if (!!serverAlbum) {
+                    this.loadImageData();
                 }
 
                 /*this.albumSlidesSubscription = this.album.getSlidesObserver().subscribe(slides => {
@@ -147,12 +155,6 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
             .catch(err => {
                 console.error(err);
             });
-
-        this.initSlides();
-
-        if (!!serverAlbum) {
-            this.loadImageData();
-        }
     }
 
     private sendAlbum(): void {
@@ -222,6 +224,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private removeSlide(slideId: string): void {
         if (this.album.removeSlides(slideId)) {
+            this.uniqueRulesFormGroup.removeControl(slideId);
             this.transvaseSlide(slideId, this.addedSlides, this.slides);
 
             if (this.album.slides.length > 0 && this.album.imageId === this.getImageIdFromSlideId(slideId, this.slides)) {
@@ -235,8 +238,8 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private addSlide(slideId: string): void {
+        this.uniqueRulesFormGroup.addControl(slideId);
         if (this.album.addSlides(slideId)) {
-            this.uniqueRulesFormGroup.addControl(slideId);
             this.transvaseSlide(slideId, this.slides, this.addedSlides);
 
             if (this.album.slides.length === 1) {
