@@ -1,41 +1,45 @@
 <mat-card *ngIf="!!album">
 	<h1 *ngIf="!albumForm">You cannot send Album</h1>
-	<form *ngIf="!!albumForm" [formGroup]="albumForm" (ngSubmit)="sendAlbum()">
+	<form *ngIf="!!albumForm" [formGroup]="albumForm">
 		<mat-card-header>
-			<mat-icon mat-card-avatar>photo_album</mat-icon>
-			<mat-card-title>Album {{album.isCreated() ? album.title : "Unknown"}}</mat-card-title>
-			<mat-card-subtitle *ngIf="!album.isCreated()">Create new album</mat-card-subtitle>
-			<mat-card-subtitle *ngIf="album.isCreated()">Update album</mat-card-subtitle>
-		</mat-card-header>
+			<mat-icon mat-card-avatar fxLayout="column" fxLayoutAlign="center center">photo_album</mat-icon>
+			<mat-card-title>
+				<button mat-button *ngIf="!editAlbumName" class="clickable" (click)="editAlbumName=true">
+					{{album.isCreated() ? album.title : "Unknown"}}
+					<mat-icon aria-label="Edit album name">edit</mat-icon>
+				</button>
 
-		<mat-form-field>
-			<input matInput formControlName="title" [(ngModel)]="album.title" placeholder="Album title">
-		</mat-form-field>
+				<mat-form-field *ngIf="editAlbumName">
+					<input matInput formControlName="title" [(ngModel)]="album.title" placeholder="Album title" (blur)="editAlbumName=false">
+				</mat-form-field>
+			</mat-card-title>
+			<mat-card-subtitle>{{album.isCreated() ? "Update" : "Create new"}} album</mat-card-subtitle>
+		</mat-card-header>
 
 		<div>
 			<label>slides</label>
 			<mat-radio-group #frontImageRadioGroup>
-				<mat-list *ngIf="album.slides.length > 0" role="list">
-					<mat-list-item *ngFor="let slide of album.slides" role="listitem" [ngClass]="{'matListError': albumForm.get('slides').hasError('eltValidators') && userForm.get('slides').getError('eltValidators').value.indexOf(slide) > -1}">
-						<label formControlName="{{slide}}">{{slide}}</label>
+				<mat-list *ngIf="!!uniqueRulesFormGroup && addedSlides.length > 0" role="list">
+					<mat-list-item *ngFor="let slide of addedSlides" role="listitem" [ngClass]="{'matListError': !uniqueRulesFormGroup.controls[slide.id].valid}">
 
-						<button mat-button class="clickable" color="warn" (click)="removeSlide(slide)">
+						<button mat-button class="clickable" color="warn" (click)="removeSlide(slide.id)">
                             <mat-icon aria-label="Remove the slide">remove_circle</mat-icon>
                         </button>
 
-						<mat-radio-button *ngIf="album.slides.length > 1" value="{{slide}}" (change)="setImage(slide)">
-							Set as front picture
-						</mat-radio-button>
+						<mat-radio-button *ngIf="addedSlides.length > 1" [disabled]="!uniqueRulesFormGroup.controls[slide.id].valid" value="{{slide}}" (change)="setImage(slide)"></mat-radio-button>
+
+						<label>{{slide.title}}</label>
+
 					</mat-list-item>
 				</mat-list>
 			</mat-radio-group>
 
 			<mat-select placeholder="{{slides.length > 0 ? 'Select an Image' : 'No slide to select, please add some...'}}">
-				<mat-option *ngFor="let slide of slides" (click)="addSlide(slide.id)">{{slide.id}}</mat-option>
+				<mat-option *ngFor="let slide of slides" (click)="addSlide(slide.id)">{{slide.title}}</mat-option>
 			</mat-select>
 		</div>
 
-		<div *ngIf="album.slides.length > 0">
+		<div *ngIf="addedSlides.length > 0">
 			<label>Front image</label>
 			<img *ngIf="album.isLoaded" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
 			<div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
@@ -43,9 +47,23 @@
 			</div>
 		</div>
 
-		<button mat-button class="clickable block_centered" color="primary" (click)="sendAlbum()">
-            <span *ngIf="album.isCreated()">Update</span>
-            <span *ngIf="!album.isCreated()">Create</span>
-        </button>
+		<div *ngIf="!showDeleteConfimation" fxLayout="row" fxLayoutAlign="center center" class="buttonGroup">
+			<button mat-button class="clickable" color="primary" (click)="sendAlbum()">
+	            {{album.isCreated() ? "Update" : "Create" }}
+			</button>
+			<button mat-button *ngIf="album.isCreated()" class="clickable" color="warn" (click)="showDeleteConfimation=true">
+	            Delete
+			</button>
+		</div>
+
+		<div *ngIf="showDeleteConfimation && album.isCreated()" fxLayout="row" fxLayoutAlign="center center" class="buttonGroup">
+			Delete Album ?
+			<button mat-button class="clickable" color="warn" (click)="deleteAlbum()">
+				Yes
+			</button>
+			<button mat-button class="clickable" color="primary" (click)="showDeleteConfimation=false">
+	            No
+			</button>
+		</div>
 	</form>
 </mat-card>

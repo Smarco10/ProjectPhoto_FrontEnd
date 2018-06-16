@@ -24,6 +24,9 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     private addedSlides: Array<Slide> = new Array<Slide>();
     private albumSlidesSubscription: Subscription;
 
+    private editAlbumName: boolean = false;
+    private showDeleteConfimation: boolean = false;
+
     @ViewChild('frontImageRadioGroup', { read: MatRadioGroup })
     frontImageRadioGroup: MatRadioGroup;
 
@@ -41,6 +44,9 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        this.editAlbumName = false;
+        this.showDeleteConfimation = false;
+
         const map = this.route.snapshot.paramMap
         if (map.has('id')) {
             let id = map.get('id');
@@ -102,6 +108,12 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getSlidesPromise = new Promise((resolve) => {
             this.slidesService.getSlides()
                 .then(slides => {
+
+                    slides.push({
+                        _id: "NO_ID",
+                        title: "INVALID"
+                    });
+
                     for (let i = 0; i < slides.length; ++i) {
                         const slide: Slide = new Slide(slides[i]);
                         if (this.album.slides.indexOf(slide.id) > -1) {
@@ -110,6 +122,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
                             this.slides.push(slide);
                         }
                     }
+
                     this.updateFrontImageRadioButton();
                     resolve();
                 })
@@ -118,10 +131,6 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
                     resolve();
                 });
         });
-
-        this.slides.push(new Slide({
-            _id: "INVALID"
-        })); //XXX: only for test
     }
 
     private initAlbum(serverAlbum?: any): void {
@@ -136,6 +145,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 for (let slide of tmpAlbum.slides) {
                     this.uniqueRulesFormGroup.addControl(slide);
+                    validateVariable(this.uniqueRulesFormGroup.get(slide), slide);
                 }
 
                 this.album = tmpAlbum;
@@ -145,12 +155,6 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (!!serverAlbum) {
                     this.loadImageData();
                 }
-
-                /*this.albumSlidesSubscription = this.album.getSlidesObserver().subscribe(slides => {
-                    validateVariable(this.albumForm.get("slides"), slides);
-                });
-
-                validateVariable(this.albumForm.get("slides"), this.album.slides);*/
             })
             .catch(err => {
                 console.error(err);
@@ -158,20 +162,22 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private sendAlbum(): void {
-        if (!!this.album) {
+        if (!!this.album && this.albumForm.valid) {
             this.albumsService.uploadAlbum(this.album.id, this.album.slides, this.album.imageId, this.album.title)
                 .then(album => {
-                    if (this.album.isCreated()) {
-                        alert("album updated");
-                    } else {
-                        alert("album created");
-                    }
+                    alert("Album \"" + album.title + "\" " + (this.album.isCreated() ? "updated" : "created"));
                     this.album.updateFromServer(album);
                 })
                 .catch(err => {
                     console.log(err);
                     alert("Error " + err);
                 });
+        }
+    }
+
+    private deleteAlbum(): void {
+        if (this.album.isCreated()) {
+            this.albumsService.deleteAlbum(this.album.id);
         }
     }
 
@@ -239,10 +245,11 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private addSlide(slideId: string): void {
         this.uniqueRulesFormGroup.addControl(slideId);
+        validateVariable(this.uniqueRulesFormGroup.get(slideId), slideId);
+
         if (this.album.addSlides(slideId)) {
             this.transvaseSlide(slideId, this.slides, this.addedSlides);
-
-            if (this.album.slides.length === 1) {
+            if (this.album.slides.length === 1 && this.uniqueRulesFormGroup.get(slideId).valid) {
                 this.setImage(slideId);
             }
         }

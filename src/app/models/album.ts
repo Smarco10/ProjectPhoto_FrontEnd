@@ -52,7 +52,6 @@ export class Album extends Slide {
 
     public removeSlides(...slides: string[]): boolean {
         let previousLenght = this._slides.length;
-
         for (let slide of slides) {
             let index = this._slides.indexOf(slide);
             if (index >= 0) {

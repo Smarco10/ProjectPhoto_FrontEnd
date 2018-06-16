@@ -1,3 +1,7 @@
 .matListError {
     background-color: red;
 }
+
+.buttonGroup {
+    padding: 8px;
+}
