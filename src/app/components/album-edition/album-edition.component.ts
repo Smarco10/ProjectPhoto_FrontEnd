@@ -22,13 +22,13 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     private album: Album;
     private slides: Array<Slide> = new Array<Slide>();
     private addedSlides: Array<Slide> = new Array<Slide>();
-    private albumSlidesSubscription: Subscription;
+    private slideImageIdSubscription: Subscription;
 
     private editAlbumName: boolean = false;
     private showDeleteConfimation: boolean = false;
 
     @ViewChild('frontImageRadioGroup', { read: MatRadioGroup })
-    frontImageRadioGroup: MatRadioGroup;
+    private frontImageRadioGroup: MatRadioGroup;
 
     private getAlbumPromise: Promise<any>;
     private getSlidesPromise: Promise<any>;
@@ -85,21 +85,23 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    ngOnDestroy() {
-        if (!!this.albumSlidesSubscription) {
-            this.albumSlidesSubscription.unsubscribe();
+    ngOnDestroy(): void {
+        if (!!this.slideImageIdSubscription) {
+            this.slideImageIdSubscription.unsubscribe();
         }
     }
 
     private updateFrontImageRadioButton(): void {
         if (!!this.frontImageRadioGroup) {
             var slideId: string = this.addedSlides.length > 0 ? this.addedSlides[0].id : undefined;
+
             for (var i = 0; i < this.addedSlides.length; ++i) {
                 if (this.addedSlides[i].imageId === this.album.imageId) {
                     slideId = this.addedSlides[i].id;
                     break;
                 }
             }
+
             this.frontImageRadioGroup.value = slideId;
         }
     }
@@ -108,11 +110,6 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getSlidesPromise = new Promise((resolve) => {
             this.slidesService.getSlides()
                 .then(slides => {
-
-                    slides.push({
-                        _id: "NO_ID",
-                        title: "INVALID"
-                    });
 
                     for (let i = 0; i < slides.length; ++i) {
                         const slide: Slide = new Slide(slides[i]);
@@ -150,6 +147,12 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 this.album = tmpAlbum;
 
+                this.slideImageIdSubscription = this.album.getImageIdObserver()
+                    .subscribe(imageId => {
+                        validateVariable(this.albumForm.get("image"), imageId);
+                    });
+                validateVariable(this.albumForm.get("image"), this.album.imageId);
+
                 this.initSlides();
 
                 if (!!serverAlbum) {
@@ -169,9 +172,11 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.album.updateFromServer(album);
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.error(err);
                     alert("Error " + err);
                 });
+        } else {
+            console.error("sendAlbum", this.albumForm);
         }
     }
 
@@ -183,6 +188,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private setImage(slideId: string): void {
         var imageId: string = this.album.imageId;
+
         for (let slide of this.addedSlides) {
             if (slide.id === slideId) {
                 imageId = slide.imageId;
@@ -196,7 +202,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateFrontImageRadioButton();
     }
 
-    private loadImageData() {
+    private loadImageData(): void {
         this.album.unsetData();
         if (!!this.album.imageId) {
             this.filesService.getFileData(this.album.imageId, FilesService.getPictureParam('PNG', 500, 500))

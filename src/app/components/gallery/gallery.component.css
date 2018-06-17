@@ -1,0 +1,17 @@
+#wrapper {
+    width: 100%;
+}
+
+.centered {
+    margin: auto;
+}
+
+#previousIcon {
+    color: black;
+    background-color: white;
+}
+
+#nextIcon {
+    color: black;
+    background-color: white;
+}

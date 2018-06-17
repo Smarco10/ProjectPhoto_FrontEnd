@@ -13,12 +13,14 @@ function b64(e: ArrayBuffer): string {
 export class Slide {
 
     id: string;
-    isLoaded: Boolean = false;
+    isLoaded: boolean = false;
+    isHidden: boolean = false;
 
-    imageId: string;
     mimetype: string;
     data: string;
     metadata: any;
+
+    private _imageId: string;
     private imageIdSubject: Subject<string> = new Subject<string>();
 
     title: string;
@@ -66,7 +68,6 @@ export class Slide {
             if (this.imageId !== serverData.image) {
                 this.imageId = serverData.image;
                 this.isLoaded = false;
-                this.imageIdSubject.next(this.imageId);
             }
             //TODO: how to update style???
         }
@@ -83,6 +84,17 @@ export class Slide {
 
     unsetData() {
         this.isLoaded = false;
+    }
+
+    get imageId(): string {
+        return this._imageId;
+    }
+
+    set imageId(imageId: string) {
+        if (this._imageId !== imageId) {
+            this._imageId = imageId;
+            this.imageIdSubject.next(this.imageId);
+        }
     }
 
     getImageIdObserver(): Observable<string> {

@@ -38,7 +38,7 @@ import { MediaScreenSize } from '@tools/common';
 export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private mediaWatcher: Subscription;
-    private activeMediaQuery = "";
+    private searchExpended: boolean = false;
 
     @Input() nbCols: number = 4;
 
@@ -84,6 +84,8 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.searchExpended = false;
+
         this.updateLogin();
 
         this.albumsService.getAlbums()
@@ -145,5 +147,11 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
     private childNavigation(event, rootLink): void {
         event.stopPropagation();
         this.router.navigate(rootLink);
+    }
+
+    private search(input: string): void {
+        for (let album of this.albums) {
+            album.isHidden = (album.title.indexOf(input) === -1);
+        }
     }
 }

@@ -5,11 +5,11 @@ import { Album } from '@models/album'
 import { AlbumsService, FilesService, SlideService } from 'services'
 
 @Component({
-    selector: 'app-uploads',
-    templateUrl: './uploads.component.html',
-    styleUrls: ['./uploads.component.css']
+    selector: 'app-slide-edition',
+    templateUrl: './slide-edition.component.html',
+    styleUrls: ['./slide-edition.component.css']
 })
-export class UploadsComponent implements OnInit {
+export class SlideEditionComponent implements OnInit {
 
     mkTextUp: string = "";
 

@@ -1,0 +1,17 @@
+<div fxLayout="row" fxLayoutAlign="center stretch">
+	<div flexAlign="start stretch" class="centered">
+		<button *ngIf="hasPreviousElt()" mat-fab class="clickable" id="previousIcon" (click)="previousElt()">
+			<mat-icon aria-label="Previous Element">navigate_before</mat-icon>
+		</button>
+	</div>
+
+	<div fxFlex="100">
+		<ng-content></ng-content>
+	</div>
+
+	<div flexAlign="end stretch" class="centered">
+		<button *ngIf="hasNextElt()" mat-fab class="clickable" id="nextIcon" (click)="nextElt()">
+			<mat-icon aria-label="Next Element">navigate_next</mat-icon>
+		</button>
+	</div>
+</div>

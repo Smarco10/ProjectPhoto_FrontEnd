@@ -33,11 +33,12 @@ import {
     AlbumEditionComponent,
     AlbumsComponent,
     AppComponent,
+    GalleryComponent,
     LoginComponent,
-    UploadsComponent,
-    SlideshowComponent,
+    SlideEditionComponent,
     SlideComponent,
     SlideManagementComponent,
+    SlideshowComponent,
     SlidesManagerComponent,
     UserManagementComponent,
     UsersManagerComponent
@@ -64,14 +65,15 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         SlideComponent,
         SlideManagementComponent,
         LoginComponent,
-        UploadsComponent,
+        SlideEditionComponent,
         SlidesManagerComponent,
         StayFullSizeDirective,
         UserManagementComponent,
         UsersManagerComponent,
         AlbumComponent,
         AlbumEditionComponent,
-        AlbumsComponent
+        AlbumsComponent,
+        GalleryComponent
     ],
     imports: [
         BrowserModule,

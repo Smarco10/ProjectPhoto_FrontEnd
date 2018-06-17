@@ -6,11 +6,12 @@ import { AuthGuard } from 'guards';
 import {
     AlbumEditionComponent,
     AlbumsComponent,
+    GalleryComponent,
     LoginComponent,
     SlideComponent,
     SlideshowComponent,
     SlidesManagerComponent,
-    UploadsComponent,
+    SlideEditionComponent,
     UsersManagerComponent
 } from 'components';
 
@@ -23,7 +24,7 @@ const routes: Routes = [
             { path: '', redirectTo: '/', pathMatch: 'full' },
             { path: 'view', component: SlideComponent },
             { path: 'manage', component: SlidesManagerComponent, canActivate: [AuthGuard] },
-            { path: 'create', component: UploadsComponent, canActivate: [AuthGuard] }
+            { path: 'create', component: SlideEditionComponent, canActivate: [AuthGuard] }
         ]
     },
     {

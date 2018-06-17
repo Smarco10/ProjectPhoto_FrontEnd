@@ -48,6 +48,10 @@
 			<mat-icon>view_carousel</mat-icon>
 			<span>Open Slideshow</span>
 		</button>
+		<button mat-menu-item color="primary" (click)="drawer.close()" [routerLink]="['/gallery']">
+			<mat-icon>view_carousel</mat-icon>
+			<span>Open Gallery</span>
+		</button>
 		<button mat-menu-item color="primary" (click)="drawer.close()" *ngIf="logged && allowed.manageSlides" [routerLink]="['/slide/manage']">
 		  <mat-icon>add_to_photos</mat-icon>
 		  <span>Slide Management</span>

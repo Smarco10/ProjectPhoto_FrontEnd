@@ -5,7 +5,7 @@
 			<mat-icon mat-card-avatar fxLayout="column" fxLayoutAlign="center center">photo_album</mat-icon>
 			<mat-card-title>
 				<button mat-button *ngIf="!editAlbumName" class="clickable" (click)="editAlbumName=true">
-					{{album.isCreated() ? album.title : "Unknown"}}
+					{{(!!album.title && album.title != "") ? album.title : "Unknown"}}
 					<mat-icon aria-label="Edit album name">edit</mat-icon>
 				</button>
 
@@ -22,13 +22,15 @@
 				<mat-list *ngIf="!!uniqueRulesFormGroup && addedSlides.length > 0" role="list">
 					<mat-list-item *ngFor="let slide of addedSlides" role="listitem" [ngClass]="{'matListError': !uniqueRulesFormGroup.controls[slide.id].valid}">
 
-						<button mat-button class="clickable" color="warn" (click)="removeSlide(slide.id)">
+						<button mat-button class="clickable" color="{{uniqueRulesFormGroup.controls[slide.id].valid ? 'warn' : 'black'}}" (click)="removeSlide(slide.id)">
                             <mat-icon aria-label="Remove the slide">remove_circle</mat-icon>
                         </button>
 
-						<mat-radio-button *ngIf="addedSlides.length > 1" [disabled]="!uniqueRulesFormGroup.controls[slide.id].valid" value="{{slide}}" (change)="setImage(slide)"></mat-radio-button>
+						<mat-radio-button *ngIf="addedSlides.length > 1" [disabled]="!uniqueRulesFormGroup.controls[slide.id].valid" value="{{slide.id}}" (change)="setImage(slide.id)">
+							{{slide.title}}
+						</mat-radio-button>
 
-						<label>{{slide.title}}</label>
+						<span *ngIf="addedSlides.length === 1">{{slide.title}}</span>
 
 					</mat-list-item>
 				</mat-list>
