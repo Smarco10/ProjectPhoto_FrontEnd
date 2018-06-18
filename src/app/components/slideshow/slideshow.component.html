@@ -8,5 +8,7 @@
 </ngx-carousel-->
 
 <app-gallery>
-	<app-slide *ngFor='let slide of slides' [slide]="slide" [layout]="'carousel'"></app-slide>
+	<app-gallery-elt *ngFor='let slide of slides'>
+		<app-slide [slide]="slide" [layout]="'carousel'"></app-slide>
+	</app-gallery-elt>
 </app-gallery>

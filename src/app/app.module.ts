@@ -34,6 +34,7 @@ import {
     AlbumsComponent,
     AppComponent,
     GalleryComponent,
+    GalleryElt,
     LoginComponent,
     SlideEditionComponent,
     SlideComponent,
@@ -73,7 +74,8 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         AlbumComponent,
         AlbumEditionComponent,
         AlbumsComponent,
-        GalleryComponent
+        GalleryComponent,
+        GalleryElt
     ],
     imports: [
         BrowserModule,

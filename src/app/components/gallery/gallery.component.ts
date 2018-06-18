@@ -1,4 +1,4 @@
-import { Component, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit, ContentChildren, QueryList } from '@angular/core';
 
 @Component({
     selector: 'app-gallery-elt',
@@ -6,7 +6,7 @@ import { Component, AfterContentInit } from '@angular/core';
 })
 export class GalleryElt {
     isHidden: boolean = true;
-    constructor(){}
+    constructor() { }
 }
 
 @Component({
@@ -16,36 +16,44 @@ export class GalleryElt {
 })
 export class GalleryComponent implements AfterContentInit {
 
-@ContentChildren(GalleryElt)
-galleryElts: QueryList<GalleryElt>;
-    index: number = 0;
+    @ContentChildren(GalleryElt)
+    galleryElts: QueryList<GalleryElt>;
+
+    private index: number = 0;
 
     constructor() { }
 
     ngAfterContentInit() {
-        console.log(galleryElts);
-        //show first elt if possible
+        console.log("GalleryComponent", this.galleryElts);
+        this.index = 0;
+        if (this.galleryElts.length > this.index) {
+            this.galleryElts[this.index].isHidden = false;
+        }
     }
 
     private hasPreviousElt(): boolean {
-    return this.index > 0;
-    }
-
-    private previousElt(): void {
-    if(hasPreviousElt()){
-    this.index--;
-    //TODO change visible elt and send externel event onPrevious
-    }
+        return this.index > 0;
     }
 
     private hasNextElt(): boolean {
-    return this.index < galleryElts.length;
+        return this.index < this.galleryElts.length;
+    }
+
+    private previousElt(): void {
+        if (this.hasPreviousElt()) {
+            this.galleryElts[this.index].isHidden = true;
+            this.index--;
+            this.galleryElts[this.index].isHidden = false;
+            //TODO send externel event onPrevious
+        }
     }
 
     private nextElt(): void {
-    if(hasNextElt()) {
-    this.index++;
-    //TODO change visible elt and send externel event onNext
-    }
+        if (this.hasNextElt()) {
+            this.galleryElts[this.index].isHidden = false;
+            this.index++;
+            this.galleryElts[this.index].isHidden = true;
+            //TODO send externel event onNext
+        }
     }
 }
