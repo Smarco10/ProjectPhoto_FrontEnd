@@ -26,9 +26,11 @@ export class GalleryComponent implements AfterContentInit {
     ngAfterContentInit() {
         console.log("GalleryComponent", this.galleryElts);
         this.index = 0;
-        if (this.galleryElts.length > this.index) {
-            this.galleryElts[this.index].isHidden = false;
-        }
+        this.galleryElts.changes.subscribe(() => {
+            if (this.galleryElts.length > this.index && this.galleryElts[this.index].isHidden) {
+                this.galleryElts.toArray()[this.index].isHidden = false;
+            }
+        });
     }
 
     private hasPreviousElt(): boolean {
