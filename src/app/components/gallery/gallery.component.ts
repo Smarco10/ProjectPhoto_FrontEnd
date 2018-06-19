@@ -1,4 +1,6 @@
-import { Component, AfterContentInit, ContentChildren, QueryList } from '@angular/core';
+import { Component, AfterContentInit, OnDestroy, ContentChildren, QueryList } from '@angular/core';
+
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'app-gallery-elt',
@@ -14,10 +16,11 @@ export class GalleryElt {
     templateUrl: './gallery.component.html',
     styleUrls: ['./gallery.component.css']
 })
-export class GalleryComponent implements AfterContentInit {
+export class GalleryComponent implements AfterContentInit, OnDestroy {
 
     @ContentChildren(GalleryElt)
     galleryElts: QueryList<GalleryElt>;
+    private galleryEltsSubscription: Subscription;
 
     private index: number = 0;
 
@@ -26,11 +29,21 @@ export class GalleryComponent implements AfterContentInit {
     ngAfterContentInit() {
         console.log("GalleryComponent", this.galleryElts);
         this.index = 0;
-        this.galleryElts.changes.subscribe(() => {
-            if (this.galleryElts.length > this.index && this.galleryElts[this.index].isHidden) {
-                this.galleryElts.toArray()[this.index].isHidden = false;
-            }
+        this.galleryEltsSubscription = this.galleryElts.changes.subscribe(() => {
+            this.setElementVisibility(true);
         });
+    }
+
+    ngOnDestroy(): void {
+        if (!!this.galleryEltsSubscription) {
+            this.galleryEltsSubscription.unsubscribe();
+        }
+    }
+
+    private setElementVisibility(isVisible: boolean) {
+        if (this.index < this.galleryElts.length && this.galleryElts[this.index].isHidden == isVisible) {
+            this.galleryElts.toArray()[this.index].isHidden = !isVisible;
+        }
     }
 
     private hasPreviousElt(): boolean {
@@ -43,18 +56,18 @@ export class GalleryComponent implements AfterContentInit {
 
     private previousElt(): void {
         if (this.hasPreviousElt()) {
-            this.galleryElts[this.index].isHidden = true;
+            this.setElementVisibility(false);
             this.index--;
-            this.galleryElts[this.index].isHidden = false;
+            this.setElementVisibility(true);
             //TODO send externel event onPrevious
         }
     }
 
     private nextElt(): void {
         if (this.hasNextElt()) {
-            this.galleryElts[this.index].isHidden = false;
+            this.setElementVisibility(false);
             this.index++;
-            this.galleryElts[this.index].isHidden = true;
+            this.setElementVisibility(true);
             //TODO send externel event onNext
         }
     }
