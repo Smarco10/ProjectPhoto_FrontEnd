@@ -2,11 +2,32 @@ import { Component, AfterContentInit, OnDestroy, ContentChildren, QueryList } fr
 
 import { Subscription } from 'rxjs/Subscription';
 
+//TODO: a deplacer dans une classe à part
+class Guid {
+    private static setOfGuids: new Array<string>();
+
+    private static genGuid(): string {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
+
+    static newGuid(): string {
+        let guid: string = genGuid();
+        while(setOfGuids.indexOf(guid) >= 0) {
+            guid = genGuid();
+        }
+        return guid;
+    }
+}
+
 @Component({
     selector: 'app-gallery-elt',
     template: '<ng-content *ngIf="!isHidden"></ng-content>',
 })
 export class GalleryElt {
+    id: string = Guid.newGuid();
     isHidden: boolean = true;
     constructor() { }
 }
@@ -23,6 +44,7 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     private galleryEltsSubscription: Subscription;
 
     private index: number = 0;
+    private currentVisibleElt: GalleryElt;
 
     constructor() { }
 
@@ -30,6 +52,9 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
         console.log("GalleryComponent", this.galleryElts);
         this.index = 0;
         this.galleryEltsSubscription = this.galleryElts.changes.subscribe(() => {
+            if(!this.currentVisibleElt) {
+                this.currentVisibleElt = this.galleryElts.first;
+            }
             this.setElementVisibility(true);
         });
     }
@@ -41,8 +66,9 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     }
 
     private setElementVisibility(isVisible: boolean) {
-        if (this.index < this.galleryElts.length && this.galleryElts[this.index].isHidden == isVisible) {
-            this.galleryElts.toArray()[this.index].isHidden = !isVisible;
+        let elts = this.galleryElts.toArray();
+        if (this.index < this.galleryElts.length && elts[this.index].isHidden == isVisible) {
+            elts[this.index].isHidden = !isVisible;
         }
     }
 
