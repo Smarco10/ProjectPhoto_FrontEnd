@@ -1,30 +1,34 @@
 import { Component, AfterContentInit, OnDestroy, ContentChildren, QueryList } from '@angular/core';
 
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
+
 import { Subscription } from 'rxjs/Subscription';
 
-//TODO: a deplacer dans une classe à part
-class Guid {
-    private static setOfGuids: new Array<string>();
-
-    private static genGuid(): string {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-        });
-    }
-
-    static newGuid(): string {
-        let guid: string = genGuid();
-        while(setOfGuids.indexOf(guid) >= 0) {
-            guid = genGuid();
-        }
-        return guid;
-    }
-}
+import { Guid } from '@models/guid'
 
 @Component({
     selector: 'app-gallery-elt',
-    template: '<ng-content *ngIf="!isHidden"></ng-content>',
+    template: '<ng-content *ngIf="!isHidden"></ng-content>', //TODO: ngIf provoque une erreur
+    animations: [
+        trigger('visibilityState', [
+            state('in', style({
+                opacity: 1,
+                transform: 'translateX(0)'
+            })),
+            state('out', style({
+                opacity: 0,
+                transform: 'translateX(100%)'
+            })),
+            transition('in => out', animate('100ms ease-out')),
+            transition('out => in', animate('100ms ease-in'))
+        ])
+    ]
 })
 export class GalleryElt {
     id: string = Guid.newGuid();
@@ -42,19 +46,17 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     @ContentChildren(GalleryElt)
     galleryElts: QueryList<GalleryElt>;
     private galleryEltsSubscription: Subscription;
-
-    private index: number = 0;
     private currentVisibleElt: GalleryElt;
+
+    private hasNextElement: boolean = false;
+    private hasPreviousElement: boolean = false;
 
     constructor() { }
 
     ngAfterContentInit() {
-        console.log("GalleryComponent", this.galleryElts);
-        this.index = 0;
+        this.setElementVisibility(true);
+
         this.galleryEltsSubscription = this.galleryElts.changes.subscribe(() => {
-            if(!this.currentVisibleElt) {
-                this.currentVisibleElt = this.galleryElts.first;
-            }
             this.setElementVisibility(true);
         });
     }
@@ -65,36 +67,60 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
         }
     }
 
-    private setElementVisibility(isVisible: boolean) {
-        let elts = this.galleryElts.toArray();
-        if (this.index < this.galleryElts.length && elts[this.index].isHidden == isVisible) {
-            elts[this.index].isHidden = !isVisible;
+    private setElementVisibility(isVisible: boolean): void {
+        if (!!this.galleryElts && this.galleryElts.length > 0 && !this.currentVisibleElt) {
+            this.currentVisibleElt = this.galleryElts.first;
         }
+
+        if (!!this.currentVisibleElt && this.currentVisibleElt.isHidden == isVisible) {
+            this.currentVisibleElt.isHidden = !isVisible;
+        }
+
+        this.updateButtonVisibility();
     }
 
-    private hasPreviousElt(): boolean {
-        return this.index > 0;
+    private getIndexOfCurrentElt(): number {
+        let index: number = -1;
+        if (!!this.currentVisibleElt) {
+            let arr: Array<GalleryElt> = this.galleryElts.toArray();
+            let tmpIndex: number = 0;
+            for (let elt of arr) {
+                if (elt.id === this.currentVisibleElt.id) {
+                    index = tmpIndex;
+                    break;
+                }
+                tmpIndex++;
+            };
+        }
+        return index;
     }
 
-    private hasNextElt(): boolean {
-        return this.index < this.galleryElts.length;
+    private offsetCurrentElement(by: number): boolean {
+        let index = this.getIndexOfCurrentElt();
+        if ((index + by > -1) && (index + by < (this.galleryElts.length - 1))) {
+            this.setElementVisibility(false);
+            this.currentVisibleElt = this.galleryElts.toArray()[index + by];
+            this.setElementVisibility(true);
+            return true;
+        }
+        return false;
+    }
+
+    private updateButtonVisibility(): void {
+        let index = this.getIndexOfCurrentElt();
+        this.hasPreviousElement = (index > 0);
+        this.hasNextElement = (index > -1) && (index < (this.galleryElts.length - 1));
     }
 
     private previousElt(): void {
-        if (this.hasPreviousElt()) {
-            this.setElementVisibility(false);
-            this.index--;
-            this.setElementVisibility(true);
+        if (this.offsetCurrentElement(-1)) {
             //TODO send externel event onPrevious
         }
     }
 
     private nextElt(): void {
-        if (this.hasNextElt()) {
-            this.setElementVisibility(false);
-            this.index++;
-            this.setElementVisibility(true);
-            //TODO send externel event onNext
+        if (this.offsetCurrentElement(+1)) {
+            //TODO send externel event onPrevious
         }
     }
 }

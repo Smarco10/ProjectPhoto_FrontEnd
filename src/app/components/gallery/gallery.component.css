@@ -9,9 +9,11 @@
 #previousIcon {
     color: black;
     background-color: white;
+    z-index: 201;
 }
 
 #nextIcon {
     color: black;
     background-color: white;
+    z-index: 200;
 }
