@@ -6,7 +6,6 @@ import { AuthGuard } from 'guards';
 import {
     AlbumEditionComponent,
     AlbumsComponent,
-    GalleryComponent,
     LoginComponent,
     SlideComponent,
     SlideshowComponent,
