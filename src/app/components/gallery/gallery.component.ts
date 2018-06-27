@@ -1,4 +1,12 @@
-import { Component, AfterContentInit, OnDestroy, ContentChildren, QueryList } from '@angular/core';
+import {
+    Component,
+    AfterContentInit,
+    OnDestroy,
+    ContentChildren,
+    QueryList,
+    Output,
+    EventEmitter
+} from '@angular/core';
 
 import {
     trigger,
@@ -51,6 +59,8 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     private hasNextElement: boolean = false;
     private hasPreviousElement: boolean = false;
 
+    @Output() onload: EventEmitter<any> = new EventEmitter();
+
     constructor() { }
 
     ngAfterContentInit() {
@@ -95,15 +105,14 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
         return index;
     }
 
-    private offsetCurrentElement(by: number): boolean {
+    private offsetCurrentElement(by: number): void {
         let index = this.getIndexOfCurrentElt();
-        if ((index + by > -1) && (index + by < (this.galleryElts.length - 1))) {
+        if ((index + by > -1) && (index + by < this.galleryElts.length)) {
             this.setElementVisibility(false);
             this.currentVisibleElt = this.galleryElts.toArray()[index + by];
             this.setElementVisibility(true);
-            return true;
+            this.onload.emit(index + by);
         }
-        return false;
     }
 
     private updateButtonVisibility(): void {
@@ -113,14 +122,10 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     }
 
     private previousElt(): void {
-        if (this.offsetCurrentElement(-1)) {
-            //TODO send externel event onPrevious
-        }
+        this.offsetCurrentElement(-1);
     }
 
     private nextElt(): void {
-        if (this.offsetCurrentElement(+1)) {
-            //TODO send externel event onPrevious
-        }
+        this.offsetCurrentElement(+1);
     }
 }
