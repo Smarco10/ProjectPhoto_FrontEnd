@@ -150,8 +150,9 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private search(input: string): void {
+        let searchInput = input.trim().toLowerCase();
         for (let album of this.albums) {
-            album.isHidden = (album.title.indexOf(input) === -1);
+            album.isHidden = (album.title.trim().toLowerCase().indexOf(searchInput) === -1);
         }
     }
 }

@@ -1,13 +1,4 @@
-<!-- https://www.npmjs.com/package/ngx-carousel -->
-<!--ngx-carousel #someInput [inputs]="carouselOne" (carouselLoad)="carouselLoadEvent($event)" (onMove)="onMoveEvent($event)">
-	<ngx-item NgxCarouselItem class="bannerStyle" *ngFor='let slide of slides'>
-		<app-slide [slide]="slide" [layout]="'carousel'"></app-slide>
-	</ngx-item>
-	<button NgxCarouselPrev class='leftRs'>&lt;</button>
-	<button NgxCarouselNext class='rightRs'>&gt;</button>
-</ngx-carousel-->
-
-<app-gallery>
+<app-gallery (onload)="galleryLoadEvent($event)">
 	<app-gallery-elt *ngFor='let slide of slides'>
 		<app-slide [slide]="slide" [layout]="'carousel'"></app-slide>
 	</app-gallery-elt>

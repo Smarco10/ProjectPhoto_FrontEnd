@@ -16,16 +16,16 @@
 
 <h1 *ngIf="albums.length === 0">No albums to show</h1>
 
-<div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center center" class="fixed body-icons">
-	<button *ngIf="allowed.manageAlbum" mat-mini-fab class="clickable white-icon" color="warn" [routerLink]="['/album/edit']">
-		<mat-icon aria-label="Create an album">add</mat-icon>
-	</button>
-	<button *ngIf="!searchExpended" mat-fab class="clickable white-icon" color="primary" (click)="searchExpended=true">
-		<mat-icon aria-label="Search album">search</mat-icon>
-	</button>
-	<mat-card *ngIf="searchExpended" class="mat-primary">
-		<mat-form-field floatLabel="never">
-			<input matInput placeholder="Search..." (input)="search($event.target.value)" (blur)="searchExpended=false" autofocus autocomplete="off" />
+<div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center end" class="fixed body-icons">
+	<div *ngIf="allowed.manageAlbum" fxLayout="row" fxLayoutAlign="center end" style="width: 56px;">
+		<button mat-mini-fab class="clickable white-icon" color="warn" [routerLink]="['/album/edit']">
+			<mat-icon aria-label="Create an album">add</mat-icon>
+		</button>
+	</div>
+	<div fxLayout="row" fxLayoutAlign="space-around center" class="noActionMatFab white-icon" [ngClass]="{'btnSearchExpended': searchExpended, 'clickable': !searchExpended}" (mouseenter)="searchExpended=true" (mouseleave)="searchExpended=false">
+		<mat-form-field *ngIf="searchExpended" floatLabel="never">
+			<input matInput placeholder="Search..." (input)="search($event.target.value)" autofocus autocomplete="off" />
 		</mat-form-field>
-	</mat-card>
+		<mat-icon aria-label="Search album">search</mat-icon>
+	</div>
 </div>

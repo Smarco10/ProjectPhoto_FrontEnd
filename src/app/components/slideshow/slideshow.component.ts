@@ -113,7 +113,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         this.slides.splice(index, 1);
     }
 
-    public carouselLoadEvent(event: number) {
+    public galleryLoadEvent(event: number) {
         if (event < this.slides.length) {
             //TODO: Implement a IsLoading state
             if (!this.slides[event].isLoaded) {
@@ -122,6 +122,4 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
             this.loadSlideData(event + 1);
         }
     }
-
-    public onMoveEvent(data: NgxCarouselStore) { }
 }
