@@ -31,7 +31,7 @@ export class UsersManagerComponent implements OnInit {
         });
 
         this.userService.onRemoved((user, context) => {
-            for (var i = 0; i < this.users.length; ++i) {
+            for (let i = 0; i < this.users.length; ++i) {
                 if (this.users[i].id === user._id) {
                     this.users.splice(i, 1);
                     break;
@@ -51,7 +51,7 @@ export class UsersManagerComponent implements OnInit {
 
         this.userService.getUsers()
             .then(users => {
-                for (var i = 0; i < users.data.length; ++i) {
+                for (let i = 0; i < users.data.length; ++i) {
                     let permissions = typeof (users.data[i].permissions) === "string" ? [users.data[i].permissions] : users.data[i].permissions;
                     usersOutputArray.splice(this.users.length - 1, 0, new User(users.data[i]._id, users.data[i].email, permissions));
                 }

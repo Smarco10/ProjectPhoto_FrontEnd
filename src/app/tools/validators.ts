@@ -40,11 +40,11 @@ export class UniqueRulesFormGroup extends FormGroup {
     private static assign(validators: ValidatorFn | ValidatorFn[], ...controls: string[]): {
         [key: string]: AbstractControl;
     } {
-        var obj: {
+        let obj: {
             [key: string]: AbstractControl;
         } = {};
 
-        for (var key of controls) {
+        for (let key of controls) {
             obj[key] = new FormControl('', validators);
         }
 
@@ -64,7 +64,7 @@ export class UniqueRulesFormGroup extends FormGroup {
 export class MyValidators {
     static subsetOf<T>(values: T[]): ValidatorFn {
         return (control: AbstractControl): ValidationErrors => {
-            var eltInError: Array<T> = new Array<T>();
+            let eltInError: Array<T> = new Array<T>();
 
             for (let val of control.value) {
                 if (values.indexOf(val) < 0) {
@@ -78,7 +78,7 @@ export class MyValidators {
 }
 
 export function generateShema(shema: any): ValidatorFn[] {
-    var validators: Array<ValidatorFn> = new Array<ValidatorFn>();
+    let validators: Array<ValidatorFn> = new Array<ValidatorFn>();
 
     if (!!shema) {
         if (!!shema.subsetOf) {
@@ -143,7 +143,7 @@ export function generateShema(shema: any): ValidatorFn[] {
 }
 
 export function generateControl(shema: any): AbstractControl {
-    var control: AbstractControl;
+    let control: AbstractControl;
 
     if (!!shema.eltShema) {
         //TODO: use generateShema(shema)
@@ -156,7 +156,7 @@ export function generateControl(shema: any): AbstractControl {
 }
 
 export function generateFormGroup(validatorShemas: any): FormGroup {
-    var formValidators: { [key: string]: AbstractControl } = {};
+    let formValidators: { [key: string]: AbstractControl } = {};
 
     for (let validatorName of Object.keys(validatorShemas)) {
         formValidators[validatorName] = generateControl(validatorShemas[validatorName]);

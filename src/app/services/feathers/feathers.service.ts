@@ -74,7 +74,7 @@ export class FeathersService {
 
     // expose authentication
     public async authenticate(credentials?: any) {
-        var authicated: boolean = false;
+        let authicated: boolean = false;
 
         try {
             let response = await this._feathers.authenticate(credentials);

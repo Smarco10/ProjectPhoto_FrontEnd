@@ -24,7 +24,6 @@ import {
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { NgxCarouselModule } from 'ngx-carousel';
 import 'hammerjs';
 import { MarkdownModule } from 'angular2-markdown';
 
@@ -100,7 +99,6 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         MatSidenavModule,
         MatRadioModule,
         MatToolbarModule,
-        NgxCarouselModule,
         MarkdownModule
     ],
     providers: [

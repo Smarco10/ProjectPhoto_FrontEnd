@@ -44,8 +44,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis i
 
     previewFile(event) {
         this.fileList = event.target.files;
-        var thus = this;
-        var reader = new FileReader();
+        let thus = this;
+        let reader = new FileReader();
 
         reader.addEventListener("load", function() {
             thus.slideData = reader.result;

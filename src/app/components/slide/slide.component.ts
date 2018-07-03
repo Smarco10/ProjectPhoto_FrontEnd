@@ -45,7 +45,7 @@ export class SlideComponent implements OnInit, OnDestroy {
     updateSlide(): void {
         const map = this.route.snapshot.paramMap
         if (map.has('id')) {
-            var id = map.get('id');
+            let id = map.get('id');
             this.slideService.getSlides({
                 _id: id
             })

@@ -27,7 +27,7 @@ export class AuthService extends FeathersServiceEventListener {
     }
 
     updateUser(user: User): Promise<any> {
-        var query: any = {
+        let query: any = {
             email: user.email,
             permissions: user.permissions
         };

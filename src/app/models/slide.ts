@@ -1,10 +1,10 @@
 import { Observable, Subject } from 'rxjs';
 
 function b64(e: ArrayBuffer): string {
-    var t = "";
-    var n = new Uint8Array(e);
-    var r = n.byteLength;
-    for (var i = 0; i < r; ++i) {
+    let t = "";
+    let n = new Uint8Array(e);
+    let r = n.byteLength;
+    for (let i = 0; i < r; ++i) {
         t += String.fromCharCode(n[i]);
     }
     return window.btoa(t);

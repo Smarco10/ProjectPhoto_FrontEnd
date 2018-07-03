@@ -68,7 +68,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        var promises: Array<Promise<any>> = new Array<Promise<any>>();
+        let promises: Array<Promise<any>> = new Array<Promise<any>>();
         if (!!this.getAlbumPromise) {
             promises.push(this.getAlbumPromise);
         }
@@ -93,9 +93,9 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private updateFrontImageRadioButton(): void {
         if (!!this.frontImageRadioGroup) {
-            var slideId: string = this.addedSlides.length > 0 ? this.addedSlides[0].id : undefined;
+            let slideId: string = this.addedSlides.length > 0 ? this.addedSlides[0].id : undefined;
 
-            for (var i = 0; i < this.addedSlides.length; ++i) {
+            for (let i = 0; i < this.addedSlides.length; ++i) {
                 if (this.addedSlides[i].imageId === this.album.imageId) {
                     slideId = this.addedSlides[i].id;
                     break;
@@ -131,7 +131,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private initAlbum(serverAlbum?: any): void {
-        var tmpAlbum = new Album(serverAlbum || {});
+        let tmpAlbum = new Album(serverAlbum || {});
 
         this.configurationService.getValidators()
             .then(validators => {
@@ -187,7 +187,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private setImage(slideId: string): void {
-        var imageId: string = this.album.imageId;
+        let imageId: string = this.album.imageId;
 
         for (let slide of this.addedSlides) {
             if (slide.id === slideId) {
@@ -225,8 +225,8 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getImageIdFromSlideId(slideId: string, array: Array<Slide>): string {
-        var imageId: string;
-        for (var i = 0; i < array.length; ++i) {
+        let imageId: string;
+        for (let i = 0; i < array.length; ++i) {
             if (array[i].id == slideId) {
                 imageId = array[i].imageId;
             }

@@ -4,6 +4,7 @@ import {
     OnDestroy,
     ContentChildren,
     QueryList,
+    Input,
     Output,
     EventEmitter
 } from '@angular/core';
@@ -22,26 +23,57 @@ import { Guid } from '@models/guid'
 
 @Component({
     selector: 'app-gallery-elt',
-    template: '<ng-content *ngIf="!isHidden" [@visibilityState]="isHidden"></ng-content>', //TODO: ngIf provoque une erreur
+    template: `
+		<div *ngIf="!isHidden" [@visibilityState]="visibilityRequested" (@visibilityState.done)="applyState()">
+			<ng-content></ng-content>
+		</div>
+	`, //TODO: ngIf provoque une erreur
     animations: [
         trigger('visibilityState', [
-            state('false', style({
-                opacity: 1,
-                transform: 'translateX(0)'
+            state('hide', style({
+                opacity: 0
+                //transform: 'translateX(100vw + 100%)'
             })),
-            state('true', style({
-                opacity: 0,
-                transform: 'translateX(100%)'
+            state('show', style({
+                opacity: 1
+                //transform: 'translateX(0vw)'
             })),
-            transition('false => true', animate('100ms ease-out')),
-            transition('true => false', animate('100ms ease-in'))
+            transition('hide => show', animate('1000ms ease-out')),
+            transition('show => hide', animate('1000ms ease-out'))
         ])
     ]
 })
 export class GalleryElt {
-    id: string = Guid.newGuid();
-    isHidden: boolean = true;
+    private _id: string = Guid.newGuid();
+    private _isHidden: boolean = true;
+    private visibilityRequested: string = 'hide';
+
     constructor() { }
+    /*
+    defaut: isHidden = true && visibilityRequested = 'hide'
+    visible: setIsHidden(false) => isHidden = false && visibilityRequested = 'show' => transition: 'hide' -> 'show'
+    invisible: setIsHidden(true) => visibilityRequested = 'hide' => transition: 'show' -> 'hide' && isHidden = true
+    */
+    get id(): string {
+        return this._id;
+    }
+
+    get isHidden(): boolean {
+        return this._isHidden;
+    }
+
+    set isHidden(isHidden: boolean) {
+        if (!isHidden) {
+            this.applyState();
+        }
+        this.visibilityRequested = isHidden ? 'hide' : 'show';
+        console.log("isHidden", this.visibilityRequested, isHidden);
+    }
+
+    private applyState(): void {
+        this._isHidden = this.visibilityRequested === 'hide';
+        console.log("applyState", this.visibilityRequested, this.isHidden);
+    }
 }
 
 @Component({
@@ -59,7 +91,7 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     private hasNextElement: boolean = false;
     private hasPreviousElement: boolean = false;
 
-    @Output() onload: EventEmitter<any> = new EventEmitter();
+    @Output() onload: EventEmitter<number> = new EventEmitter();
 
     constructor() { }
 

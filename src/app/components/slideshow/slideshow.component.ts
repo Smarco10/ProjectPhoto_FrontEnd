@@ -1,8 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
-
 import { AlbumsService, FilesService, SlideService } from 'services';
 import { Slide } from '@models/slide';
 
@@ -14,7 +12,6 @@ import { Slide } from '@models/slide';
 export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private slides: Array<Slide> = new Array<Slide>();
-    public carouselOne: NgxCarousel;
 
     constructor(
         private route: ActivatedRoute,
@@ -24,7 +21,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit() {
-        this.carouselOne = {
+        let galleryOptions = {
             grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
             slide: 1,
             speed: 400,
@@ -74,10 +71,10 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         const query = slideIds && { _id: { $in: slideIds } }
         this.slideService.getSlides(query)
             .then(slides => {
-                for (var i = 0; i < slides.length; ++i) {
+                for (let i = 0; i < slides.length; ++i) {
                     this.slides.push(new Slide(slides[i]));
                 }
-                this.carouselLoadEvent(0);
+                this.galleryLoadEvent(0);
             })
             .catch(err => {
                 console.log(err);
@@ -97,7 +94,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     }
 
     private applyOnSlide(slideId: string, cb: (index: number, options?: any) => void, options?: any) {
-        for (var i = 0; i < this.slides.length; ++i) {
+        for (let i = 0; i < this.slides.length; ++i) {
             if (this.slides[i].id === slideId) {
                 cb(i, options);
                 break;

@@ -91,7 +91,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.albumsService.getAlbums()
             .then(albums => {
                 //TODO: pourquoi je recois un .data???
-                for (var i = 0; i < albums.data.length; ++i) {
+                for (let i = 0; i < albums.data.length; ++i) {
                     this.albums.push(new Album(albums.data[i]));
                 }
             })
@@ -123,7 +123,7 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private applyOnAlbum(albumId: string, cb: (index: number, options?: any) => void, options?: any) {
-        for (var i = 0; i < this.albums.length; ++i) {
+        for (let i = 0; i < this.albums.length; ++i) {
             if (this.albums[i].id === albumId) {
                 cb(i, options);
                 break;

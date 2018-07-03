@@ -46,7 +46,7 @@ export class SlidesManagerComponent implements OnInit {
 
         slideService.getSlides(undefined)
             .then(slides => {
-                for (var i = 0; i < slides.length; ++i) {
+                for (let i = 0; i < slides.length; ++i) {
                     let slide = new Slide(slides[i]);
                     slidesOutputArray.push(slide);
                     this.loadSlideData(i);
@@ -70,7 +70,7 @@ export class SlidesManagerComponent implements OnInit {
     }
 
     private applyOnSlide(slideId: string, cb: (index: number, options?: any) => void, options?: any) {
-        for (var i = 0; i < this.slides.length; ++i) {
+        for (let i = 0; i < this.slides.length; ++i) {
             if (this.slides[i].id === slideId) {
                 cb(i, options);
                 break;
