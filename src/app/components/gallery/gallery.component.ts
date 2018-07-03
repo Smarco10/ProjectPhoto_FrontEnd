@@ -14,19 +14,19 @@ import { Guid } from '@models/guid'
 
 @Component({
     selector: 'app-gallery-elt',
-    template: '<ng-content *ngIf="!isHidden"></ng-content>', //TODO: ngIf provoque une erreur
+    template: '<ng-content *ngIf="!isHidden" [@visibilityState]="isHidden"></ng-content>', //TODO: ngIf provoque une erreur
     animations: [
         trigger('visibilityState', [
-            state('in', style({
+            state('false', style({
                 opacity: 1,
                 transform: 'translateX(0)'
             })),
-            state('out', style({
+            state('true', style({
                 opacity: 0,
                 transform: 'translateX(100%)'
             })),
-            transition('in => out', animate('100ms ease-out')),
-            transition('out => in', animate('100ms ease-in'))
+            transition('false => true', animate('100ms ease-out')),
+            transition('true => false', animate('100ms ease-in'))
         ])
     ]
 })
