@@ -38,8 +38,9 @@ import { Guid } from '@models/guid'
                 opacity: 1
                 //transform: 'translateX(0vw)'
             })),
-            transition('hide => show', animate('1000ms ease-out')),
-            transition('show => hide', animate('1000ms ease-out'))
+            /*transition('hide => show', animate('1000ms ease-out')),
+            transition('show => hide', animate('1000ms ease-out'))*/
+            transition('* => *', animate(300))
         ])
     ]
 })

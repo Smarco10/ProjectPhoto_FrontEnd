@@ -17,3 +17,15 @@
     background-color: white;
     z-index: 200;
 }
+
+app-slide-panel {
+    max-width: 300px;
+    height: 150px;
+}
+
+app-slide-panel div {
+    height: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}

@@ -38,6 +38,7 @@ import {
     SlideEditionComponent,
     SlideComponent,
     SlideManagementComponent,
+    SlidePanelComponent,
     SlideshowComponent,
     SlidesManagerComponent,
     UserManagementComponent,
@@ -62,6 +63,7 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
     declarations: [
         AppComponent,
         SlideshowComponent,
+        SlidePanelComponent,
         SlideComponent,
         SlideManagementComponent,
         LoginComponent,

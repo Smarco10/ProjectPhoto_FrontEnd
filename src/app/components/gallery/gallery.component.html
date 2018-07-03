@@ -15,3 +15,13 @@
 		</button>
 	</div>
 </div>
+
+<app-slide-panel [activePane]="isLeftVisible ? 'left' : 'right'">
+	<div leftPane style="background-color: red">LEFT</div>
+	<div centerPane style="background-color: maroon">CENTER</div>
+	<div rightPane style="background-color: green">RIGHT</div>
+</app-slide-panel>
+
+<button (click)="isLeftVisible = !isLeftVisible">
+  Toggle panes
+</button>
