@@ -18,13 +18,14 @@ import {
     templateUrl: 'slide-panel.component.html',
     animations: [
         trigger('slide', [
-            state('left', style({ transform: 'translateX(0)' })),
-            state('right', style({ transform: 'translateX(-50%)' })),
+            state('current', style({ transform: 'translateX(0)' })),
+            state('next', style({ transform: 'translateX(-50%)' })),
             transition('* => *', animate(300))
         ])
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlidePanelComponent {
-    @Input() activePane: number = 0;
+    @Input() panes: Array<string> = ["left","right"];
+    @Input() activePane: string = panes[0];
 }

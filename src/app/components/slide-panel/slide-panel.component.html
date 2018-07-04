@@ -1,8 +1,5 @@
-<div class="parent" [@slide]="activePane">
-	<div>
-		<ng-content select="[leftPane]"></ng-content>
-	</div>
-	<div>
-		<ng-content select="[rightPane]"></ng-content>
+<div class="parent" [style.width]="(panes.length * 100) + '%'" [@slide]="{value: activePane, params:{translate-x: (panes.length * 100)}}">
+	<div *ngFor="let pane of panes">
+        <ng-content select="[pane-id=pane]"></ng-content>  
 	</div>
 </div>

@@ -16,10 +16,10 @@
 	</div>
 </div>
 
-<app-slide-panel [activePane]="isLeftVisible ? 'left' : 'right'">
-	<div leftPane style="background-color: red">LEFT</div>
-	<div centerPane style="background-color: maroon">CENTER</div>
-	<div rightPane style="background-color: green">RIGHT</div>
+<app-slide-panel panes="['left','center','right']" [activePane]="isLeftVisible ? 'left' : 'right'">
+	<div pane-id="left" style="background-color: red">LEFT</div>
+	<div pane-id="center" style="background-color: maroon">CENTER</div>
+	<div pane-id="right" style="background-color: green">RIGHT</div>
 </app-slide-panel>
 
 <button (click)="isLeftVisible = !isLeftVisible">
