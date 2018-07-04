@@ -16,12 +16,15 @@
 	</div>
 </div>
 
-<app-slide-panel panes="['left','center','right']" [activePane]="isLeftVisible ? 'left' : 'right'">
-	<div pane-id="left" style="background-color: red">LEFT</div>
-	<div pane-id="center" style="background-color: maroon">CENTER</div>
-	<div pane-id="right" style="background-color: green">RIGHT</div>
+<app-slide-panel [panes]="panes" [activePane]="activePane">
+	<div paneId="left" style="background-color: red">LEFT</div>
+	<div paneId="center" style="background-color: blue">CENTER</div>
+	<div paneId="right" style="background-color: green">RIGHT</div>
 </app-slide-panel>
 
-<button (click)="isLeftVisible = !isLeftVisible">
-  Toggle panes
+<button (click)="activePane = activePane - 1">
+  -
+</button>
+<button (click)="activePane = activePane + 1">
+  +
 </button>

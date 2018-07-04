@@ -94,6 +94,9 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
 
     @Output() onload: EventEmitter<number> = new EventEmitter();
 
+    private activePane: number = 0;
+    private panes: Array<string> = ['left', 'center', 'right'];
+
     constructor() { }
 
     ngAfterContentInit() {

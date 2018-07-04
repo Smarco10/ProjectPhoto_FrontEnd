@@ -1,5 +1,14 @@
-<div class="parent" [style.width]="(panes.length * 100) + '%'" [@slide]="{value: activePane, params:{translate-x: (panes.length * 100)}}">
-	<div *ngFor="let pane of panes">
-        <ng-content select="[pane-id=pane]"></ng-content>  
+<div *ngIf="!!panes && (panes.length > 0)" class="parent" [style.width]="(panes.length * 100) + '%'" [@slide]="{value: activePane % 2 === 0 ? 'state1' : 'state2', params:{translate_x: getTranslateX()}}" (@slide.start)="animStart($event)">
+	<!--div *ngFor="let pane of panes"> see: https://stackoverflow.com/questions/46976570/how-to-render-multiple-ng-content-inside-an-ngfor-loop-using-angular-4?rq=1
+		<ng-content></ng-content>
+	</div-->
+	<div>
+		<ng-content select="[paneId=left]"></ng-content>
+	</div>
+	<div>
+		<ng-content select="[paneId=center]"></ng-content>
+	</div>
+	<div>
+		<ng-content select="[paneId=right]"></ng-content>
 	</div>
 </div>
