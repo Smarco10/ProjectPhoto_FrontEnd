@@ -95,7 +95,11 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
     @Output() onload: EventEmitter<number> = new EventEmitter();
 
     private activePane: number = 0;
-    private panes: Array<string> = ['left', 'center', 'right'];
+    private panes: Array<any> = [
+        {color: 'green', name: 'left'}
+        {color: 'blue', name: 'center'},
+        {color: 'red', name: 'right'}
+    ];
 
     constructor() { }
 

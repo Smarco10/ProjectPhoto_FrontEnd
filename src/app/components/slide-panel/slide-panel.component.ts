@@ -32,15 +32,16 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlidePanelComponent {
-    @Input() panes: Array<string> = ["left", "right"];
+    @Input() panes: Array<string> = [];
     @Input() activePane: number = 0;
+    @ContentChild('paneSlide') paneSlideTmpl: TemplateRef<any>; 
+ 
 
     private animStart(event): void {
         console.log("animStart", this.activePane, event);
     }
 
     private getTranslateX(): number {
-        let x = this.activePane * 100 / this.panes.length;
-        return x;
+        return this.activePane * 100 / this.panes.length;
     }
 }
