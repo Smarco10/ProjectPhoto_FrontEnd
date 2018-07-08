@@ -96,9 +96,11 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
 
     private activePane: number = 0;
     private panes: Array<any> = [
-        {color: 'green', name: 'left'}
-        {color: 'blue', name: 'center'},
-        {color: 'red', name: 'right'}
+        { color: 'green', name: 'left' },
+        { color: 'blue', name: 'center' },
+        { color: 'red', name: 'right' },
+        { color: 'maroon', name: '1' },
+        { color: 'yellow', name: '2' }
     ];
 
     constructor() { }

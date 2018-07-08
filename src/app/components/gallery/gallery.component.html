@@ -17,14 +17,20 @@
 </div>
 
 <app-slide-panel [panes]="panes" [activePane]="activePane">
-    <ng-template #paneSlide let-pane>
-        <div [style.backgroundColor]="pane.color">pane.name</div>
-    </ng-template>
+	<ng-template #paneSlide let-pane>
+		<div [style.backgroundColor]="pane.color">{{pane.name}}</div>
+	</ng-template>
 </app-slide-panel>
 
+<button (click)="activePane = 0">
+  <<
+</button>
 <button (click)="activePane = activePane - 1">
   -
 </button>
 <button (click)="activePane = activePane + 1">
   +
+</button>
+<button *ngIf="!!panes && panes.length > 0" (click)="activePane = panes.length - 1">
+  >>
 </button>
