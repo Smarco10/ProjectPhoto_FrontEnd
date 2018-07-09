@@ -14,6 +14,12 @@ import {
     trigger
 } from '@angular/animations';
 
+// this method is run each time the `myAnimationTrigger` trigger value changes.
+function myInlineMatcherFn(fromState: string, toState: string, element: any, params: {[key: string]: any}): boolean {
+console.log(fromState, "=>", toState, params, element);
+  return true;
+}
+
 @Component({
     selector: 'app-slide-panel',
     styleUrls: ['slide-panel.component.scss'],
@@ -29,8 +35,9 @@ import {
             }), { params: { translate_x: 0 } }
             ),
             /*transition('* => *', animate(300))*/
-            transition('state1 => state2', animate(300)),
-            transition('state2 => state1', animate(300))
+            /*transition('state1 => state2', animate(300)),
+            transition('state2 => state1', animate(300))*/
+            transition(myInlineMatcherFn, animate(300))
         ])
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -51,7 +58,7 @@ export class SlidePanelComponent {
 
     private updateState(): void {
         //TODO: ne marche pas bien, a corriger
-        console.log("aninDone", this.previousPane, this.activePane, this.activeState);
+        console.log("updateState", this.previousPane, this.activePane, this.activeState);
         if (this.previousPane != this.activePane) {
             switch (this.activeState) {
                 case 'state1':
