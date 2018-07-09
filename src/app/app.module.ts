@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import {
     MatButtonModule,
     MatCardModule,
@@ -25,7 +25,8 @@ import {
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import 'hammerjs';
-import { MarkdownModule } from 'angular2-markdown';
+import { NgxMdModule } from 'ngx-md';
+import 'prismjs/prism';
 
 import {
     AlbumComponent,
@@ -83,7 +84,7 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         FormsModule,
         ReactiveFormsModule,
         AppRoutingModule,
-        HttpModule,
+        HttpClientModule,
         BrowserAnimationsModule,
         FlexLayoutModule,
         MatButtonModule,
@@ -101,7 +102,7 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         MatSidenavModule,
         MatRadioModule,
         MatToolbarModule,
-        MarkdownModule
+        NgxMdModule
     ],
     providers: [
         AlbumsService,
