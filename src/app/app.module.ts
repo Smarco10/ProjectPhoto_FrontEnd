@@ -25,7 +25,7 @@ import {
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import 'hammerjs';
-import { NgxMdModule } from 'ngx-md';
+import { MarkdownModule } from 'ngx-markdown';
 import 'prismjs/prism';
 
 import {
@@ -102,7 +102,7 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         MatSidenavModule,
         MatRadioModule,
         MatToolbarModule,
-        NgxMdModule
+        MarkdownModule.forRoot()
     ],
     providers: [
         AlbumsService,

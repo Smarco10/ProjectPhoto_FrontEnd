@@ -35,10 +35,7 @@ function myInlineMatcherFn(fromState: string, toState: string, element: any, par
                 transform: 'translateX(-{{translate_x}}%)'
             }), { params: { translate_x: 0 } }
             ),
-            /*transition('* => *', animate(300))*/
-            /*transition('state1 => state2', animate(300)),
-            transition('state2 => state1', animate(300))*/
-            transition(myInlineMatcherFn, animate(300))
+            transition('* => *', animate(300))
         ])
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -46,34 +43,36 @@ function myInlineMatcherFn(fromState: string, toState: string, element: any, par
 export class SlidePanelComponent {
     @Input() panes: Array<string> = new Array<string>();
 
-    @Input() activePane: number = 0;
-    private previousPane: number = this.activePane;
+    private _activePane: number = 0;
+    private previousPane: number = -1;
 
     private activeState: string = 'state1';
 
     @ContentChild('paneSlide') paneSlideTmpl: TemplateRef<any>;
 
-    private animStart(event): void {
-        console.log("animStart", this.activePane, this.activeState, event);
+    @Input()
+    set activePane(paneId: number) {
+        this.updateState();
+        this._activePane = paneId;
+    }
+
+    get activePane(): number {
+        return this._activePane;
     }
 
     private updateState(): void {
-        //TODO: ne marche pas bien, a corriger
-        console.log("updateState", this.previousPane, this.activePane, this.activeState);
-        if (this.previousPane != this.activePane) {
-            switch (this.activeState) {
-                case 'state1':
-                    this.activeState = 'state2';
-                    break;
-                case 'state2':
-                    this.activeState = 'state1';
-                    break;
-                default:
-                    console.error("active state is not knwon: ", this.activeState);
-                    break;
-            }
-            console.log("active state:", this.activeState);
+        switch (this.activeState) {
+            case 'state1':
+                this.activeState = 'state2';
+                break;
+            case 'state2':
+                this.activeState = 'state1';
+                break;
+            default:
+                console.error("active state is not knwon: ", this.activeState);
+                break;
         }
+
         this.previousPane = this.activePane;
     }
 
@@ -85,14 +84,6 @@ export class SlidePanelComponent {
             this.activePane = this.panes.length - 1;
         }
 
-        this.updateState();
-
-        let x = (this.panes.length === 0) ? 0 : (this.activePane * 100 / this.panes.length);
-        console.log("getTranslateX", this.activePane, x);
-        return x;
-    }
-
-    private animDone(event): void {
-        console.log("animDone", this.activePane, this.activeState, event);
+        return (this.panes.length === 0) ? 0 : (this.activePane * 100 / this.panes.length);
     }
 }

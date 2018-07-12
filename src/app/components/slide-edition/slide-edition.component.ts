@@ -13,7 +13,7 @@ export class SlideEditionComponent implements OnInit {
 
     mkTextUp: string = "";
 
-    //https://www.npmjs.com/package/ngx-md
+    //https://www.npmjs.com/package/markdown
     mkTextDown: string = "<div style=\"background-color:rgb(55,55,55); padding: 10px; text-align: justify;\"/>\n\
 ### <span style=\"color:rgb(200,200,200)\">Lorem Ipsum</span>\n\
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis iaculis egestas. Ut et consectetur nisi, nec faucibus leo. Curabitur at purus maximus, blandit ante in, eleifend arcu. Mauris rhoncus ex quam, vel bibendum diam blandit a. In pretium tellus in ipsum finibus porttitor. Aliquam hendrerit ac tellus et porta. Suspendisse ultrices urna vel augue egestas accumsan. Proin eleifend facilisis massa sit amet tempor. Vivamus eleifend libero ac nunc sodales, eu gravida ligula finibus. Integer gravida luctus felis, eget vulputate leo maximus in. Etiam tellus lorem, iaculis id eleifend sit amet, porta sit amet lectus. In pellentesque quam eu tincidunt vehicula. Pellentesque pellentesque arcu quis nulla pellentesque, ac rhoncus ipsum ornare.\n\

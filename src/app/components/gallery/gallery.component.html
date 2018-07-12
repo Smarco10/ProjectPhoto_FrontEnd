@@ -24,15 +24,14 @@
 	</ng-template>
 </app-slide-panel>
 
-<button (click)="activePane = 0">
-  <<
-</button>
-<button (click)="activePane = activePane - 1">
+<button [disabled]="!panes || panes.length === 0 || activePane === 0" (click)="activePane = 0">
+	<< </button>
+<button [disabled]="!panes || panes.length === 0 || activePane === 0" (click)="activePane = activePane - 1">
   -
 </button>
-<button (click)="activePane = activePane + 1">
+<button [disabled]="!panes || panes.length === 0 || activePane === panes.length - 1" (click)="activePane = activePane + 1">
   +
 </button>
-<button *ngIf="!!panes && panes.length > 0" (click)="activePane = panes.length - 1">
+<button [disabled]="!panes || panes.length === 0 || activePane === panes.length - 1" (click)="activePane = panes.length - 1">
   >>
 </button>

@@ -11,6 +11,6 @@
 	</div>
 
 	<div *ngIf="layout == 'view' && slide.text.length !== 0" class="slide_text" [ngStyle]="slide.textStyle">
-		<ngx-md #mkd>{{slide.text}}</ngx-md>
+		<markdown #mkd>{{slide.text}}</markdown>
 	</div>
 </div>

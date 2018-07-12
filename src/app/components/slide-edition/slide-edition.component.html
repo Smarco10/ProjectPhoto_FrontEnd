@@ -3,8 +3,8 @@
 		<td colspan="3">
 			<div *ngIf="showTextUp">
 				<label *ngIf="!mkTextUp || (mkTextUp.length == 0)" for="upload-text-up" class="placeholder clickable block_centered" (click)="mkTextUp=' '">CLICK TO ADD TEXT</label>
-				<ngx-md *ngIf="showMkTextUp && mkTextUp && (mkTextUp.length > 0)" [data]="mkTextUp" (click)="showMkTextUp=!showMkTextUp" class="clickable">
-				</ngx-md>
+				<markdown *ngIf="showMkTextUp && mkTextUp && (mkTextUp.length > 0)" [data]="mkTextUp" (click)="showMkTextUp=!showMkTextUp" class="clickable">
+				</markdown>
 				<textarea *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0) " placeholder="markdown code here..." [(ngModel)]="mkTextUp" name="text-up"></textarea>
 				<br *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0)" />
 				<button *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0)" (click)="showMkTextUp=!showMkTextUp">Toogle Markdown</button>
@@ -15,8 +15,8 @@
 		<td>
 			<div *ngIf="showTextLeft">
 				<label *ngIf="!mkTextLeft || (mkTextLeft.length == 0)" for="upload-text-left" class="placeholder clickable block_centered" (click)="mkTextLeft=' '">+</label>
-				<ngx-md *ngIf="showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" [data]="mkTextLeft" (click)="showMkTextLeft=!showMkTextLeft" class="clickable">
-				</ngx-md>
+				<markdown *ngIf="showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" [data]="mkTextLeft" (click)="showMkTextLeft=!showMkTextLeft" class="clickable">
+				</markdown>
 				<textarea *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextLeft" name="text-left"></textarea>
 				<br *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" />
 				<button *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" (click)="showMkTextLeft=!showMkTextLeft">Toogle Markdown</button>
@@ -29,8 +29,8 @@
 		<td>
 			<div *ngIf="showTextRight">
 				<label *ngIf="!mkTextRight || (mkTextRight.length == 0)" for="upload-text-right" class="placeholder clickable block_centered" (click)="mkTextRight=' '">+</label>
-				<ngx-md *ngIf="showMkTextRight && mkTextRight && (mkTextRight.length > 0)" [data]="mkTextRight" (click)="showMkTextRight=!showMkTextRight" class="clickable">
-				</ngx-md>
+				<markdown *ngIf="showMkTextRight && mkTextRight && (mkTextRight.length > 0)" [data]="mkTextRight" (click)="showMkTextRight=!showMkTextRight" class="clickable">
+				</markdown>
 				<textarea *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextRight" name="text-right"></textarea>
 				<br *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" />
 				<button *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" (click)="showMkTextRight=!showMkTextRight">Toogle Markdown</button>
@@ -41,8 +41,8 @@
 		<td colspan="3">
 			<div *ngIf="showTextDown">
 				<label *ngIf="!mkTextDown || (mkTextDown.length == 0)" for="upload-text-down" class="placeholder clickable block_centered" (click)="mkTextDown=' '">CLICK TO ADD TEXT</label>
-				<ngx-md *ngIf="showMkTextDown && mkTextDown && (mkTextDown.length > 0)" [data]="mkTextDown" (click)="showMkTextDown=!showMkTextDown" class="clickable">
-				</ngx-md>
+				<markdown *ngIf="showMkTextDown && mkTextDown && (mkTextDown.length > 0)" [data]="mkTextDown" (click)="showMkTextDown=!showMkTextDown" class="clickable">
+				</markdown>
 				<textarea *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextDown" name="text-down"></textarea>
 				<br *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" />
 				<button *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" (click)="showMkTextDown=!showMkTextDown">Toogle Markdown</button>
