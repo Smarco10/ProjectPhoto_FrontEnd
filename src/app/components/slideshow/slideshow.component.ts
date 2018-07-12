@@ -69,7 +69,6 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private loadSlides(slideIds?: string[]): void {
         const query = slideIds && { _id: { $in: slideIds } };
-        console.log("loadSlides ", query);
         this.slideService.getSlides(query)
             .then(slides => {
                 for (let i = 0; i < slides.length; ++i) {

@@ -1,7 +1,6 @@
 <div *ngIf="!!panes && (panes.length > 0)" class="parent" [style.width]="(panes.length * 100) + '%'" [@slide]="{value: activeState, params:{translate_x: getTranslateX()}}">
 	<!--  see: https://stackoverflow.com/questions/46976570/how-to-render-multiple-ng-content-inside-an-ngfor-loop-using-angular-4?rq=1 -->
 	<div *ngFor="let pane of panes">
-		<ng-container *ngTemplateOutlet="paneSlideTmpl, 
-                     context: { $implicit: pane }"></ng-container>
+		<ng-container *ngTemplateOutlet="paneSlideTmpl, context: { $implicit: pane }"></ng-container>
 	</div>
 </div>

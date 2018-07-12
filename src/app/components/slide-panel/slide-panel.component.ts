@@ -14,13 +14,6 @@ import {
     trigger
 } from '@angular/animations';
 
-// this method is run each time the `myAnimationTrigger` trigger value changes.
-function myInlineMatcherFn(fromState: string, toState: string, element: any, params: { [key: string]: any }): boolean {
-    console.log(fromState, "=>", toState, params, element);
-
-    return true;
-}
-
 @Component({
     selector: 'app-slide-panel',
     styleUrls: ['slide-panel.component.scss'],
@@ -43,7 +36,7 @@ function myInlineMatcherFn(fromState: string, toState: string, element: any, par
 export class SlidePanelComponent {
     @Input() panes: Array<string> = new Array<string>();
 
-    private _activePane: number = 0;
+    private _activePaneId: number = 0;
     private previousPane: number = -1;
 
     private activeState: string = 'state1';
@@ -51,13 +44,13 @@ export class SlidePanelComponent {
     @ContentChild('paneSlide') paneSlideTmpl: TemplateRef<any>;
 
     @Input()
-    set activePane(paneId: number) {
+    set activePaneId(paneId: number) {
         this.updateState();
-        this._activePane = paneId;
+        this._activePaneId = paneId;
     }
 
-    get activePane(): number {
-        return this._activePane;
+    get activePaneId(): number {
+        return this._activePaneId;
     }
 
     private updateState(): void {
@@ -73,17 +66,17 @@ export class SlidePanelComponent {
                 break;
         }
 
-        this.previousPane = this.activePane;
+        this.previousPane = this.activePaneId;
     }
 
     private getTranslateX(): number {
-        if (this.activePane < 0) {
-            this.activePane = 0;
+        if (this.activePaneId < 0) {
+            this.activePaneId = 0;
         }
-        if (this.activePane > this.panes.length - 1) {
-            this.activePane = this.panes.length - 1;
+        if (this.activePaneId > this.panes.length - 1) {
+            this.activePaneId = this.panes.length - 1;
         }
 
-        return (this.panes.length === 0) ? 0 : (this.activePane * 100 / this.panes.length);
+        return (this.panes.length === 0) ? 0 : (this.activePaneId * 100 / this.panes.length);
     }
 }
