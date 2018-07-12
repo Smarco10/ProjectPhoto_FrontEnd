@@ -94,6 +94,10 @@ export class GalleryComponent implements AfterContentInit, OnDestroy {
 
     @Output() onload: EventEmitter<number> = new EventEmitter();
 
+    private currentSlide: Slide = undefined;
+    @Input slides: Array<Slide>;
+
+    //TODO: used only for slidepane tests
     private activePane: number = 0;
     private panes: Array<any> = [
         { color: 'green', name: 'left' },

@@ -17,6 +17,7 @@ import {
 // this method is run each time the `myAnimationTrigger` trigger value changes.
 function myInlineMatcherFn(fromState: string, toState: string, element: any, params: { [key: string]: any }): boolean {
     console.log(fromState, "=>", toState, params, element);
+
     return true;
 }
 

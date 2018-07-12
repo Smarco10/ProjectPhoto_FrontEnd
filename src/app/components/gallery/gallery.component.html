@@ -5,9 +5,11 @@
 		</button>
 	</div>
 
-	<div fxFlex="100">
-		<ng-content></ng-content>
-	</div>
+    <app-slide-panel fxFlex="100" [panes]="slides" [currentPane]="currentSlide">
+        <ng-template #paneSlide let-pane>
+            <app-slide [slide]="pane" [layout]="'carousel'"></app-slide>
+        </ng-template>
+    </app-slide-panel>
 
 	<div [style.visibility]="hasNextElement ? 'visible' : 'hidden'" flexAlign="end stretch" class="centered">
 		<button mat-fab class="clickable " id="nextIcon" (click)="nextElt()">

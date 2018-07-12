@@ -1,5 +1,2 @@
-<app-gallery (onload)="galleryLoadEvent($event)">
-	<app-gallery-elt *ngFor='let slide of slides'>
-		<app-slide [slide]="slide" [layout]="'carousel'"></app-slide>
-	</app-gallery-elt>
+<app-gallery [slides]="slides" (onload)="galleryLoadEvent($event)">
 </app-gallery>
