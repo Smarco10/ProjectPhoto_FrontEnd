@@ -21,20 +21,6 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit() {
-        let galleryOptions = {
-            grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
-            slide: 1,
-            speed: 400,
-            animation: 'lazy',
-            point: {
-                visible: true
-            },
-            load: 1,
-            touch: true,
-            loop: true,
-            easing: 'ease'
-        }
-
         this.slideService.onCreated((newSlide, context) => {
             this.slides.push(new Slide(newSlide));
         });
