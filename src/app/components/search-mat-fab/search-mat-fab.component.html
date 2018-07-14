@@ -1,0 +1,8 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" class="noActionMatFab black-icon" [@searchMouseInOut]="searchExpended" (@searchMouseInOut.start)="searchMouseInOutStart()" (@searchMouseInOut.done)="searchMouseInOutDone()" (mouseenter)="searchExpended=true"
+    (mouseleave)="searchExpended=false">
+	<mat-form-field *ngIf="showInput" floatLabel="never">
+		<input matInput #mySearchBtn placeholder="Search..." (input)="search.emit()" autofocus autocomplete="off" />
+		<mat-icon matSuffix aria-label="Search album">search</mat-icon>
+	</mat-form-field>
+	<mat-icon *ngIf="!showInput" aria-label="Search album">search</mat-icon>
+</div>

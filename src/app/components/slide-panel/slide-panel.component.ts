@@ -15,24 +15,23 @@ import {
 } from '@angular/animations';
 
 enum AnimState {
-    STATE1: "state1",
-    STATE2: "state2"
+    STATE1 = "state1",
+    STATE2 = "state2"
 }
+
+const stateStyle = {
+    transform: 'translateX(-{{translate_x}}%)'
+};
+const defaultParams = { params: { translate_x: 0 } };
 
 @Component({
     selector: 'app-slide-panel',
     styleUrls: ['slide-panel.component.scss'],
     templateUrl: 'slide-panel.component.html',
     animations: [
-        trigger('slide', [
-            state(AnimState.STATE1, style({
-                transform: 'translateX(-{{translate_x}}%)'
-            }), { params: { translate_x: 0 } }
-            ),
-            state(AnimState.STATE2, style({
-                transform: 'translateX(-{{translate_x}}%)'
-            }), { params: { translate_x: 0 } }
-            ),
+        trigger('slideBinaryState', [
+            state('true', style(stateStyle), defaultParams),
+            state('false', style(stateStyle), defaultParams),
             transition('* => *', animate(300))
         ])
     ],
@@ -44,7 +43,7 @@ export class SlidePanelComponent {
     private _activePaneId: number = 0;
     private previousPane: number = -1;
 
-    private activeState: AnimState = AnimState.STATE1;
+    private activeBinaryState: boolean = true;
 
     /*TODO: implement options like this
         let galleryOptions = {
@@ -75,18 +74,7 @@ export class SlidePanelComponent {
     }
 
     private updateState(): void {
-        switch (this.activeState) {
-            case AnimState.STATE1:
-                this.activeState = AnimState.STATE2;
-                break;
-            case AnimState.STATE2:
-                this.activeState = AnimState.STATE1;
-                break;
-            default:
-                console.error("active state is not knwon: ", this.activeState);
-                break;
-        }
-
+        this.activeBinaryState = !this.activeBinaryState;
         this.previousPane = this.activePaneId;
     }
 

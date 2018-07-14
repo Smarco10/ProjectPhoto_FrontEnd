@@ -21,8 +21,7 @@ export class SlideComponent implements OnInit, OnDestroy {
         private filesService: FilesService,
         private router: Router,
         private slideService: SlideService
-    ) {
-    }
+    ) { }
 
     ngOnInit() {
         if (this.layout == 'view') {

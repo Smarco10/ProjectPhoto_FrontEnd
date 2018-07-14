@@ -46,7 +46,7 @@ export class Slide {
                 "vertical-align": "middle"
             },
             {
-                "position": "absolute",
+                //"position": "absolute",
                 "top": "10%",
                 "left": "0",
                 "text-align": "center",

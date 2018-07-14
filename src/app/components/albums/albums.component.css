@@ -28,45 +28,6 @@ mat-grid-tile {
     color: #232F34;
 }
 
-.white-icon {
+.black-icon {
     color: black;
-}
-
-.noActionMatFab {
-    box-sizing: border-box;
-    position: relative;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: pointer;
-    outline: 0;
-    border: none;
-    -webkit-tap-highlight-color: transparent;
-    display: inline-block;
-    white-space: nowrap;
-    text-decoration: none;
-    vertical-align: baseline;
-    text-align: center;
-    margin: 0;
-    min-width: 88px;
-    line-height: 36px;
-    border-radius: 2px;
-    transform: translate3d(0, 0, 0);
-    transition: background .4s cubic-bezier(.25, .8, .25, 1), box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
-    min-width: 0;
-    padding: 0;
-    flex-shrink: 0;
-    width: 56px;
-    height: 56px;
-    padding: 16px 0;
-    border-radius: 28px;
-    background-color: white;
-    /*blue: #4286f4*/
-    /*mauve: #673ab7*/
-}
-
-.btnSearchExpended {
-    width: 250px;
-    padding: 0 0;
 }

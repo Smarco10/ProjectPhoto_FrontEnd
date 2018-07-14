@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, Input, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { Subscription } from 'rxjs/Subscription';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { MediaScreenSize } from '@tools/common';
     templateUrl: './albums.component.html',
     styleUrls: ['./albums.component.css'],
     animations: [
-        trigger('mouseInOut', [
+        trigger('albumMouseInOut', [
             state('in', style({
                 opacity: 1,
                 transform: 'translateX(0)'
@@ -38,7 +38,6 @@ import { MediaScreenSize } from '@tools/common';
 export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private mediaWatcher: Subscription;
-    private searchExpended: boolean = false;
 
     @Input() nbCols: number = 4;
 
@@ -84,8 +83,6 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.searchExpended = false;
-
         this.updateLogin();
 
         this.albumsService.getAlbums()

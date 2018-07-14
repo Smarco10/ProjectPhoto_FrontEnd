@@ -5,6 +5,7 @@ export * from '@components/app/app.component';
 export * from '@components/gallery/gallery.component';
 export * from '@components/login/login.component';
 export * from '@components/slide/slide.component';
+export * from '@components/search-mat-fab/search-mat-fab.component';
 export * from '@components/slide-management/slide-management.component';
 export * from '@components/slide-panel/slide-panel.component';
 export * from '@components/slides-manager/slides-manager.component';

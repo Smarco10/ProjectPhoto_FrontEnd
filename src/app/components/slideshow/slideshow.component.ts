@@ -57,10 +57,11 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         const query = slideIds && { _id: { $in: slideIds } };
         this.slideService.getSlides(query)
             .then(slides => {
+                let slidesArr: Array<Slide> = new Array<Slide>();
                 for (let i = 0; i < slides.length; ++i) {
-                    this.slides.push(new Slide(slides[i]));
+                    slidesArr.push(new Slide(slides[i]));
                 }
-                console.log("nb slides loads: ", this.slides.length);
+                this.slides = slidesArr; //TODO: oblige de faire ca sinon slide-panel ne voit pas les changements
                 this.galleryLoadEvent(0);
             })
             .catch(err => {

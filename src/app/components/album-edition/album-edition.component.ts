@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatRadioGroup } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
@@ -36,6 +36,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     private uniqueRulesFormGroup: UniqueRulesFormGroup;
 
     constructor(
+        private router: Router,
         private route: ActivatedRoute,
         private albumsService: AlbumsService,
         private slidesService: SlideService,
@@ -183,6 +184,7 @@ export class AlbumEditionComponent implements OnInit, AfterViewInit, OnDestroy {
     private deleteAlbum(): void {
         if (this.album.isCreated()) {
             this.albumsService.deleteAlbum(this.album.id);
+            this.router.navigateByUrl('/');
         }
     }
 

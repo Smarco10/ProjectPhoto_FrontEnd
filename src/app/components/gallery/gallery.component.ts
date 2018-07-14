@@ -57,12 +57,12 @@ export class GalleryComponent implements AfterViewInit {
         let index = this.currentSlideId;
         this.hasPreviousElement = (index > 0);
         this.hasNextElement = (index > -1) && (index < (this.slides.length - 1));
-        console.log("updateButtonVisibility", this.currentSlideId, this.slides, this.hasPreviousElement, this.hasNextElement);
     }
 
     private previousElt(): void {
         if (this.hasPreviousElement) {
             this.currentSlideId -= 1;
+            this.onload.emit(this.currentSlideId);
             this.updateButtonVisibility();
         }
     }
@@ -70,6 +70,7 @@ export class GalleryComponent implements AfterViewInit {
     private nextElt(): void {
         if (this.hasNextElement) {
             this.currentSlideId += 1;
+            this.onload.emit(this.currentSlideId);
             this.updateButtonVisibility();
         }
     }

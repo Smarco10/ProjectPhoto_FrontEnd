@@ -10,20 +10,21 @@
     color: black;
     background-color: white;
     z-index: 201;
+    left: 16px;
 }
 
 #nextIcon {
     color: black;
     background-color: white;
     z-index: 200;
+    right: 16px;
 }
 
 app-slide-panel {
-    max-width: 300px;
-    height: 150px;
+    height: 500px;
 }
 
-app-slide-panel div {
+app-slide-panel app-slide {
     height: 100%;
     display: flex;
     align-content: center;

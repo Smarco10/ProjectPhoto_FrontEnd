@@ -2,7 +2,7 @@
 	<div *ngFor="let album of albums">
 		<mat-grid-tile *ngIf="!album.isHidden" (mouseenter)="album.hover='in'" (mouseleave)="album.hover='out'" [routerLink]="['/slideshow', {id: album.id}]" class="clickable">
 			<app-album [album]="album" [hover]="album.hover" class="clickable"></app-album>
-			<div fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="start stretch" class="floating album-icons" [@mouseInOut]="album.hover">
+			<div fxLayout="column" fxLayoutGap="0.5rem" fxLayoutAlign="start stretch" class="floating album-icons" [@albumMouseInOut]="album.hover">
 				<button mat-mini-fab *ngIf="allowed.manageAlbum" class="clickable grey-icon" color="white" (click)="deleteAlbum($event, album.id)">
 			    	<mat-icon aria-label="Delete the album">clear</mat-icon>
 			  	</button>
@@ -18,14 +18,10 @@
 
 <div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center end" class="fixed body-icons">
 	<div *ngIf="allowed.manageAlbum" fxLayout="row" fxLayoutAlign="center end" style="width: 56px;">
-		<button mat-mini-fab class="clickable white-icon" color="warn" [routerLink]="['/album/edit']">
+		<button mat-mini-fab class="clickable black-icon" color="warn" [routerLink]="['/album/edit']">
 			<mat-icon aria-label="Create an album">add</mat-icon>
 		</button>
 	</div>
-	<div fxLayout="row" fxLayoutAlign="space-around center" class="noActionMatFab white-icon" [ngClass]="{'btnSearchExpended': searchExpended, 'clickable': !searchExpended}" (mouseenter)="searchExpended=true" (mouseleave)="searchExpended=false">
-		<mat-form-field *ngIf="searchExpended" floatLabel="never">
-			<input matInput placeholder="Search..." (input)="search($event.target.value)" autofocus autocomplete="off" />
-		</mat-form-field>
-		<mat-icon aria-label="Search album">search</mat-icon>
-	</div>
+
+	<app-search-mat-fab (search)="search($event)"></app-search-mat-fab>
 </div>
