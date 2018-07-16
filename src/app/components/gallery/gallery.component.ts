@@ -28,23 +28,22 @@ import { Slide } from '@models/slide'
 })
 export class GalleryComponent implements AfterViewInit {
 
+    @Output() onLoad: EventEmitter<number> = new EventEmitter();
+
+    private currentElement: number = 0;
+    private _nbElements: number = 0;
+
     private hasNextElement: boolean = false;
     private hasPreviousElement: boolean = false;
 
-    @Output() onload: EventEmitter<number> = new EventEmitter();
-
-    private currentSlideId: number = 0;
-
-    private _slides: Array<Slide>;
-
     @Input()
-    set slides(slides: Array<Slide>) {
-        this._slides = slides;
+    set nbElements(nbElements: number) {
+        this._nbElements = nbElements;
         this.updateButtonVisibility();
     }
 
-    get slides(): Array<Slide> {
-        return this._slides;
+    get nbElements(): number {
+        return this._nbElements;
     }
 
     constructor() { }
@@ -54,23 +53,22 @@ export class GalleryComponent implements AfterViewInit {
     }
 
     private updateButtonVisibility(): void {
-        let index = this.currentSlideId;
-        this.hasPreviousElement = (index > 0);
-        this.hasNextElement = (index > -1) && (index < (this.slides.length - 1));
+        this.hasPreviousElement = (this.currentElement > 0);
+        this.hasNextElement = (this.currentElement > -1) && (this.currentElement < (this.nbElements - 1));
     }
 
     private previousElt(): void {
         if (this.hasPreviousElement) {
-            this.currentSlideId -= 1;
-            this.onload.emit(this.currentSlideId);
+            this.currentElement -= 1;
+            this.onLoad.emit(this.currentElement);
             this.updateButtonVisibility();
         }
     }
 
     private nextElt(): void {
         if (this.hasNextElement) {
-            this.currentSlideId += 1;
-            this.onload.emit(this.currentSlideId);
+            this.currentElement += 1;
+            this.onLoad.emit(this.currentElement);
             this.updateButtonVisibility();
         }
     }

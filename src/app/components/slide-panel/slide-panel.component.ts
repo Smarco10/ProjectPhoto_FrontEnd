@@ -14,11 +14,6 @@ import {
     trigger
 } from '@angular/animations';
 
-enum AnimState {
-    STATE1 = "state1",
-    STATE2 = "state2"
-}
-
 const stateStyle = {
     transform: 'translateX(-{{translate_x}}%)'
 };
@@ -38,10 +33,9 @@ const defaultParams = { params: { translate_x: 0 } };
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlidePanelComponent {
-    @Input() panes: Array<string>;
+    @Input() panes: Array<any>;
 
     private _activePaneId: number = 0;
-    private previousPane: number = -1;
 
     private activeBinaryState: boolean = true;
 
@@ -61,7 +55,7 @@ export class SlidePanelComponent {
         }
 */
 
-    @ContentChild('paneSlide') paneSlideTmpl: TemplateRef<any>;
+    @ContentChild('paneTmpl') paneTmpl: TemplateRef<any>;
 
     @Input()
     set activePaneId(paneId: number) {
@@ -75,7 +69,6 @@ export class SlidePanelComponent {
 
     private updateState(): void {
         this.activeBinaryState = !this.activeBinaryState;
-        this.previousPane = this.activePaneId;
     }
 
     private getTranslateX(): number {

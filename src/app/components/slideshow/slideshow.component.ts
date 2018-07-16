@@ -12,6 +12,7 @@ import { Slide } from '@models/slide';
 export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private slides: Array<Slide> = new Array<Slide>();
+    private currentSlideId: number = 0;
 
     constructor(
         private route: ActivatedRoute,
@@ -98,13 +99,14 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         this.slides.splice(index, 1);
     }
 
-    public galleryLoadEvent(event: number) {
-        if (event < this.slides.length) {
+    public galleryLoadEvent(index: number) {
+        if (index < this.slides.length) {
+            this.currentSlideId = index;
             //TODO: Implement a IsLoading state
-            if (!this.slides[event].isLoaded) {
-                this.loadSlideData(event);
+            if (!this.slides[index].isLoaded) {
+                this.loadSlideData(index);
             }
-            this.loadSlideData(event + 1);
+            this.loadSlideData(index + 1);
         }
     }
 }
