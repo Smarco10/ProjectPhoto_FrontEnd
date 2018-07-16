@@ -21,6 +21,11 @@ import { Subscription } from 'rxjs/Subscription';
 import { Guid } from '@models/guid'
 import { Slide } from '@models/slide'
 
+enum SWIPE_ACTION {
+    LEFT = 'swipeleft',
+    RIGHT = 'swiperight'
+};
+
 @Component({
     selector: 'app-gallery',
     templateUrl: './gallery.component.html',
@@ -71,5 +76,13 @@ export class GalleryComponent implements AfterViewInit {
             this.onLoad.emit(this.currentElement);
             this.updateButtonVisibility();
         }
+    }
+
+    private onSwipeLeft(event: any) {
+        this.nextElt();
+    }
+
+    private onSwipeRight(event: any) {
+        this.previousElt();
     }
 }

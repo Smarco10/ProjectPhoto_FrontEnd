@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="center">
+<div fxLayout="row" fxLayoutAlign="center" (swipeleft)="onSwipeLeft($event)" (swiperight)="onSwipeRight($event)">
 	<div [style.visibility]="hasPreviousElement ? 'visible' : 'hidden'" flexAlign="start stretch" class="centered">
 		<button mat-fab class="clickable" id="previousIcon" (click)="previousElt()">
 			<mat-icon aria-label="Previous Element">navigate_before</mat-icon>
