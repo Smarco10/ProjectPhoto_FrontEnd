@@ -13,3 +13,7 @@
 		</button>
 	</div>
 </div>
+
+<div fxLayout="row" fxLayoutAlign="center" class="spots-container">
+	<div *ngFor="let i of getIndexes()" class="spot" [ngClass]="{'spot-selected': currentElement == i}" (click)="spotSelected(i)"></div>
+</div>

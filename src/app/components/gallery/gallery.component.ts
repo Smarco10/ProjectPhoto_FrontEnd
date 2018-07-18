@@ -62,19 +62,21 @@ export class GalleryComponent implements AfterViewInit {
         this.hasNextElement = (this.currentElement > -1) && (this.currentElement < (this.nbElements - 1));
     }
 
+    private setCurrentElement(currentElt: number): void {
+        this.currentElement = currentElt;
+        this.onLoad.emit(this.currentElement);
+        this.updateButtonVisibility();
+    }
+
     private previousElt(): void {
         if (this.hasPreviousElement) {
-            this.currentElement -= 1;
-            this.onLoad.emit(this.currentElement);
-            this.updateButtonVisibility();
+            this.setCurrentElement(this.currentElement - 1);
         }
     }
 
     private nextElt(): void {
         if (this.hasNextElement) {
-            this.currentElement += 1;
-            this.onLoad.emit(this.currentElement);
-            this.updateButtonVisibility();
+            this.setCurrentElement(this.currentElement + 1);
         }
     }
 
@@ -84,5 +86,16 @@ export class GalleryComponent implements AfterViewInit {
 
     private onSwipeRight(event: any) {
         this.previousElt();
+    }
+
+    private getIndexes(): Array<number> {
+        //TODO: to change in order to allow dynamic update
+        return Array(this.nbElements).fill(0).map((x, i) => i);
+    }
+
+    private spotSelected(index: number): void {
+        if (index < this.nbElements) {
+            this.setCurrentElement(index);
+        }
     }
 }
