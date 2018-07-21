@@ -1,16 +1,24 @@
-<div *ngIf="slide">
-	<div id="{{slide.name}}" class="slide" [ngStyle]="slide.style">
-		<img *ngIf="slide.isLoaded" [routerLink]="['/slide/view', {id: slide.id}]" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" appStayFullSize />
-		<div *ngIf="!slide.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="slide.imgStyle">
-			<mat-spinner diameter="70"></mat-spinner>
-		</div>
-	</div>
+<div *ngIf="!!slide && layout == 'view'">
+	<app-slide-view [slide]="slide"></app-slide-view>
 
 	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
 		<h2>{{slide.title}}</h2>
 	</div>
 
-	<div *ngIf="layout == 'view' && slide.text.length !== 0" class="slide_text" [ngStyle]="slide.textStyle">
+	<div *ngIf="slide.text.length !== 0" class="slide_text" [ngStyle]="slide.textStyle">
 		<markdown #mkd>{{slide.text}}</markdown>
+	</div>
+</div>
+
+<div *ngIf="!!slide && layout == 'carousel'">
+	<!--  fxLayout="row" fxLayoutAlign="center center"
+		Pour supperposer le texte sur l'image il faut utiliser les propriétés CSS suivantes:
+			position: relative;
+	    	top: -500px;
+-->
+	<app-slide-view [slide]="slide"></app-slide-view>
+
+	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
+		<h2>{{slide.title}}</h2>
 	</div>
 </div>
