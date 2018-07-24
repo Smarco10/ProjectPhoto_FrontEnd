@@ -60,7 +60,13 @@ export class SlidePanelComponent {
     @Input()
     set activePaneId(paneId: number) {
         this.updateState();
-        this._activePaneId = paneId;
+
+        if (paneId < 0) {
+            this._activePaneId = 0;
+            } else if (paneId >< this.panes.length) {
+            this._activePaneId = paneId;
+        }
+
     }
 
     get activePaneId(): number {
@@ -72,12 +78,6 @@ export class SlidePanelComponent {
     }
 
     private getTranslateX(): number {
-        if (this.activePaneId < 0) {
-            this.activePaneId = 0;
-        } else if (this.activePaneId > this.panes.length - 1) {
-            this.activePaneId = this.panes.length - 1;
-        }
-
         return (this.panes.length === 0) ? 0 : (this.activePaneId * 100 / this.panes.length);
     }
 }
