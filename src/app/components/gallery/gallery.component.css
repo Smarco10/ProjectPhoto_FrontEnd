@@ -30,3 +30,37 @@ app-slide-panel app-slide {
     align-content: center;
     justify-content: center;
 }
+
+.spots-container {
+    margin: 2px;
+}
+
+.spot {
+    box-sizing: border-box;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    outline: 0;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    transform: translate3d(0, 0, 0);
+    transition: background .4s cubic-bezier(.25, .8, .25, 1), box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    border-radius: 8px;
+    background-color: #37474F;
+}
+
+.spot-selected {
+    background-color: #78909C;
+}

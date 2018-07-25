@@ -42,6 +42,7 @@ import {
     SlidePanelComponent,
     SlideshowComponent,
     SlidesManagerComponent,
+    SlideViewComponent,
     UserManagementComponent,
     UsersManagerComponent
 } from '@app/components';
@@ -77,7 +78,8 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         AlbumEditionComponent,
         AlbumsComponent,
         GalleryComponent,
-        SearchMatFabComponent
+        SearchMatFabComponent,
+        SlideViewComponent
     ],
     imports: [
         BrowserModule,

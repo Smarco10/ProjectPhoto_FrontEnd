@@ -11,5 +11,6 @@ export * from '@components/slide-panel/slide-panel.component';
 export * from '@components/slides-manager/slides-manager.component';
 export * from '@components/slideshow/slideshow.component';
 export * from '@components/slide-edition/slide-edition.component';
+export * from '@components/slide-view/slide-view.component';
 export * from '@components/user-management/user-management.component';
 export * from '@components/users-manager/users-manager.component';
