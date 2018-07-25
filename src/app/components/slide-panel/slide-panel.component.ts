@@ -35,7 +35,8 @@ const defaultParams = { params: { translate_x: 0 } };
 export class SlidePanelComponent {
     @Input() panes: Array<any>;
 
-    private _activePaneId: number = 0;
+    private _activePaneId: string;
+    private activePaneIndex: number;
 
     private activeBinaryState: boolean = true;
 
@@ -57,20 +58,22 @@ export class SlidePanelComponent {
 
     @ContentChild('paneTmpl') paneTmpl: TemplateRef<any>;
 
-    @Input()
-    set activePaneId(paneId: number) {
-        this.updateState();
-
-        if (paneId < 0) {
-            this._activePaneId = 0;
-            } else if (paneId >< this.panes.length) {
-            this._activePaneId = paneId;
-        }
-
+    private getPaneIndex(paneId: string): number {
+    let i = 0;
+        if(!!this.panes){
+        for(; i < this.panes.length; ++i) {
+            if(this.panes[i].id === paneId) {
+                break;
+            }
+            }
+            }
+        return i;
     }
 
-    get activePaneId(): number {
-        return this._activePaneId;
+    @Input()
+    set activePaneId(paneId: string) {
+        this.updateState();
+        this._activePaneId = this.getPaneIndex(paneId);
     }
 
     private updateState(): void {
@@ -78,6 +81,6 @@ export class SlidePanelComponent {
     }
 
     private getTranslateX(): number {
-        return (this.panes.length === 0) ? 0 : (this.activePaneId * 100 / this.panes.length);
+        return (this.panes.length === 0) ? 0 : (this._activePaneId * 100 / this.panes.length);
     }
 }
