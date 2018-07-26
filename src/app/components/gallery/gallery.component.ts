@@ -33,22 +33,25 @@ enum SWIPE_ACTION {
 })
 export class GalleryComponent implements AfterViewInit {
 
-    @Output() onLoad: EventEmitter<number> = new EventEmitter();
+    @Output() onLoad: EventEmitter<string> = new EventEmitter();
 
-    private currentElement: number = 0;
-    private _nbElements: number = 0;
+    private currentElement: string;
+    private _elements: Array<Slide>;
 
     private hasNextElement: boolean = false;
     private hasPreviousElement: boolean = false;
 
     @Input()
-    set nbElements(nbElements: number) {
-        this._nbElements = nbElements;
+    set elements(elements: Array<Slide>) {
+        this._elements = elements;
+        if (this.elements.length > 0) {
+            this.currentElement = elements[0].id;
+        }
         this.updateButtonVisibility();
     }
 
-    get nbElements(): number {
-        return this._nbElements;
+    get elements(): Array<Slide> {
+        return this.elements;
     }
 
     constructor() { }
@@ -57,26 +60,49 @@ export class GalleryComponent implements AfterViewInit {
         this.updateButtonVisibility();
     }
 
-    private updateButtonVisibility(): void {
-        this.hasPreviousElement = (this.currentElement > 0);
-        this.hasNextElement = (this.currentElement > -1) && (this.currentElement < (this.nbElements - 1));
+    private getElementIndex(elementId: string): number {
+        let i = 0;
+        for (; !!this.elements && (i < this.elements.length) && (this.elements[i].id !== elementId); ++i);
+        return i;
     }
 
-    private setCurrentElement(currentElt: number): void {
-        this.currentElement = currentElt;
-        this.onLoad.emit(this.currentElement);
+    private getElementId(elementIndex: number): string {
+        let id: string;
+        if (!!this.elements) {
+            if (elementIndex < 0) {
+                id = this.elements[0].id;
+            } else if (elementIndex >= this.elements.length) {
+                id = this.elements[this.elements.length - 1].id;
+            } else {
+                id = this.elements[elementIndex].id;
+            }
+        }
+        return id;
+    }
+
+    private updateButtonVisibility(): void {
+        let elementIdex = this.getElementIndex(this.currentElement);
+        this.hasPreviousElement = (elementIdex > 0);
+        this.hasNextElement = (elementIdex > -1) && !!this.elements && (elementIdex < (this.elements.length - 1));
+    }
+
+    private setCurrentElement(currentEltIndex: number): void {
+        this.currentElement = this.getElementId(currentEltIndex);
+        if (!!this.currentElement) {
+            this.onLoad.emit(this.currentElement);
+        }
         this.updateButtonVisibility();
     }
 
     private previousElt(): void {
         if (this.hasPreviousElement) {
-            this.setCurrentElement(this.currentElement - 1);
+            this.setCurrentElement(this.getElementIndex(this.currentElement) - 1);
         }
     }
 
     private nextElt(): void {
         if (this.hasNextElement) {
-            this.setCurrentElement(this.currentElement + 1);
+            this.setCurrentElement(this.getElementIndex(this.currentElement) + 1);
         }
     }
 
@@ -90,11 +116,11 @@ export class GalleryComponent implements AfterViewInit {
 
     private getIndexes(): Array<number> {
         //TODO: to change in order to allow dynamic update
-        return Array(this.nbElements).fill(0).map((x, i) => i);
+        return Array(this.elements.length).fill(0).map((x, i) => i);
     }
 
     private spotSelected(index: number): void {
-        if (index < this.nbElements) {
+        if (index < this.elements.length) {
             this.setCurrentElement(index);
         }
     }

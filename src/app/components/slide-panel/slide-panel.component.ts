@@ -14,10 +14,28 @@ import {
     trigger
 } from '@angular/animations';
 
+import { Slide } from '@models/slide'
+
 const stateStyle = {
     transform: 'translateX(-{{translate_x}}%)'
 };
 const defaultParams = { params: { translate_x: 0 } };
+
+/*TODO: implement options like this
+	let galleryOptions = {
+		grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
+		slide: 1,
+		speed: 400,
+		animation: 'lazy',
+		point: {
+			visible: true
+		},
+		load: 1,
+		touch: true,
+		loop: true,
+		easing: 'ease'
+	}
+*/
 
 @Component({
     selector: 'app-slide-panel',
@@ -33,40 +51,15 @@ const defaultParams = { params: { translate_x: 0 } };
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlidePanelComponent {
-    @Input() panes: Array<any>;
-
-    private _activePaneId: string;
-    private activePaneIndex: number;
-
+    @Input() panes: Array<Slide>;
+    private _activePaneId: number;
     private activeBinaryState: boolean = true;
-
-    /*TODO: implement options like this
-        let galleryOptions = {
-            grid: { xs: 1, sm: 1, md: 1, lg: 1, all: 0 },
-            slide: 1,
-            speed: 400,
-            animation: 'lazy',
-            point: {
-                visible: true
-            },
-            load: 1,
-            touch: true,
-            loop: true,
-            easing: 'ease'
-        }
-*/
 
     @ContentChild('paneTmpl') paneTmpl: TemplateRef<any>;
 
     private getPaneIndex(paneId: string): number {
-    let i = 0;
-        if(!!this.panes){
-        for(; i < this.panes.length; ++i) {
-            if(this.panes[i].id === paneId) {
-                break;
-            }
-            }
-            }
+        let i = 0;
+        for (; !!this.panes && (i < this.panes.length) && (this.panes[i].id !== paneId); ++i);
         return i;
     }
 
@@ -81,6 +74,6 @@ export class SlidePanelComponent {
     }
 
     private getTranslateX(): number {
-        return (this.panes.length === 0) ? 0 : (this._activePaneId * 100 / this.panes.length);
+        return (!this.panes || (this.panes.length === 0)) ? 0 : (this._activePaneId * 100 / this.panes.length);
     }
 }

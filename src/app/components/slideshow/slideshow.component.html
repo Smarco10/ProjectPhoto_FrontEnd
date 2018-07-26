@@ -1,4 +1,4 @@
-<app-gallery [nbElements]="slides.length" (onLoad)="galleryLoadEvent($event)">
+<app-gallery [elements]="slides" (onLoad)="galleryLoadEvent($event)">
 	<app-slide-panel [panes]="slides" [activePaneId]="currentSlideId">
 		<ng-template #paneTmpl let-pane>
 			<app-slide [slide]="pane" [layout]="'carousel'"></app-slide>
