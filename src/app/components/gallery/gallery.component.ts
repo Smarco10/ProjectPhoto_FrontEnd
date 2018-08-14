@@ -44,14 +44,13 @@ export class GalleryComponent implements AfterViewInit {
     @Input()
     set elements(elements: Array<Slide>) {
         this._elements = elements;
-        if (this.elements.length > 0) {
-            this.currentElement = elements[0].id;
-        }
+        let curIdx = this.getCurrentElementIndex();
+        this.currentElement = this.getElementId(curIdx);
         this.updateButtonVisibility();
     }
 
     get elements(): Array<Slide> {
-        return this.elements;
+        return this._elements;
     }
 
     constructor() { }
@@ -66,13 +65,17 @@ export class GalleryComponent implements AfterViewInit {
         return i;
     }
 
+    private getCurrentElementIndex(): number {
+        return this.getElementIndex(this.currentElement); 
+    }
+
     private getElementId(elementIndex: number): string {
         let id: string;
         if (!!this.elements) {
             if (elementIndex < 0) {
-                id = this.elements[0].id;
+                id = this.getElementId(0);
             } else if (elementIndex >= this.elements.length) {
-                id = this.elements[this.elements.length - 1].id;
+                id = this.getElementId(this.elements.length - 1);
             } else {
                 id = this.elements[elementIndex].id;
             }
@@ -81,7 +84,7 @@ export class GalleryComponent implements AfterViewInit {
     }
 
     private updateButtonVisibility(): void {
-        let elementIdex = this.getElementIndex(this.currentElement);
+        let elementIdex = this.getCurrentElementIndex();
         this.hasPreviousElement = (elementIdex > 0);
         this.hasNextElement = (elementIdex > -1) && !!this.elements && (elementIdex < (this.elements.length - 1));
     }
@@ -96,13 +99,13 @@ export class GalleryComponent implements AfterViewInit {
 
     private previousElt(): void {
         if (this.hasPreviousElement) {
-            this.setCurrentElement(this.getElementIndex(this.currentElement) - 1);
+            this.setCurrentElement(this.getCurrentElementIndex() - 1);
         }
     }
 
     private nextElt(): void {
         if (this.hasNextElement) {
-            this.setCurrentElement(this.getElementIndex(this.currentElement) + 1);
+            this.setCurrentElement(this.getCurrentElementIndex() + 1);
         }
     }
 
@@ -125,3 +128,4 @@ export class GalleryComponent implements AfterViewInit {
         }
     }
 }
+
