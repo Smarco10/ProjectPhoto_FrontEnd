@@ -1,3 +1,12 @@
+<mat-list *ngIf="!!slidesImported && slidesImported.length > 0" role="list" id="slides_list">
+	<mat-list-item *ngFor="let slide of slidesImported; let idx = index" role="listitem">
+		<app-slide-management [slide]="slide" (onEdit)="editSlide($event)" (onDelete)="removeSlide($event)"></app-slide-management>
+		<mat-divider *ngIf="idx < slidesImported.length - 1"></mat-divider>
+	</mat-list-item>
+</mat-list>
+
+<button mat-raised-button color="primary" class="button block_centered" (click)="file_dialog_multiple.click()">Load pictures</button>
+
 <table id="layout">
 	<tr>
 		<td colspan="3">
@@ -23,7 +32,7 @@
 			</div>
 		</td>
 		<td>
-			<label *ngIf="!slideData" for="upload-image" class="placeholder clickable block_centered">CLICK TO LOAD PICTURE</label>
+			<label *ngIf="!slideData" class="placeholder clickable block_centered" (click)="file_dialog_one.click()">CLICK TO LOAD PICTURE</label>
 			<img *ngIf="slideData" [src]="slideData" height="500" alt="Aperçu de l’image..." class="clickable block_centered" (click)="slideData=undefined" />
 		</td>
 		<td>
@@ -68,6 +77,7 @@
 	<input id="upload-text-right" class="hidden" type="text" name="text-right" [ngModel]="mkTextRight" />
 	<input id="upload-text-down" class="hidden" type="text" name="text-down" [ngModel]="mkTextDown" />
 
-	<input id="upload-image" class="hidden" name="image" type="file" (change)="previewFile($event)" />
+	<input id="upload-image" class="hidden" name="image" #file_dialog_multiple type="file" accept="image/*" multiple (change)="loadFiles($event)" />
+	<input class="hidden" name="image" #file_dialog_one type="file" accept="image/*" (change)="loadFile($event)" />
 	<input id="upload-btn" class="hidden" name="upload" type="submit" />
 </form>

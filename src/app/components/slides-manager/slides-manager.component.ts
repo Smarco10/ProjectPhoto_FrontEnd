@@ -79,10 +79,28 @@ export class SlidesManagerComponent implements OnInit {
     }
 
     private updateSlide(index: number, updatedSlide: any) {
-        this.slides[index].updateFromServer(updatedSlide);
+        if (index < this.slides.length) {
+            this.slides[index].updateFromServer(updatedSlide);
+        }
     }
 
     private removeSlide(index: number) {
-        this.slides.splice(index, 1);
+        if (index < this.slides.length) {
+            this.slides.splice(index, 1);
+        }
+    }
+
+    private editSlide(slide: Slide) {
+        console.log("edit slide: " + slide.id);
+    }
+
+    private deleteSlide(slide: Slide) {
+        this.slideService.deleteSlide(slide.id)
+            .then(ret => {
+                console.log("Succeed to remove " + ret);
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 }

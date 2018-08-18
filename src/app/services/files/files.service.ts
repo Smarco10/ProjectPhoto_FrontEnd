@@ -22,8 +22,15 @@ export class FilesService {
         });
     }
 
-    uploadFile(fileData: string): Promise<any> {
-        return this.filesService.create({ uri: fileData });
+    uploadFile(data: string, name?: string, format?: string): Promise<any> {
+        let query: any = { uri: data };
+        if (!!format) {
+            Object.assign(query, { format });
+        }
+        if (!!name) {
+            Object.assign(query, { name });
+        }
+        return this.filesService.create(query);
     }
 
     deleteFile(id: string): Promise<any> {

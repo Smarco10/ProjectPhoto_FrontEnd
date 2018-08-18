@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Slide } from '@models/slide'
 import { Album } from '@models/album'
+import { CollectionHelper } from '@models/collection_helper';
 import { AlbumsService, FilesService, SlideService } from 'services'
 
 @Component({
@@ -11,6 +12,9 @@ import { AlbumsService, FilesService, SlideService } from 'services'
 })
 export class SlideEditionComponent implements OnInit {
 
+    private slidesImported: Array<Slide> = new Array<Slide>();
+    private idHelper: CollectionHelper<Slide> = new CollectionHelper<Slide>(this.slidesImported);
+
     mkTextUp: string = "";
 
     //https://www.npmjs.com/package/markdown
@@ -19,9 +23,7 @@ export class SlideEditionComponent implements OnInit {
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis iaculis egestas. Ut et consectetur nisi, nec faucibus leo. Curabitur at purus maximus, blandit ante in, eleifend arcu. Mauris rhoncus ex quam, vel bibendum diam blandit a. In pretium tellus in ipsum finibus porttitor. Aliquam hendrerit ac tellus et porta. Suspendisse ultrices urna vel augue egestas accumsan. Proin eleifend facilisis massa sit amet tempor. Vivamus eleifend libero ac nunc sodales, eu gravida ligula finibus. Integer gravida luctus felis, eget vulputate leo maximus in. Etiam tellus lorem, iaculis id eleifend sit amet, porta sit amet lectus. In pellentesque quam eu tincidunt vehicula. Pellentesque pellentesque arcu quis nulla pellentesque, ac rhoncus ipsum ornare.\n\
 ";
 
-    albums: Album[] = [];
     slideData: string;
-    fileList: FileList;
 
     showMkTextUp: boolean = false;
     showMkTextLeft: boolean = false;
@@ -42,22 +44,32 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis i
 
     ngOnInit() { }
 
-    previewFile(event) {
-        this.fileList = event.target.files;
-        let thus = this;
-        let reader = new FileReader();
+    loadFiles(event: any) {
+        let fileList: FileList = event.target.files;
 
-        reader.addEventListener("load", function() {
-            thus.slideData = reader.result;
-        }, false);
+        if (!!fileList) {
+            for (let i = 0; i < fileList.length; ++i) {
+                let slide: Slide = new Slide({
+                    title: fileList[i].name
+                });
 
-        if (this.fileList && this.fileList.length > 0) {
-            reader.readAsDataURL(this.fileList[0]);
+                slide.setStyle({ height: "100px" }, undefined, undefined);
+
+                let reader = new FileReader();
+                reader.addEventListener("load", function() {
+                    let data: string = (<string>reader.result).substring(("data:" + fileList[i].type + ";base64,").length);
+                    slide.setData(data, { "Mime type": fileList[i].type });
+                }, false);
+
+                reader.readAsDataURL(fileList[i]);
+
+                this.slidesImported.push(slide);
+            }
         }
     }
 
     upload() {
-        if (this.slideData) {
+        if (!!this.slideData) {
             this.filesService.uploadFile(this.slideData)
                 .then(data => {
                     this.slideService
@@ -78,10 +90,23 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit ex quis i
     }
 
     previewSlide() {
-        if (this.slideData) {
+        if (!!this.slideData) {
             console.log("preview slide");
         } else {
             console.error("cannot preview undefined slide");
+        }
+    }
+
+    editSlide(slide: Slide) {
+        console.log("edit " + slide.title);
+    }
+
+    removeSlide(slide: Slide) {
+        let slideIdx = this.idHelper.getIndex(slide, (elt1: Slide, elt2: Slide): boolean => {
+            return elt1.title === elt2.title;
+        });
+        if (slideIdx < this.slidesImported.length) {
+            this.slidesImported.splice(slideIdx, 1);
         }
     }
 }

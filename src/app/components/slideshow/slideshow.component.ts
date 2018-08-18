@@ -39,11 +39,20 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         const map = this.route.snapshot.paramMap
-        if (map.has('id')) {
-            this.loadAlbum(map.get('id'));
-            //TODO allow to slide composition of albumIds and slideIds
+        if (map.has('albumId')) {
+            this.loadAlbum(map.get('albumId'));
         } else {
-            this.loadSlides(); //TODO or redirect to '/'
+            let i = 0;
+            if (map.has('slideId' + i)) {
+                let slides: Array<string> = new Array<string>();
+                while (map.has('slideId' + i)) {
+                    slides.push(map.get('slideId' + i));
+                    ++i;
+                }
+                this.loadSlides(slides);
+            } else {
+                this.loadSlides(); //TODO or redirect to '/'
+            }
         }
     }
 

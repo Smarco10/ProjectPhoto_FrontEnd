@@ -1,26 +1,24 @@
 <div *ngIf="slide" class="grid-container">
-	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide" [ngStyle]="slide.style">
+	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide centered" [ngStyle]="slide.style">
 		<img *ngIf="slide.isLoaded" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" />
 		<div *ngIf="!slide.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="slide.imgStyle">
 			<mat-spinner diameter="40"></mat-spinner>
 		</div>
 	</div>
 
-	<div *ngIf="slide.title.length !== 0" class="slide_title centerized" [ngStyle]="slide.titleStyle">
+	<div *ngIf="slide.title.length > 0" class="slide_title centered" [ngStyle]="slide.titleStyle">
 		{{slide.title}}
 	</div>
 
-	<div class="buttons centerized" *ngIf="!deleteRequested">
+	<div class="buttons centered" *ngIf="!deleteRequested">
 		<button mat-button (click)="modifySlide()">
 			<mat-icon>edit</mat-icon>
 		</button>
 		<button mat-button color="warn" (click)="deleteRequested = true"><mat-icon>delete</mat-icon></button>
 	</div>
 
-	<div class="buttons centerized" *ngIf="deleteRequested">
+	<div class="buttons centered" *ngIf="deleteRequested">
 		<button mat-button color="warn" (click)="deleteSlide()">Yes</button>
-		<button mat-button (click)="deleteRequested = false">
-			No
-		</button>
+		<button mat-button (click)="deleteRequested = false">No</button>
 	</div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -11,6 +11,9 @@ import { Slide } from '@models/slide';
     styleUrls: ['./slide-management.component.css']
 })
 export class SlideManagementComponent implements OnInit, OnDestroy {
+
+    @Output() onEdit: EventEmitter<Slide> = new EventEmitter();
+    @Output() onDelete: EventEmitter<Slide> = new EventEmitter();
 
     @Input() slide: Slide;
     private slideImageIdSubscription: Subscription;
@@ -43,21 +46,12 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
             });
     }
 
-    modifySlide() {
-        console.log("modifySlide(" + this.slide.id + ")");
+    private modifySlide() {
+        this.onEdit.emit(this.slide);
     }
 
-    deleteSlide() {
-        let id = this.slide.id;
-
+    private deleteSlide() {
         this.deleteRequested = false;
-
-        this.slideService.deleteSlide(id)
-            .then(ret => {
-                console.log("Succeed to remove " + ret);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        this.onDelete.emit(this.slide);
     }
 }

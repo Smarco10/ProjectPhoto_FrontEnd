@@ -77,7 +77,9 @@ export class Slide extends Idable {
     setData(data: ArrayBuffer | string, metadata: any): void {
         this.data = typeof (data) === "string" ? data : b64(data);
         this.metadata = metadata;
-        this.mimetype = metadata["Mime type"];
+        if (!!metadata) {
+            this.mimetype = metadata["Mime type"];
+        }
 
         this.isLoaded = true;
     }
