@@ -1,4 +1,5 @@
 import { Observable, Subject } from 'rxjs';
+import { Idable } from "./idable"
 
 function b64(e: ArrayBuffer): string {
     let t = "";
@@ -10,9 +11,8 @@ function b64(e: ArrayBuffer): string {
     return window.btoa(t);
 }
 
-export class Slide {
+export class Slide extends Idable {
 
-    id: string;
     isLoaded: boolean = false;
     isHidden: boolean = false;
 
@@ -32,7 +32,7 @@ export class Slide {
     textStyle: object;
 
     constructor(serverData: any) {
-        this.id = serverData._id;
+        super(serverData);
         this.updateFromServer(serverData);
 
         this.style = {
@@ -61,7 +61,7 @@ export class Slide {
     }
 
     updateFromServer(serverData: any): boolean {
-        const serverDataAreValid: boolean = serverData._id === this.id;
+        const serverDataAreValid: boolean = this.serverDataAreValid(serverData);
         if (serverDataAreValid) {
             this.title = serverData.title;
             this.text = serverData.text;

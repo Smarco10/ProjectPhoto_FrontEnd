@@ -6,13 +6,21 @@
 		</div>
 	</div>
 
-	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
-		<h2>{{slide.title}}</h2>
+	<div *ngIf="slide.title.length !== 0" class="slide_title centerized" [ngStyle]="slide.titleStyle">
+		{{slide.title}}
 	</div>
 
-	<div class="buttons">
-		<button mat-raised-button (click)="modifySlide()">modify</button>
-		<br/>
-		<button mat-raised-button color="warn" (click)="deleteSlide()">remove</button>
+	<div class="buttons centerized" *ngIf="!deleteRequested">
+		<button mat-button (click)="modifySlide()">
+			<mat-icon>edit</mat-icon>
+		</button>
+		<button mat-button color="warn" (click)="deleteRequested = true"><mat-icon>delete</mat-icon></button>
+	</div>
+
+	<div class="buttons centerized" *ngIf="deleteRequested">
+		<button mat-button color="warn" (click)="deleteSlide()">Yes</button>
+		<button mat-button (click)="deleteRequested = false">
+			No
+		</button>
 	</div>
 </div>

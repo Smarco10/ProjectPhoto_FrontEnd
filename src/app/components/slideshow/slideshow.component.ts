@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AlbumsService, FilesService, SlideService } from 'services';
 import { Slide } from '@models/slide';
+import { CollectionHelper } from '@models/collection_helper';
 
 @Component({
     selector: 'app-slideshow',
@@ -12,7 +13,8 @@ import { Slide } from '@models/slide';
 export class SlideshowComponent implements OnInit, AfterViewInit {
 
     private slides: Array<Slide> = new Array<Slide>();
-    private currentSlideId: number = 0;
+    private idHelper: CollectionHelper<Slide> = new CollectionHelper<Slide>(this.slides);
+    private currentSlideId: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -39,6 +41,7 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         const map = this.route.snapshot.paramMap
         if (map.has('id')) {
             this.loadAlbum(map.get('id'));
+            //TODO allow to slide composition of albumIds and slideIds
         } else {
             this.loadSlides(); //TODO or redirect to '/'
         }
@@ -54,6 +57,21 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
             });
     }
 
+    private getSlideIndex(slideId: string): number {
+        return !!this.idHelper ? this.idHelper.getIndex(slideId, Slide.isIdEqualTo) : 0;
+    }
+
+    private getSlideId(slideIndex: number): string {
+        let id: string = null;
+        if (!!this.idHelper) {
+            const slide: Slide = this.idHelper.get(slideIndex);
+            if (!!slide) {
+                id = slide.id;
+            }
+        }
+        return id;
+    }
+
     private loadSlides(slideIds?: string[]): void {
         const query = slideIds && { _id: { $in: slideIds } };
         this.slideService.getSlides(query)
@@ -63,7 +81,8 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
                     slidesArr.push(new Slide(slides[i]));
                 }
                 this.slides = slidesArr; //TODO: oblige de faire ca sinon slide-panel ne voit pas les changements
-                this.galleryLoadEvent(0);
+                this.idHelper = new CollectionHelper<Slide>(this.slides);
+                this.galleryLoadEvent(this.idHelper.first.id);
             })
             .catch(err => {
                 console.log(err);
@@ -99,9 +118,11 @@ export class SlideshowComponent implements OnInit, AfterViewInit {
         this.slides.splice(index, 1);
     }
 
-    public galleryLoadEvent(index: number) {
+    public galleryLoadEvent(id: string) {
+        let index = this.getSlideIndex(id);
         if (index < this.slides.length) {
-            this.currentSlideId = index;
+            this.currentSlideId = id;
+
             //TODO: Implement a IsLoading state
             if (!this.slides[index].isLoaded) {
                 this.loadSlideData(index);

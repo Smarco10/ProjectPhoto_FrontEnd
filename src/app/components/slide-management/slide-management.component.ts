@@ -14,6 +14,7 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
 
     @Input() slide: Slide;
     private slideImageIdSubscription: Subscription;
+    private deleteRequested: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -23,6 +24,7 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        this.deleteRequested = false;
         this.slideImageIdSubscription = this.slide.getImageIdObserver()
             .subscribe(message => { this.loadSlideData(); });
     }
@@ -47,7 +49,8 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
 
     deleteSlide() {
         let id = this.slide.id;
-        let router = this.router;
+
+        this.deleteRequested = false;
 
         this.slideService.deleteSlide(id)
             .then(ret => {

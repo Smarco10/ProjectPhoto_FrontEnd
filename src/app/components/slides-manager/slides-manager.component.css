@@ -1,0 +1,14 @@
+#slides_list {
+    background-color: white;
+}
+
+.mat-list .mat-list-item {
+    height: unset;
+}
+
+#new_slide_button {
+    display: block;
+    margin: 0 auto;
+    margin-top: 6px;
+    margin-bottom: 3px;
+}

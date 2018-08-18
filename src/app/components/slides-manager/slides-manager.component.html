@@ -1,4 +1,7 @@
-<mat-card *ngFor="let slide of slides">
-	<app-slide-management [slide]="slide"></app-slide-management>
-</mat-card>
-<button mat-raised-button [routerLink]="['/slide/create']" color="primary">Create new Slide</button>
+<mat-list role="list" id="slides_list">
+	<mat-list-item *ngFor="let slide of slides; let idx = index" role="listitem">
+		<app-slide-management [slide]="slide"></app-slide-management>
+		<mat-divider *ngIf="idx < slides.length - 1"></mat-divider>
+	</mat-list-item>
+</mat-list>
+<button mat-raised-button id="new_slide_button" [routerLink]="['/slide/create']" color="primary">Create new Slide</button>

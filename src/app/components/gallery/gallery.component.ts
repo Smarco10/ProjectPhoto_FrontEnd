@@ -18,8 +18,9 @@ import {
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { Guid } from '@models/guid'
-import { Slide } from '@models/slide'
+import { Guid } from '@models/guid';
+import { Slide } from '@models/slide';
+import { CollectionHelper } from '@models/collection_helper';
 
 enum SWIPE_ACTION {
     LEFT = 'swipeleft',
@@ -37,15 +38,19 @@ export class GalleryComponent implements AfterViewInit {
 
     private currentElement: string;
     private _elements: Array<Slide>;
+    private idHelper: CollectionHelper<Slide>;
 
     private hasNextElement: boolean = false;
     private hasPreviousElement: boolean = false;
 
+    @Input() rollOverAllowed: boolean = false;
+
     @Input()
     set elements(elements: Array<Slide>) {
         this._elements = elements;
+        this.idHelper = new CollectionHelper<Slide>(this.elements);
         let curIdx = this.getCurrentElementIndex();
-        this.currentElement = this.getElementId(curIdx);
+        this.currentElement = this.getElementId(curIdx < this.elements.length ? curIdx : 0);
         this.updateButtonVisibility();
     }
 
@@ -60,24 +65,19 @@ export class GalleryComponent implements AfterViewInit {
     }
 
     private getElementIndex(elementId: string): number {
-        let i = 0;
-        for (; !!this.elements && (i < this.elements.length) && (this.elements[i].id !== elementId); ++i);
-        return i;
+        return !!this.idHelper ? this.idHelper.getIndex(elementId, Slide.isIdEqualTo) : 0;
     }
 
     private getCurrentElementIndex(): number {
-        return this.getElementIndex(this.currentElement); 
+        return this.getElementIndex(this.currentElement);
     }
 
     private getElementId(elementIndex: number): string {
-        let id: string;
-        if (!!this.elements) {
-            if (elementIndex < 0) {
-                id = this.getElementId(0);
-            } else if (elementIndex >= this.elements.length) {
-                id = this.getElementId(this.elements.length - 1);
-            } else {
-                id = this.elements[elementIndex].id;
+        let id: string = null;
+        if (!!this.idHelper) {
+            const slide: Slide = this.idHelper.get(elementIndex);
+            if (!!slide) {
+                id = slide.id;
             }
         }
         return id;
@@ -100,12 +100,20 @@ export class GalleryComponent implements AfterViewInit {
     private previousElt(): void {
         if (this.hasPreviousElement) {
             this.setCurrentElement(this.getCurrentElementIndex() - 1);
+        } else {
+            if (this.rollOverAllowed) {
+                this.setCurrentElement(this.elements.length - 1);
+            }
         }
     }
 
     private nextElt(): void {
         if (this.hasNextElement) {
             this.setCurrentElement(this.getCurrentElementIndex() + 1);
+        } else {
+            if (this.rollOverAllowed) {
+                this.setCurrentElement(0);
+            }
         }
     }
 
