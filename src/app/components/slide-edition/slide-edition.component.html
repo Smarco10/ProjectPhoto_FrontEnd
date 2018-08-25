@@ -1,72 +1,37 @@
 <mat-list *ngIf="!!slidesImported && slidesImported.length > 0" role="list" id="slides_list">
-	<mat-list-item *ngFor="let slide of slidesImported; let idx = index" role="listitem">
-		<app-slide-management [slide]="slide" (onEdit)="editSlide($event)" (onDelete)="removeSlide($event)"></app-slide-management>
+	<mat-list-item *ngFor="let slide of slidesImported; let idx = index" role="listitem" [ngClass]="{'slide_editing': currentSlideEdit === slide}">
+		<app-slide-management [slide]="slide" [iconEdit]="currentSlidePreview ? 'photo' : 'edit'" (onEdit)="editSlide($event)" (onDelete)="removeSlide($event)"></app-slide-management>
+		<mat-icon *ngIf="!slide.id && slide.isLoaded" class="clickable" (click)="upload(slide)">cloud_upload</mat-icon>
+		<mat-icon *ngIf="!!slide.id">cloud_done</mat-icon>
 		<mat-divider *ngIf="idx < slidesImported.length - 1"></mat-divider>
 	</mat-list-item>
 </mat-list>
 
-<button mat-raised-button color="primary" class="button block_centered" (click)="file_dialog_multiple.click()">Load pictures</button>
+<button mat-raised-button color="primary" class="button centered" (click)="file_dialog_multiple.click()">Load pictures</button>
+<button mat-raised-button color="warn" class="button centered" (click)="upload(slidesImported)">Upload</button>
+
+<br>
+
+<mat-slide-toggle [disabled]="!slidesImported || slidesImported.length == 0" (toggleChange)="currentSlidePreview = !currentSlidePreview">{{currentSlidePreview ? "Edit" : "Preview"}}</mat-slide-toggle>
 
 <table id="layout">
 	<tr>
 		<td colspan="3">
-			<div *ngIf="showTextUp">
-				<label *ngIf="!mkTextUp || (mkTextUp.length == 0)" for="upload-text-up" class="placeholder clickable block_centered" (click)="mkTextUp=' '">CLICK TO ADD TEXT</label>
-				<markdown *ngIf="showMkTextUp && mkTextUp && (mkTextUp.length > 0)" [data]="mkTextUp" (click)="showMkTextUp=!showMkTextUp" class="clickable">
-				</markdown>
-				<textarea *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0) " placeholder="markdown code here..." [(ngModel)]="mkTextUp" name="text-up"></textarea>
-				<br *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0)" />
-				<button *ngIf="!showMkTextUp && mkTextUp && (mkTextUp.length > 0)" (click)="showMkTextUp=!showMkTextUp">Toogle Markdown</button>
-			</div>
+			<markdown *ngIf="currentSlidePreview && !!currentSlideEdit && !!currentSlideEdit.title && (currentSlideEdit.title.length > 0)" [data]="currentSlideEdit.title"></markdown>
+			<textarea *ngIf="!currentSlidePreview && !!currentSlideEdit" placeholder="markdown code here..." [(ngModel)]="currentSlideEdit.title"></textarea>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<div *ngIf="showTextLeft">
-				<label *ngIf="!mkTextLeft || (mkTextLeft.length == 0)" for="upload-text-left" class="placeholder clickable block_centered" (click)="mkTextLeft=' '">+</label>
-				<markdown *ngIf="showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" [data]="mkTextLeft" (click)="showMkTextLeft=!showMkTextLeft" class="clickable">
-				</markdown>
-				<textarea *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextLeft" name="text-left"></textarea>
-				<br *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" />
-				<button *ngIf="!showMkTextLeft && mkTextLeft && (mkTextLeft.length > 0)" (click)="showMkTextLeft=!showMkTextLeft">Toogle Markdown</button>
-			</div>
-		</td>
-		<td>
-			<label *ngIf="!slideData" class="placeholder clickable block_centered" (click)="file_dialog_one.click()">CLICK TO LOAD PICTURE</label>
-			<img *ngIf="slideData" [src]="slideData" height="500" alt="Aperçu de l’image..." class="clickable block_centered" (click)="slideData=undefined" />
-		</td>
-		<td>
-			<div *ngIf="showTextRight">
-				<label *ngIf="!mkTextRight || (mkTextRight.length == 0)" for="upload-text-right" class="placeholder clickable block_centered" (click)="mkTextRight=' '">+</label>
-				<markdown *ngIf="showMkTextRight && mkTextRight && (mkTextRight.length > 0)" [data]="mkTextRight" (click)="showMkTextRight=!showMkTextRight" class="clickable">
-				</markdown>
-				<textarea *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextRight" name="text-right"></textarea>
-				<br *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" />
-				<button *ngIf="!showMkTextRight && mkTextRight && (mkTextRight.length > 0)" (click)="showMkTextRight=!showMkTextRight">Toogle Markdown</button>
-			</div>
+			<app-slide-view [slide]="currentSlideEdit"></app-slide-view>
+			<!--img *ngIf="!!currentSlideEdit && currentSlideEdit.isLoaded" src="data:{{currentSlideEdit.mimetype}};base64,{{currentSlideEdit.data}}" height="500" alt="Aperçu de l’image..." class="clickable block_centered" (click)="file_dialog_one.click()" /-->
 		</td>
 	</tr>
 	<tr>
 		<td colspan="3">
-			<div *ngIf="showTextDown">
-				<label *ngIf="!mkTextDown || (mkTextDown.length == 0)" for="upload-text-down" class="placeholder clickable block_centered" (click)="mkTextDown=' '">CLICK TO ADD TEXT</label>
-				<markdown *ngIf="showMkTextDown && mkTextDown && (mkTextDown.length > 0)" [data]="mkTextDown" (click)="showMkTextDown=!showMkTextDown" class="clickable">
-				</markdown>
-				<textarea *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" placeholder="markdown code here..." [(ngModel)]="mkTextDown" name="text-down"></textarea>
-				<br *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" />
-				<button *ngIf="!showMkTextDown && mkTextDown && (mkTextDown.length > 0)" (click)="showMkTextDown=!showMkTextDown">Toogle Markdown</button>
-			</div>
+			<markdown *ngIf="currentSlidePreview && !!currentSlideEdit && !!currentSlideEdit.text && (currentSlideEdit.text.length > 0)" [data]="currentSlideEdit.text"></markdown>
+			<textarea *ngIf="!currentSlidePreview && !!currentSlideEdit" placeholder="markdown code here..." [(ngModel)]="currentSlideEdit.text" name="text-down"></textarea>
 		</td>
-	</tr>
-</table>
-
-<br/>
-
-<table id="btn-box">
-	<tr>
-		<td><button id="upload-btn" class="button" (click)="upload()">Upload</button></td>
-		<!-- [disabled]="!slideData" -->
-		<td><button id="preview-btn" class="button" (click)="previewSlide()">Preview</button></td>
 	</tr>
 </table>
 
@@ -78,6 +43,6 @@
 	<input id="upload-text-down" class="hidden" type="text" name="text-down" [ngModel]="mkTextDown" />
 
 	<input id="upload-image" class="hidden" name="image" #file_dialog_multiple type="file" accept="image/*" multiple (change)="loadFiles($event)" />
-	<input class="hidden" name="image" #file_dialog_one type="file" accept="image/*" (change)="loadFile($event)" />
+	<input class="hidden" name="image" #file_dialog_one type="file" accept="image/*" (change)="loadCurrentSlideFile($event)" />
 	<input id="upload-btn" class="hidden" name="upload" type="submit" />
 </form>

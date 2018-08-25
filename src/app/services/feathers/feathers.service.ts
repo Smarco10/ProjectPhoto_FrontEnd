@@ -74,20 +74,20 @@ export class FeathersService {
 
     // expose authentication
     public async authenticate(credentials?: any) {
-        let authicated: boolean = false;
+        let authenticated: boolean = false;
 
         try {
             let response = await this._feathers.authenticate(credentials);
             let payload = await this._feathers.passport.verifyJWT(response.accessToken);
-            console.log("successfully logged in");
+            console.log("successfully logged in", this._feathers.passport);
 
             let user = await this.service(ServiceNames.USERS).get(payload.userId);
             this._feathers.set(LocalUserPassportFieldName, new User(user._id, user.email, user.permissions));
 
-            authicated = true;
+            authenticated = true;
 
         } catch (err) {
-            authicated = false;
+            authenticated = false;
             console.error("Authentication err", err);
             this._feathers.set(LocalUserPassportFieldName, undefined);
             this.logout();
@@ -96,14 +96,14 @@ export class FeathersService {
             }
         }
 
-        if (authicated) {
+        if (authenticated) {
             for (let callback of this._authenticatedEventCallbackQueue) {
                 callback();
             }
         }
 
         return new Promise<any>((resolve, reject) => {
-            if (authicated)
+            if (authenticated)
                 resolve();
             else
                 reject();
@@ -112,6 +112,11 @@ export class FeathersService {
 
     public getConnectedUser(): User {
         return this._feathers.get(LocalUserPassportFieldName);
+    }
+
+    public getJWT(): string {
+        const storageKey = this._feathers.passport.options.storageKey;
+        return this._feathers.passport.storage[storageKey];
     }
 
     // expose logout

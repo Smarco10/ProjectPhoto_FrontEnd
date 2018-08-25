@@ -107,7 +107,6 @@ export class AlbumsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private updateLogin() {
         let user = this.auth.getConnectedUser();
-        console.log("updateLogin", user); //pk user disparait???
         this.allowed.manageAlbum = !!user && user.isAdmin();
     }
 

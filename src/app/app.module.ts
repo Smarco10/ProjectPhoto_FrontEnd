@@ -18,6 +18,7 @@ import {
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatRadioModule,
     MatToolbarModule
 } from '@angular/material';
@@ -102,6 +103,7 @@ import { StayFullSizeDirective } from '@directives/stay-full-size/stay-full-size
         MatProgressSpinnerModule,
         MatSelectModule,
         MatSidenavModule,
+        MatSlideToggleModule,
         MatRadioModule,
         MatToolbarModule,
         MarkdownModule.forRoot()

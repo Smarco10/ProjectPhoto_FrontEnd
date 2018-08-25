@@ -2,6 +2,10 @@
     background-color: white;
 }
 
+.slide_editing {
+    background-color: lightgrey;
+}
+
 .mat-list .mat-list-item {
     height: unset;
 }

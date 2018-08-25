@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { Idable } from "./idable"
+import { Identifiable } from "./identifiable"
 
 function b64(e: ArrayBuffer): string {
     let t = "";
@@ -11,11 +11,13 @@ function b64(e: ArrayBuffer): string {
     return window.btoa(t);
 }
 
-export class Slide extends Idable {
+export class Slide extends Identifiable {
 
     isLoaded: boolean = false;
     isHidden: boolean = false;
 
+    title: string;
+    text: string;
     mimetype: string;
     data: string;
     metadata: any;
@@ -23,19 +25,15 @@ export class Slide extends Idable {
     private _imageId: string;
     private imageIdSubject: Subject<string> = new Subject<string>();
 
-    title: string;
-    text: string;
-
-    style: object;
+    /*style: object;
     imgStyle: object;
     titleStyle: object;
-    textStyle: object;
+    textStyle: object;*/
 
     constructor(serverData: any) {
         super(serverData);
-        this.updateFromServer(serverData);
 
-        this.style = {
+        /*this.style = {
             "width": "100%"
         };
 
@@ -53,15 +51,11 @@ export class Slide extends Idable {
                 "width": "100%"
             },
             {}
-        );
-    }
-
-    public isCreated(): boolean {
-        return !!this.id;
+        );*/
     }
 
     updateFromServer(serverData: any): boolean {
-        const serverDataAreValid: boolean = this.serverDataAreValid(serverData);
+        const serverDataAreValid: boolean = super.updateFromServer(serverData);
         if (serverDataAreValid) {
             this.title = serverData.title;
             this.text = serverData.text;
@@ -69,7 +63,6 @@ export class Slide extends Idable {
                 this.imageId = serverData.image;
                 this.isLoaded = false;
             }
-            //TODO: how to update style???
         }
         return serverDataAreValid;
     }
@@ -80,7 +73,6 @@ export class Slide extends Idable {
         if (!!metadata) {
             this.mimetype = metadata["Mime type"];
         }
-
         this.isLoaded = true;
     }
 
@@ -95,7 +87,9 @@ export class Slide extends Idable {
     set imageId(imageId: string) {
         if (this._imageId !== imageId) {
             this._imageId = imageId;
-            this.imageIdSubject.next(this.imageId);
+            if (!!this.imageIdSubject) {
+                this.imageIdSubject.next(this.imageId);
+            }
         }
     }
 
@@ -103,11 +97,11 @@ export class Slide extends Idable {
         return this.imageIdSubject.asObservable();
     }
 
-    setStyle(imgStyle: object, titleStyle: object, textStyle: object) {
+    /*setStyle(imgStyle: object, titleStyle: object, textStyle: object) {
         this.imgStyle = imgStyle;
         this.titleStyle = titleStyle;
         this.textStyle = textStyle;
-    }
+    }*/
 
     getWidth(): Number {
         return this.metadata.size.width;

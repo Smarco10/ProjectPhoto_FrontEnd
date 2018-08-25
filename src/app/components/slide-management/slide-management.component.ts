@@ -19,6 +19,9 @@ export class SlideManagementComponent implements OnInit, OnDestroy {
     private slideImageIdSubscription: Subscription;
     private deleteRequested: boolean = false;
 
+    @Input() iconEdit: string = "edit";
+    @Input() iconDelete: string = "delete";
+
     constructor(
         private route: ActivatedRoute,
         private filesService: FilesService,
