@@ -1,12 +1,12 @@
 <div *ngIf="slide" class="grid-container">
-	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide centered" [ngStyle]="slide.style">
-		<img *ngIf="slide.isLoaded" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" />
-		<div *ngIf="!slide.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="slide.imgStyle">
+	<div [routerLink]="['/slide/view', {id: slide.id}]" id="{{slide.name}}" class="slide centered">
+		<img *ngIf="slide.isLoaded" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" />
+		<div *ngIf="!slide.isLoaded" fxLayout="row" fxLayoutAlign="center center">
 			<mat-spinner diameter="40"></mat-spinner>
 		</div>
 	</div>
 
-	<div *ngIf="!!slide.title && slide.title.length > 0" class="slide_title centered" [ngStyle]="slide.titleStyle">
+	<div *ngIf="!!slide.title && slide.title.length > 0" class="slide_title centered">
 		{{slide.title}}
 	</div>
 

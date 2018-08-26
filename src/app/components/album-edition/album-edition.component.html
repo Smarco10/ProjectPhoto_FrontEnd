@@ -43,8 +43,8 @@
 
 		<div *ngIf="addedSlides.length > 0">
 			<label>Front image</label>
-			<img *ngIf="album.isLoaded" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" [ngStyle]="album.imgStyle" appStayFullSize />
-			<div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="album.imgStyle">
+			<img *ngIf="album.isLoaded" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" appStayFullSize />
+			<div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center">
 				<mat-spinner diameter="70"></mat-spinner>
 			</div>
 		</div>

@@ -1,6 +1,7 @@
-<div *ngIf="!!slide" id="{{slide.name}}" class="slide" [ngStyle]="slide.style">
-	<img *ngIf="slide.isLoaded" [routerLink]="['/slide/view', {id: slide.id}]" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" [ngStyle]="slide.imgStyle" appStayFullSize />
-	<div *ngIf="!slide.isLoaded" fxLayout="row" fxLayoutAlign="center center" [ngStyle]="slide.imgStyle">
+<div *ngIf="!!slide" id="{{slide.name}}" class="slide">
+	<img *ngIf="slide.isLoaded" src="data:{{slide.mimetype}};base64,{{slide.data}}" alt="{{slide.title}}" class="img" />
+	<!--  [ngStyle]="slide.imgStyle" appStayFullSize -->
+	<div *ngIf="!slide.isLoaded" fxLayout="row" fxLayoutAlign="center center" class="img">
 		<mat-spinner diameter="70"></mat-spinner>
 	</div>
 </div>

@@ -25,33 +25,8 @@ export class Slide extends Identifiable {
     private _imageId: string;
     private imageIdSubject: Subject<string> = new Subject<string>();
 
-    /*style: object;
-    imgStyle: object;
-    titleStyle: object;
-    textStyle: object;*/
-
     constructor(serverData: any) {
         super(serverData);
-
-        /*this.style = {
-            "width": "100%"
-        };
-
-        this.setStyle(
-            {
-                "display": "block",
-                "margin": "auto",
-                "vertical-align": "middle"
-            },
-            {
-                //"position": "absolute",
-                "top": "10%",
-                "left": "0",
-                "text-align": "center",
-                "width": "100%"
-            },
-            {}
-        );*/
     }
 
     updateFromServer(serverData: any): boolean {
@@ -96,12 +71,6 @@ export class Slide extends Identifiable {
     getImageIdObserver(): Observable<string> {
         return this.imageIdSubject.asObservable();
     }
-
-    /*setStyle(imgStyle: object, titleStyle: object, textStyle: object) {
-        this.imgStyle = imgStyle;
-        this.titleStyle = titleStyle;
-        this.textStyle = textStyle;
-    }*/
 
     getWidth(): Number {
         return this.metadata.size.width;

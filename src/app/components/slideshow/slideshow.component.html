@@ -1,7 +1,7 @@
 <app-gallery [elements]="slides" [rollOverAllowed]="true" (onLoad)="galleryLoadEvent($event)">
 	<app-slide-panel [panes]="slides" [activePaneId]="currentSlideId">
 		<ng-template #paneTmpl let-pane>
-			<app-slide [slide]="pane" [layout]="'carousel'"></app-slide>
+			<app-slide [slide]="pane" [routerLink]="['/slide/view', {id: pane.id}]" [layout]="'carousel'"></app-slide>
 		</ng-template>
 	</app-slide-panel>
 </app-gallery>

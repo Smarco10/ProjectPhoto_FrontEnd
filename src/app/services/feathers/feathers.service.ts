@@ -35,28 +35,28 @@ const LocalUserPassportFieldName: string = 'user';
 export class FeathersService {
     // There are no proper typings available for feathers, due to its plugin-heavy nature
     private _feathers: any;
-    private _socket: any;
 
     private _authenticatedEventCallbackQueue: Array<Function> = new Array<Function>();
 
     constructor() {
         const serverAddressStartIndex = window.location.href.indexOf("//") + 2;
         let serverAddressEndIndex = window.location.href.indexOf(":", serverAddressStartIndex);
-        if (serverAddressEndIndex == -1)
+        if (serverAddressEndIndex == -1) {
             serverAddressEndIndex = window.location.href.indexOf("/", serverAddressStartIndex);
+        }
 
         const serverAddress = window.location.href.substring(serverAddressStartIndex, serverAddressEndIndex);
         const serverPort = 3030;
         const serverProtocol = 'http';
         const serverUrl = serverProtocol + '://' + serverAddress + ':' + serverPort;
 
-        this._socket = io(serverUrl, {
+        let socket = io(serverUrl, {
             transports: ['websocket'],
             forceNew: true
         });       // init socket.io
 
         this._feathers = feathers()         // init Feathers
-            .configure(socketio(this._socket))	// add socket.io plugin
+            .configure(socketio(socket))	// add socket.io plugin
             .configure(authentication({         // add authentication plugin
                 storage: window.localStorage
             }));

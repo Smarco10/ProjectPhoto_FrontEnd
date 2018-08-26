@@ -1,11 +1,11 @@
 <div *ngIf="!!slide && layout == 'view'">
 	<app-slide-view [slide]="slide"></app-slide-view>
 
-	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
+	<div *ngIf="!!slide.title && slide.title.length !== 0" class="slide_title">
 		<h2>{{slide.title}}</h2>
 	</div>
 
-	<div *ngIf="slide.text.length !== 0" class="slide_text" [ngStyle]="slide.textStyle">
+	<div *ngIf="!!slide.text && slide.text.length !== 0" class="slide_text">
 		<markdown #mkd>{{slide.text}}</markdown>
 	</div>
 </div>
@@ -18,7 +18,7 @@
 -->
 	<app-slide-view [slide]="slide"></app-slide-view>
 
-	<div *ngIf="slide.title.length !== 0" class="slide_title" [ngStyle]="slide.titleStyle">
+	<div *ngIf="!!slide.title && slide.title.length !== 0" class="slide_title">
 		<h2>{{slide.title}}</h2>
 	</div>
 </div>
