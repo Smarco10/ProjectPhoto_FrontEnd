@@ -43,10 +43,7 @@
 
 		<div *ngIf="addedSlides.length > 0">
 			<label>Front image</label>
-			<img *ngIf="album.isLoaded" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" appStayFullSize />
-			<div *ngIf="!album.isLoaded" fxLayout="row" fxLayoutAlign="center center">
-				<mat-spinner diameter="70"></mat-spinner>
-			</div>
+			<app-slide-view [slide]="album" appStayFullSize></app-slide-view>
 		</div>
 
 		<div *ngIf="!showDeleteConfimation" fxLayout="row" fxLayoutAlign="center center" class="buttonGroup">

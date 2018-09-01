@@ -11,12 +11,13 @@ export class Album extends Slide {
     }
 
     public updateFromServer(serverData: any): boolean {
-        const serverDataAreValid = super.updateFromServer(serverData);
-        if (serverDataAreValid) {
+        let superIsUpdated = super.updateFromServer(serverData);
+        let thisCanBeUpdated = superIsUpdated || super.serverDataAreValid(serverData);
+        if (thisCanBeUpdated) {
             //we cannot use this.slides because it is called by parent and own objects (like this.slidesSubject) aren't created yet
             this._slides = serverData.slides || [];
         }
-        return serverDataAreValid;
+        return thisCanBeUpdated;
     }
 
     set slides(slides: Array<string>) {

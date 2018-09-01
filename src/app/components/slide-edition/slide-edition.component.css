@@ -10,9 +10,17 @@
     height: unset;
 }
 
+.mat-list .mat-list-item app-slide-management ::ng-deep .slide img {
+    height: 100px;
+}
+
 textarea {
     width: 100%;
     height: 100px;
+}
+
+app-slide-view ::ng-deep .slide img {
+    height: 500px;
 }
 
 #load_slide {

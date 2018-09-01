@@ -45,8 +45,6 @@ export class SlideEditionComponent implements OnInit {
                     title: fileList[i].name
                 });
 
-                //slide.setStyle({ height: "100px" }, undefined, undefined);
-
                 this.slidesImported.push(slide);
 
                 if (!this.currentSlideEdit) {
@@ -54,9 +52,11 @@ export class SlideEditionComponent implements OnInit {
                 }
 
                 let reader = new FileReader();
+                SlideEditionComponent.setDataOnFileRead(reader, slide, fileList[i]);
+
                 reader.addEventListener("load", function() {
-                    let data: string = (<string>reader.result).substring(("data:" + fileList[i].type + ";base64,").length);
-                    slide.setData(data, { "Mime type": fileList[i].type });
+                    /*let data: string = (<string>reader.result).substring(("data:" + fileList[i].type + ";base64,").length);
+                    slide.setData(data, { "Mime type": fileList[i].type });*/
 
                     do {
                         ++that.lastReaderStarted;
@@ -82,16 +82,24 @@ export class SlideEditionComponent implements OnInit {
         }
     }
 
+    private static setDataOnFileRead(reader: FileReader, slide: Slide, file: Blob): void {
+        reader.addEventListener("load", function() {
+            let data: string = (<string>reader.result).substring(("data:" + file.type + ";base64,").length);
+            slide.setData(data, { "Mime type": file.type });
+        }, false);
+    }
+
     loadCurrentSlideFile(event: any) {
         let that = this;
         let fileList: FileList = event.target.files;
 
         if (!!fileList && fileList.length > 0) {
             let reader = new FileReader();
-            reader.addEventListener("load", function() {
+            SlideEditionComponent.setDataOnFileRead(reader, that.currentSlideEdit, fileList[0]);
+            /*reader.addEventListener("load", function() {
                 let data: string = (<string>reader.result).substring(("data:" + fileList[0].type + ";base64,").length);
                 that.currentSlideEdit.setData(data, { "Mime type": fileList[0].type });
-            }, false);
+            }, false);*/
 
             that.currentSlideEdit.unsetData();
             reader.readAsDataURL(fileList[0]);
@@ -100,7 +108,7 @@ export class SlideEditionComponent implements OnInit {
 
     upload(...slides: Slide[]) {
         for (let slide of slides) {
-            if (slide.isLoaded) {
+            if (slide.isLoaded && !slide.id) {
                 this.filesService.uploadFile("data:" + slide.mimetype + ";base64," + slide.data)
                     .then(data => {
                         slide.imageId = data.id;

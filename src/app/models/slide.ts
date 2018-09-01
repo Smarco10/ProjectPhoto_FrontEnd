@@ -30,8 +30,9 @@ export class Slide extends Identifiable {
     }
 
     updateFromServer(serverData: any): boolean {
-        const serverDataAreValid: boolean = super.updateFromServer(serverData);
-        if (serverDataAreValid) {
+        let superIsUpdated = super.updateFromServer(serverData);
+        let thisCanBeUpdated = superIsUpdated || super.serverDataAreValid(serverData);
+        if (thisCanBeUpdated) {
             this.title = serverData.title;
             this.text = serverData.text;
             if (this.imageId !== serverData.image) {
@@ -39,7 +40,7 @@ export class Slide extends Identifiable {
                 this.isLoaded = false;
             }
         }
-        return serverDataAreValid;
+        return thisCanBeUpdated;
     }
 
     setData(data: ArrayBuffer | string, metadata: any): void {

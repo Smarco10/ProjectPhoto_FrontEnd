@@ -1,7 +1,3 @@
-<!--img *ngIf="!!album && album.isLoaded" class="album-image" src="data:{{album.mimetype}};base64,{{album.data}}" alt="{{album.title}}" appStayFullSize />
-<div *ngIf="!!album && !album.isLoaded" fxLayout="row" fxLayoutAlign="center center">
-	<mat-spinner diameter="70"></mat-spinner>
-</div-->
 <app-slide-view [slide]="album"></app-slide-view>
 
 <div *ngIf="!!album && album.isLoaded" class="album-overflow" [@mouseInOut]="hover">

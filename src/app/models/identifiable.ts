@@ -11,10 +11,11 @@ export class Identifiable {
     }
 
     public updateFromServer(serverData: any): boolean {
-        if (!!serverData._id) {
+        if (!!this.id) {
             this.id = serverData._id;
+            return true;
         }
-        return !!serverData._id;
+        return false;
     }
 
     public isCreated(): boolean {
