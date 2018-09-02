@@ -11,7 +11,7 @@ export class Identifiable {
     }
 
     public updateFromServer(serverData: any): boolean {
-        if (!this.id) {
+        if (!this.isCreated()) {
             this.id = serverData._id;
             return true;
         }
